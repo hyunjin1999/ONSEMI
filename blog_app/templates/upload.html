@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Post</title>
+    </head>
+    <body>
+        <main>
+            <h1>새로운 글 등록</h1>
+            <form method='post' enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <label for="title">제목</label>
+                <input type="text" id="title" name="title" required>
+
+                <label for="title">이미지</label>
+                <input type="file" id="image" name="image" required>
+            
+                <label for="title">내용</label>
+                <textarea id="content" name="content" required></textarea>
+
+                <button type="submit">업로드</button>
+            </form>
+        </main>
+    </body>
+</html>
