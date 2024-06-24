@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Post</title>
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+    {% load static %}
     </head>
     <body>
         <main>
@@ -18,19 +19,18 @@
                 </thead>
                 <tbody>
                     {% for post in post_list %}
-                    <tr onclick="location.href='{{ post.post_id }}';" style="cursor:pointer;">
+                    <tr onclick="location.href='{% url 'blog_app:post_detail' post.pk %}';">
                         <td>{{ post.datetime }} </td>
-                        <td>{{post.title}}</td>
-                        <td>{{post.user_id}}</td>
+                        <td>{{ post.title }}</td>
+                        <td>{{ post.user_id }}</td>
                         <td>이미지파일</td>
                     </tr>
                     {% endfor %}
-                    {% endif %}
                 </tbody>
             </table>
+            {% else %}
+            <p>No posts available.</p>
+            {% endif %}
         </main>
     </body>
 </html>
-
-
-

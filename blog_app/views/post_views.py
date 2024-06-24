@@ -1,9 +1,8 @@
-from blog_app.models import Blog
+from blog_app.models import Post
 from django.shortcuts import render
 
-
 def post_all(request):
-    post_list = Blog.objects.all()
+    post_list = Post.objects.all()
     context = {'post_list': post_list}
     return render(request, 'post_list.html', context)
 
