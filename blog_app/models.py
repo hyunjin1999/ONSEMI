@@ -8,8 +8,11 @@ class Blog(models.Model):
     name = models.CharField(db_column='name', max_length=255)
     title = models.TextField(db_column='title')
     content = models.TextField(db_column='content')
-    image = models.ImageField(db_column='image', blank=True, null=True)
+    image = models.ImageField(upload_to='blog/%Y/%m/', db_column='image', blank=True, null=True)
     datetime = models.DateTimeField(db_column='datetime', auto_now_add=True)
+    
+    class Meta:
+        db_table = "Blog"
 
 
 class Comment(models.Model):
@@ -18,6 +21,10 @@ class Comment(models.Model):
     blog_id = models.ForeignKey(Blog, on_delete=models.CASCADE, db_column='blog_id') 
     datetime = models.DateTimeField(db_column='datetime', auto_now_add=True)
     content = models.TextField(db_column='content', blank=False, null=False)
+    
+    class Meta:
+        db_table = "Comment"
+
 
 
 class Love(models.Model):
@@ -25,3 +32,6 @@ class Love(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
     blog_id = models.ForeignKey(Blog, on_delete=models.CASCADE, db_column='blog_id')
     datetime = models.DateTimeField(db_column='datetime', auto_now_add=True)
+    
+    class Meta:
+        db_table = "Love"

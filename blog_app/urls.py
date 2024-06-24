@@ -5,6 +5,6 @@ from .views import post_views, upload_views
 app_name = 'blog'
 
 urlpatterns = [
-    path("post", post_views.post_all),
-    path("post/upload", upload_views.post_upload),
+    path("post", post_views.post_all, name='post'),
+    path("post/upload", upload_views.post_upload, name='upload'),
 ]

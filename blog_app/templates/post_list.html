@@ -18,14 +18,19 @@
                 </thead>
                 <tbody>
                     {% for post in post_list %}
-                    <tr onclick="location.href='{{ post.post_id }}';">
+                    <tr onclick="location.href='{{ post.post_id }}';" style="cursor:pointer;">
                         <td>{{ post.datetime }} </td>
                         <td>{{post.title}}</td>
                         <td>{{post.user_id}}</td>
                         <td>이미지파일</td>
                     </tr>
                     {% endfor %}
+                    {% endif %}
                 </tbody>
             </table>
+        </main>
+    </body>
+</html>
+
 
 
