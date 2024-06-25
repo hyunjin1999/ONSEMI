@@ -7,7 +7,7 @@ from blog_app.forms import PostForm, CommentForm
 
 @login_required
 def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    post = get_object_or_404(Blog, pk=pk)
     post.views += 1  # 조회수 증가
     post.save()
     
@@ -37,7 +37,7 @@ def post_detail(request, pk):
 @login_required
 @require_POST
 def post_like(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    post = get_object_or_404(Blog, pk=pk)
     user = request.user
     like, created = Like.objects.get_or_create(post=post, user=user)
     if not created: # 좋아요 기능은 1번만 사용가능하게 해야함
@@ -65,7 +65,7 @@ def post_create(request):
 @login_required
 @require_POST
 def comment_create(request, post_pk):
-    post = get_object_or_404(Post, pk=post_pk)
+    post = get_object_or_404(Blog, pk=post_pk)
     comment_form = CommentForm(request.POST)
     if comment_form.is_valid():
         new_comment = comment_form.save(commit=False)
@@ -80,7 +80,7 @@ def comment_create(request, post_pk):
 @login_required
 @require_POST
 def post_delete(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    post = get_object_or_404(Blog, pk=pk)
     if post.author != request.user:
         return redirect('blog_app:post_detail', pk=pk)
     
@@ -88,12 +88,12 @@ def post_delete(request, pk):
     return redirect('blog_app:post_list')
 
 def post_list(request):
-    posts = Post.objects.all()
+    posts = Blog.objects.all()
     return render(request, 'blog_app/post_list.html', {'posts': posts})
 
 @login_required
 def post_edit(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    post = get_object_or_404(Blog, pk=pk)
     if post.author != request.user:
         return redirect('blog_app:post_detail', pk=pk)
 
@@ -111,7 +111,7 @@ def post_edit(request, pk):
 @login_required
 @require_POST
 def comment_delete(request, post_pk, comment_pk):
-    post = get_object_or_404(Post, pk=post_pk)
+    post = get_object_or_404(Blog, pk=post_pk)
     comment = get_object_or_404(Comment, pk=comment_pk)
     if comment.post != post or (comment.author != request.user and post.author != request.user):
         return redirect('blog_app:post_detail', pk=post_pk)

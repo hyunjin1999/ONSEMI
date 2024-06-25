@@ -7,15 +7,15 @@ def post_upload(request):
     user = get_object_or_404(User, pk=1)
     
     if request.method == 'POST':
-        post = Blog(
+        blog = Blog(
             user_id=user,
             name=user.username,
             title=request.POST.get('title'),
             content=request.POST.get('content'),
             image=request.POST.get('image'),
         )
-        post.save()
+        blog.save()
         
-        return redirect('blog:post')
+        return redirect('/blog/')
     else:
-        return render(request, 'upload.html')
+        return render(request, 'blog_app/upload.html')
