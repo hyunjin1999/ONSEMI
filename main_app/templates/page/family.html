@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends "layout.html" %}
 {% load static %}
 
@@ -69,10 +70,92 @@
                     </table>
                     <br>
                     <button class="add-post-button" onclick="location.href='write.html'">글쓰기</button>
+=======
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="family.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow p-4 flex justify-between items-center">
+            <div class="text-xl font-bold">온새미</div>
+            <button class="text-gray-600">로그아웃</button>
+        </header>
+
+        <div class="flex flex-1">
+            <!-- Sidebar -->
+            <aside class="bg-white shadow w-48 p-4">
+                <nav class="space-y-4">
+                    <a href="#" class="block text-gray-700 font-bold">아이콘1</a>
+                    <a href="#" class="block text-gray-700 font-bold">아이콘2</a>
+                    <a href="#" class="block text-gray-700 font-bold">아이콘3</a>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-4 space-y-4">
+                <div class="bg-white shadow p-4 rounded relative">
+                    <h2 class="text-lg font-bold">커뮤니티</h2>
+                    <button id="addButton" class="absolute top-4 right-4 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center">+</button>
+                    <div class="mt-4">
+                        <table id="communityTable" class="min-w-full bg-white">
+                            <thead>
+                                <tr>
+                                    <th class="py-2">글번호</th>
+                                    <th class="py-2">제목</th>
+                                    <th class="py-2">작성자</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border px-4 py-2">1</td>
+                                    <td class="border px-4 py-2">첫 번째 글</td>
+                                    <td class="border px-4 py-2">작성자1</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2">2</td>
+                                    <td class="border px-4 py-2">두 번째 글</td>
+                                    <td class="border px-4 py-2">작성자2</td>
+                                </tr>
+                                <!-- Add more rows as needed -->
+                            </tbody>
+                        </table>
+                    </div>
+>>>>>>> a1796621cc8badaf7c22648b5f29a3905c2e6088
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById('addButton').addEventListener('click', function () {
+            const table = document.getElementById('communityTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+
+            const newRowNumber = table.rows.length; // New row number based on the current number of rows
+
+            cell1.className = 'border px-4 py-2';
+            cell2.className = 'border px-4 py-2';
+            cell3.className = 'border px-4 py-2';
+
+            cell1.innerText = newRowNumber;
+            cell2.innerText = '새 글';
+            cell3.innerText = '새 작성자';
+        });
+    </script>
 </body>
+
 </html>
 {% endblock %}

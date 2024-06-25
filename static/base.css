@@ -4,8 +4,17 @@
     font-weight: normal;
     font-style: normal;
 }
+<<<<<<< HEAD
 
 
+=======
+@font-face {
+    font-family: 'KCC-Hanbit';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+>>>>>>> a1796621cc8badaf7c22648b5f29a3905c2e6088
 body {
     font-family: 'KCC-Hanbit';
     font-size: 30px;
@@ -64,12 +73,4 @@ body {
 .content img {
     width: 50%;
     margin-top:80px;
-}
-a:link {
-    color: black;
-    text-decoration: none; 
-}
-a:visited {
-    color: black;
-    text-decoration: none; 
 }

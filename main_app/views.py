@@ -10,8 +10,5 @@ def introduce(request):
 def family(request):
     return render(request, 'page/family.html')
 
-def mypage(request):
-    return render(request, 'page/mypage.html')
-
-def order(request):
-    return render(request, 'page/order.html')
+def volunteer(request):
+    return render(request,'page/volunteer.html')
