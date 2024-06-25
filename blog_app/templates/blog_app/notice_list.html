@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device=width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/notice_list.css">
+    <title>공지 게시판</title>
+    
+</head>
+<body>
+    <div class="container">
+        <h1>공지 게시판</h1>
+        <div id="notices">
+            <!-- 공지 리스트가 여기에 동적으로 추가됩니다 -->
+            {% for notice in notices %}
+            <div class="notice" onclick="location.href='{% url 'blog_app:notice_detail' notice.id %}'">
+                <p class="notice-title">{{ notice.title }}</p>
+                <p class="notice-date">{{ notice.date }}</p>
+                <p>{{ notice.content }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="pagination">
+            <button id="prevPage" onclick="prevPage()">이전</button>
+            <button id="nextPage" onclick="nextPage()">다음</button>
+        </div>
+    </div>
+</body>
+</html>
