@@ -10,7 +10,8 @@ class Blog(models.Model):
     image = models.ImageField(upload_to='blog/%Y/%m/', db_column='image', blank=True, null=True)
     datetime = models.DateTimeField(db_column='datetime', auto_now_add=True)
     views = models.PositiveIntegerField(default=0)
-
+    blog_type = models.CharField(max_length=63, db_column='blog_type', blank=False, null=False)
+    
     class Meta:
         db_table = "Blog"
 
