@@ -29,6 +29,7 @@ def update_profile(request):
         return render(request, "auth_app/update_profile.html")
 
     if request.method == "POST":
+        username = request.POST.get("username")
         phone_number = request.POST.get("phone_number")
         email = request.POST.get("email")
         # 변경 완료 후 현재 password로 사용자 재확인
@@ -36,13 +37,15 @@ def update_profile(request):
 
         user = request.user
         if user.check_password(password):
+            if username:
+                user.username = username
             if phone_number:
                 user.phone_number = phone_number
             if email:
                 user.email = email
             user.save()
             messages.success(request, "프로필 수정 완료!")
-            return redirect("profile")
+            return redirect("/user/profile/")
         else:
             messages.error(request, "비밀번호를 다시 입력해주세요.")
 
@@ -75,7 +78,7 @@ def update_password(request):
                     request, user
                 )  # Important for keeping the user logged in
                 messages.success(request, "비밀번호 변경 완료!")
-                return redirect("profile")
+                return redirect("/user/profile/")
             else:
                 messages.error(request, "새로운 비밀번호가 일치하지 않습니다.")
         else:
