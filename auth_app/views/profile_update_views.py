@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from auth_app.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
+
 
 @login_required
 def show_profile(request):
@@ -14,19 +15,21 @@ def show_profile(request):
 
     return render(request, "auth_app/profile.html", context)
 
+
 # 프로필 업데이트
 
 # input tag에 read only만 보여준다
 # update 할 때는 입력란
 # check_password
 
+
 @login_required
 def update_profile(request):
-    if request.method == 'POST':
-        phone_number = request.POST.get('phone_number')
-        email = request.POST.get('email')
+    if request.method == "POST":
+        phone_number = request.POST.get("phone_number")
+        email = request.POST.get("email")
         # 변경 완료 후 현재 password로 사용자 재확인
-        password = request.POST.get('password')
+        password = request.POST.get("password")
 
         user = request.user
         if user.check_password(password):
@@ -35,41 +38,45 @@ def update_profile(request):
             if email:
                 user.email = email
             user.save()
-            messages.success(request, '프로필 수정 완료!')
-            return redirect('profile')
+            messages.success(request, "프로필 수정 완료!")
+            return redirect("profile")
         else:
-            messages.error(request, '비밀번호를 다시 입력해주세요.')
-    
+            messages.error(request, "비밀번호를 다시 입력해주세요.")
+
     context = {
-        'user': user,
-        'phone_number': user.phone_number,
-        'email': user.email,
+        "user": user,
+        "phone_number": user.phone_number,
+        "email": user.email,
     }
 
-    return render(request, 'auth_app/profile.html')
+    return render(request, "auth_app/profile.html")
+
 
 # 유저 비밀번호 변경
 @login_required
 def update_password(request):
-    if request.method == 'POST':
-        current_password = request.POST.get('current_password')
-        new_password = request.POST.get('new_password')
-        new_password_confirm = request.POST.get('new_password_confirm')
+    if request.method == "POST":
+        current_password = request.POST.get("current_password")
+        new_password = request.POST.get("new_password")
+        new_password_confirm = request.POST.get("new_password_confirm")
 
         user = request.user
         if user.check_password(current_password):
             if new_password == new_password_confirm:
                 user.set_password(new_password)
                 user.save()
-                update_session_auth_hash(request, user)  # Important for keeping the user logged in
-                messages.success(request, '비밀번호 변경 완료!')
-                return redirect('profile')
+                update_session_auth_hash(
+                    request, user
+                )  # Important for keeping the user logged in
+                messages.success(request, "비밀번호 변경 완료!")
+                return redirect("profile")
             else:
-                messages.error(request, '새로운 비밀번호가 일치하지 않습니다.')
+                messages.error(request, "새로운 비밀번호가 일치하지 않습니다.")
         else:
-            messages.error(request, '비밀번호를 다시 입력해주세요.')
+            messages.error(request, "비밀번호를 다시 입력해주세요.")
 
-    return render(request, 'auth_app/update_password.html')
+    return render(request, "auth_app/update_password.html")
+
 
 # transaction 활동을 단위로 묶는다.
-# 돈을 
+# 돈을
