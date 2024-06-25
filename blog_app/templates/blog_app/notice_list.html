@@ -1,29 +1,108 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device=width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/notice_list.css">
-    <title>공지 게시판</title>
-    
+    <title>Notice List</title>
+    {% load static %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        main {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+        .new a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 0;
+            background-color: #28a745;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .new a:hover {
+            background-color: #218838;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: calc(100% - 120px);
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>공지 게시판</h1>
-        <div id="notices">
-            <!-- 공지 리스트가 여기에 동적으로 추가됩니다 -->
-            {% for notice in notices %}
-            <div class="notice" onclick="location.href='{% url 'blog_app:notice_detail' notice.id %}'">
-                <p class="notice-title">{{ notice.title }}</p>
-                <p class="notice-date">{{ notice.date }}</p>
-                <p>{{ notice.content }}</p>
-            </div>
-            {% endfor %}
+    <main>
+        {% if post_list %}
+        <table id="container">
+            <thead>
+                <tr>
+                    <th>등록 일자</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>이미지</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for notice in notice_list %}
+                <tr onclick="location.href='{% url 'blog_app:notice_detail' notice.pk %}';">
+                    <td>{{ notice.datetime }} </td>
+                    <td>{{ notice.title }}</td>
+                    <td>{{ notice.name }}</td>
+                    <td>
+                    {% if notice.image %}
+                        <img src="{{ notice.image.url }}" alt="{{ notice.title }}" width=80 height=120>
+                    {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No posts available.</p>
+        {% endif %}
+
+        <div class="new">
+            <a href="upload"> + New</a>
         </div>
-        <div class="pagination">
-            <button id="prevPage" onclick="prevPage()">이전</button>
-            <button id="nextPage" onclick="nextPage()">다음</button>
+        
+        <div>
+            <form action="{% url 'blog_app:search' %}" method="get">
+                <label for="search">Search: </label>
+                <input type="text" id="search" name="search" placeholder="검색어를 입력하세요">
+            </form>
         </div>
-    </div>
+    </main>
 </body>
 </html>
