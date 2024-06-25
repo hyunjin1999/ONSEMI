@@ -4,6 +4,7 @@ from django.shortcuts import render
 def post_all(request):
     post_list = Blog.objects.all()
     context = {'post_list': post_list}
+    print(request.user)
     return render(request, 'blog_app/post_list.html', context)
 
 
