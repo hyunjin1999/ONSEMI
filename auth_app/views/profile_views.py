@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 # 회원가입 -> template, 비밀번호가 2개가
@@ -10,3 +11,13 @@ from django.shortcuts import render
 # 계정 수정 -> views -> templates로 context( views가 templates에게 데이터 전달 )-> 변경사항 꾸미기
 
 # 계정 삭제 -> 1초
+
+
+@login_required
+def profile_view(request):
+    user = request.user
+    context = {
+        'user' : user
+    }
+    
+    return render(request, 'auth_app/profile.html', context)
