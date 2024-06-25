@@ -1,12 +1,12 @@
 from django import forms
-from blog_app.models import *
+from .models import Blog, Comment
 
 class PostForm(forms.ModelForm):
     class Meta:
-        model = Post
+        model = Blog
         fields = ['title', 'content', 'image']
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['text']
+        fields = ['content']

@@ -1,23 +1,19 @@
 from django.contrib import admin
-from .models import Post, Comment
+from .models import Blog, Comment
 
-class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'published_date', 'likes', 'views')
-    readonly_fields = ('likes', 'views', 'created_date')
-    fieldsets = (
-        (None, {'fields': ('title', 'content', 'image', 'created_date', 'published_date')}),
-    )
+class BlogAdmin(admin.ModelAdmin):
+    list_display = ('title', 'user_id', 'datetime', 'views')
+    readonly_fields = ('views', 'datetime')
 
     def save_model(self, request, obj, form, change):
         if not obj.pk:
-            obj.author = request.user
+            obj.user_id = request.user
         super().save_model(request, obj, form, change)
 
     def get_readonly_fields(self, request, obj=None):
-        # Superusers can edit all fields except 'likes' and 'views'
         if request.user.is_superuser:
             return self.readonly_fields
-        return ('likes', 'views', 'created_date', 'published_date', 'author')
+        return ('views', 'datetime', 'user_id')
 
-admin.site.register(Post, PostAdmin)
+admin.site.register(Blog, BlogAdmin)
 admin.site.register(Comment)

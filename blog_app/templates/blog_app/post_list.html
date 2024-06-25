@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Post</title>
+    <title>Post List</title>
     {% load static %}
-    </head>
-    <body>
-        <main>
-            {% if post_list %}
-            <table id="container">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Post List</h1>
+        </div>
+    </header>
+    <div class="container main-content">
+        {% if post_list %}
+            <table id="post-table">
                 <thead>
                     <tr>
                         <th>등록 일자</th>
@@ -19,18 +25,18 @@
                 </thead>
                 <tbody>
                     {% for post in post_list %}
-                    <tr onclick="location.href='{% url 'blog_app:post_detail' post.pk %}';">
-                        <td>{{ post.datetime }} </td>
+                    <tr onclick="location.href='{% url 'blog_app:post_detail' pk=post.pk %}';">
+                        <td>{{ post.datetime }}</td>
                         <td>{{ post.title }}</td>
-                        <td>{{ post.user_id }}</td>
-                        <td>이미지파일</td>
+                        <td>{{ post.user_id.username }}</td>
+                        <td>{% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}" style="width: 100px; height: auto;">{% else %}No Image{% endif %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            {% else %}
+        {% else %}
             <p>No posts available.</p>
-            {% endif %}
-        </main>
-    </body>
+        {% endif %}
+    </div>
+</body>
 </html>

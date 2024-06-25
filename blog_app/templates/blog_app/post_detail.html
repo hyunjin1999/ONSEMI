@@ -15,34 +15,37 @@
     <div class="container main-content">
         <h2>{{ post.title }}</h2>
         <p>{{ post.content }}</p>
-        <p>Published on: {{ post.published_date }}</p>
-        <p>Likes: <span id="like-count">{{ post.likes }}</span></p>
+        <p>Published on: {{ post.datetime }}</p>
+        <p>Likes: <span id="like-count">{{ post.post_likes.count }}</span></p>
         <p>Views: {{ post.views }}</p>
         
         {% if post.image %}
             <img src="{{ post.image.url }}" alt="{{ post.title }}">
         {% endif %}
         
-        <button id="like-button" data-url="{% url 'blog:post_like' pk=post.pk %}">좋아요</button>
-
-        {% if user == post.author %}
-            <a href="{% url 'blog:post_edit' pk=post.pk %}" class="button">글 수정하기</a>
-            <button onclick="confirmDeletePost({{ post.pk }})" class="button">글 삭제하기</button>
-        {% endif %}
+        <div class="action-buttons">
+            <button id="like-button" data-url="{% url 'blog_app:post_like' pk=post.pk %}">좋아요</button>
+            {% if user == post.user_id %}
+                <a href="{% url 'blog_app:post_edit' pk=post.pk %}" class="button">글 수정하기</a>
+                <button onclick="confirmDeletePost({{ post.pk }})" class="button">글 삭제하기</button>
+            {% endif %}
+        </div>
 
         <h2>댓글</h2>
         {% for comment in comments %}
             <div style="margin-left: {% if comment.parent %}40px{% endif %};">
-                <p><strong>{{ comment.author }}</strong>: {{ comment.text }}</p>
-                {% if user == post.author %}
+                <p><strong>{{ comment.user_id }}</strong>: {{ comment.content }}</p>
+                <p>{{ comment.datetime }}</p>
+                {% if user == comment.user_id or user == post.user_id %}
                     <button onclick="confirmDeleteComment({{ post.pk }}, {{ comment.pk }})" class="delete-button">x</button>
                 {% endif %}
-                <p><a href="#" class="reply" data-id="{{ comment.id }}">답글쓰기</a></p>
+                <p><a href="#" class="reply" data-id="{{ comment.id }}">Reply</a></p>
                 {% if comment.replies %}
                     {% for reply in comment.replies.all %}
                         <div style="margin-left: 40px;">
-                            <p><strong>{{ reply.author }}</strong>: {{ reply.text }}</p>
-                            {% if user == post.author %}
+                            <p><strong>{{ reply.user_id }}</strong>: {{ reply.content }}</p>
+                            <p>{{ reply.datetime }}</p>
+                            {% if user == reply.user_id or user == post.user_id %}
                                 <button onclick="confirmDeleteComment({{ post.pk }}, {{ reply.pk }})" class="delete-button">x</button>
                             {% endif %}
                         </div>
@@ -51,13 +54,14 @@
             </div>
         {% endfor %}
 
+        <h2>댓글 작성</h2>
         <form method="post">
             {% csrf_token %}
             {{ comment_form.as_p }}
             <input type="hidden" name="parent_id" id="parent_id">
-            <input type="submit" value="댓글 추가하기">
+            <input type="submit" value="댓글 달기">
         </form>
-        <button onclick="location.href='{% url 'blog:post_list' %}'">목록으로 돌아가기</button>
+        <button onclick="location.href='{% url 'blog_app:post_list' %}'">목록으로 돌아가기</button>
     </div>
 
     <script>
@@ -88,14 +92,14 @@
 
         function confirmDeletePost(postId) {
             if (confirm('정말 포스트를 삭제하시겠습니까?')) {
-                fetch(`/post/${postId}/delete/`, {
+                fetch(`/blog/${postId}/delete/`, {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}'
                     }
                 }).then(response => {
                     if (response.ok) {
-                        window.location.href = '/';
+                        window.location.href = '/blog/';
                     } else {
                         alert('Failed to delete the post.');
                     }
@@ -105,7 +109,7 @@
 
         function confirmDeleteComment(postId, commentId) {
             if (confirm('정말 댓글을 삭제하시겠습니까?')) {
-                fetch(`/post/${postId}/comment/${commentId}/delete/`, {
+                fetch(`/blog/${postId}/comment/${commentId}/delete/`, {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}'
@@ -114,7 +118,7 @@
                     if (response.ok) {
                         window.location.reload();
                     } else {
-                        alert('댓글 삭제에 실패하였습니다.');
+                        alert('Failed to delete the comment.');
                     }
                 });
             }
