@@ -80,7 +80,11 @@
                     <td>{{ post.datetime }} </td>
                     <td>{{ post.title }}</td>
                     <td>{{ post.name }}</td>
-                    <td>이미지파일</td>
+                    <td>
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}" width=80 height=120>
+                    {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

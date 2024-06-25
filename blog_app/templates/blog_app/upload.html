@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <title>새로운 글 등록</title>
     <style>
@@ -59,18 +60,9 @@
 <body>
     <main>
         <h1>새로운 글 등록</h1>
-        <form method='post' enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <label for="title">제목</label>
-            <input type="text" id="title" name="title" required>
-
-            <label for="image">이미지</label>
-            <input type="file" accept="image/*" id="image" name="image">
-        
-            <label for="content">내용</label>
-            <textarea id="content" name="content" required></textarea>
-
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
             <button type="submit">업로드</button>
         </form>
     </main>

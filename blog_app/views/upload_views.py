@@ -1,21 +1,17 @@
 from blog_app.models import Blog
 from django.shortcuts import render, get_object_or_404, redirect
 from auth_app.models import User
-
+from blog_app.forms import PostForm
 
 def post_upload(request):
-    user = get_object_or_404(User, pk=1)
-    
+    post = Blog()
     if request.method == 'POST':
-        blog = Blog(
-            user_id=user,
-            name=user.username,
-            title=request.POST.get('title'),
-            content=request.POST.get('content'),
-            image=request.POST.get('image'),
-        )
-        blog.save()
-        
-        return redirect('/blog/')
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user_id = request.user
+            post.save()
+            return redirect('blog_app:post_detail', pk=post.pk)
     else:
-        return render(request, 'blog_app/upload.html')
+        form = PostForm(instance=post)
+        return render(request, 'blog_app/upload.html', {'form': form})
