@@ -12,6 +12,7 @@ def notice_upload(request):
             notice = form.save(commit=False)
             notice.user_id = request.user
             notice.name = request.user
+            notice.blog_type = 'NOTICE'
             notice.save()
             return redirect('blog_app:notice_detail', pk=notice.pk)
     else:
