@@ -1,11 +1,15 @@
-<!DOCTYPE html>
-<html lang="ko">
+{% extends "layout.html" %}
 {% load static %}
+
+{% block title %}ONSEMI{% endblock %}
+
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'base.css' %}">
+{% endblock %}
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ONSEMI</title>
 </head>
 <body>
     <div class="sidebar">
@@ -25,3 +29,4 @@
     </div>
 </body>
 </html>
+{% endblock %}

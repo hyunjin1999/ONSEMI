@@ -4,6 +4,8 @@
     font-weight: normal;
     font-style: normal;
 }
+
+
 body {
     font-family: 'KCC-Hanbit';
     font-size: 30px;
@@ -15,6 +17,8 @@ body {
     overflow: hidden;
     
 }
+
+
 .sidebar {
     width: 50%;
     height: 100vh;
