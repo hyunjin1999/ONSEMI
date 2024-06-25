@@ -1,31 +1,55 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/notice_detail.css">
-    <title>공지 상세 페이지</title>
+    <title>{{ notice.title }}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <div class="container">
-        <h1>공지 상세 페이지</h1>
-        <div class="notice-detail">
-            <p class="notice-title">{{ notice.title }}</p>
-            <p class="notice-date">{{ notice.date }}</p>
-            <p>{{ notice.content }}</p>
+    <header>
+        <div class="container">
+            <h1>{{ notice.title }}</h1>
         </div>
-        <button onclick="goBack()">목록으로 돌아가기</button>
+    </header>
+    <div class="container main-content">
+        <h2>{{ notice.title }}</h2>
+        <p>{{ notice.content }}</p>
+        <p>Published on: {{ notice.datetime }}</p>
+        <p>Views: {{ notice.views }}</p>
+        
+        {% if notice.image %}
+            <img src="{{ notice.image.url }}" alt="{{ notice.title }}">
+        {% endif %}
+        
+        <div class="action-buttons">
+            {% if user == notice.user_id %}
+                <a href="{% url 'blog_app:post_edit' pk=notice.pk %}" class="button">글 수정하기</a>
+                <button onclick="confirmDeletePost({{ notice.pk }})" class="button">글 삭제하기</button>
+            {% endif %}
+        </div>
+        </form>
+        <button onclick="location.href='{% url 'blog_app:notice_list' %}'">목록으로 돌아가기</button>
     </div>
 
-    {% if user == post.author %}
-            <a href="{% url 'blog:post_edit' pk=post.pk %}" class="button">글 수정하기</a>
-            <button onclick="confirmDeletePost({{ post.pk }})" class="button">글 삭제하기</button>
-        {% endif %}
-    
     <script>
-        function goBack() {
-            window.history.back();
+        function confirmDeletePost(postId) {
+            if (confirm('정말 포스트를 삭제하시겠습니까?')) {
+                fetch(`/blog/${postId}/delete/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        window.location.href = '/blog/';
+                    } else {
+                        alert('Failed to delete the notice.');
+                    }
+                });
+            }
         }
+
     </script>
 </body>
 </html>
