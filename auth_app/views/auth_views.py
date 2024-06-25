@@ -1,12 +1,81 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from auth_app.models import User
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db import transaction
 
 # Create your views here.
-# 회원가입 -> template, 비밀번호가 2개가
-# 로그인 -> form에 아무것도 입력안했을 떄? 어떻게해야할지
-# 로그아웃 -> 1초
 
-# 계정확인  -> views -> templates로 context( views가 templates에게 데이터 전달 )-> templates를 꾸미기
 
-# 계정 수정 -> views -> templates로 context( views가 templates에게 데이터 전달 )-> 변경사항 꾸미기
+@csrf_exempt
+def login_user(request):
+    if request.method == "GET":
+        return render(request, "auth_app/login.html")
 
-# 계정 삭제 -> 1초
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+
+        if len(username) == 0 or len(password) == 0:
+            messages.add_message(request, messages.INFO, "write correctly")
+            return redirect("/login")
+
+        user = authenticate(username=username, password=password)
+
+        if user:
+            login(request, user)
+            return render(request, "/")
+
+        return redirect("/user/login")
+
+
+@login_required
+def logout_user(request):
+    logout(request)
+    return redirect("/")
+
+
+@csrf_exempt
+def register_user(request):
+    if request.method == "GET":
+        return render(request, "auth_app/register_user.html")
+
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        confirm_password = request.POST.get("confirm_password")
+        phone_number = request.POST.get("phone_number")
+        email = request.POST.get("email")
+        user_type = request.POST.get("user_type")
+
+        user_exists = User.objects.filter(username=username).exists()
+
+        if user_exists:
+            messages.add_message(request, messages.INFO, "username exist")
+            return redirect("/user/reigster")
+
+        if len(username) <= 0:
+            messages.add_message(
+                request, messages.INFO, "username's length is too short"
+            )
+            return redirect("/user/reigster")
+
+        if password != confirm_password:
+            messages.add_message(request, messages.INFO, "confirm password")
+            return redirect("/user/reigster")
+
+        try:
+            with transaction.atomic():
+                user = User.objects.create_user(
+                    username=username,
+                    password=password,
+                    phone_number=phone_number,
+                    email=email,
+                    user_type=user_type,
+                )
+        except Exception:
+            return redirect("/")
+
+        return redirect("/user/login")
