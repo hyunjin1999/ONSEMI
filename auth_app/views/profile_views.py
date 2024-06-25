@@ -14,10 +14,9 @@ from django.contrib.auth.decorators import login_required
 
 
 @login_required
-def profile_view(request):
-    user = request.user
-    context = {
-        'user' : user
-    }
-    
-    return render(request, 'auth_app/profile.html', context)
+def show_user_profile(request):
+    if request.method == "GET":
+        user = request.user
+        context = {"user": user}
+
+        return render(request, "auth_app/profile.html", context)

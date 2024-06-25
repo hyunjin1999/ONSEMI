@@ -26,7 +26,7 @@ def login_user(request):
 
         if user:
             login(request, user)
-            return render(request, "/")
+            return render(request, "auth_app/profile.html")
 
         return redirect("/user/login")
 
@@ -54,17 +54,17 @@ def register_user(request):
 
         if user_exists:
             messages.add_message(request, messages.INFO, "username exist")
-            return redirect("/user/reigster")
+            return redirect("/user/register/")
 
         if len(username) <= 0:
             messages.add_message(
                 request, messages.INFO, "username's length is too short"
             )
-            return redirect("/user/reigster")
+            return redirect("/user/register/")
 
         if password != confirm_password:
             messages.add_message(request, messages.INFO, "confirm password")
-            return redirect("/user/reigster")
+            return redirect("/user/register/")
 
         try:
             with transaction.atomic():

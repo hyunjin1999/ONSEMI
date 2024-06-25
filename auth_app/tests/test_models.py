@@ -4,7 +4,7 @@ from auth_app.models import User
 # Create your tests here.
 
 
-class AuthViewTest(TestCase):
+class AuthModelTest(TestCase):
 
     def setUp(self):
         User.objects.create_user(

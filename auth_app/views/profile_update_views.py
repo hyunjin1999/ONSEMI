@@ -25,6 +25,9 @@ def show_profile(request):
 
 @login_required
 def update_profile(request):
+    if request.method == "GET":
+        return render(request, "auth_app/update_profile.html")
+
     if request.method == "POST":
         phone_number = request.POST.get("phone_number")
         email = request.POST.get("email")
@@ -55,6 +58,9 @@ def update_profile(request):
 # 유저 비밀번호 변경
 @login_required
 def update_password(request):
+    if request.method == "GET":
+        return render(request, "auth_app/update_password.html")
+
     if request.method == "POST":
         current_password = request.POST.get("current_password")
         new_password = request.POST.get("new_password")
