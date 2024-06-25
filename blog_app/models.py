@@ -10,16 +10,9 @@ class Blog(models.Model):
     image = models.ImageField(upload_to='blog/%Y/%m/', db_column='image', blank=True, null=True)
     datetime = models.DateTimeField(db_column='datetime', auto_now_add=True)
     views = models.PositiveIntegerField(default=0)
-    
+
     class Meta:
         db_table = "Blog"
-
-# class Love(models.Model):
-#     love_id = models.AutoField(primary_key=True, db_column='love_id')
-#     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
-#     blog_id = models.ForeignKey(Blog, on_delete=models.CASCADE, db_column='blog_id')
-#     datetime = models.DateTimeField(db_column='datetime', auto_now_add=True)
-
 
 class Comment(models.Model):
     post = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comments')
@@ -29,12 +22,12 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
 
     def __str__(self):
-        return self.text
-    
+        return self.content
+
 class Like(models.Model):
     post = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='post_likes')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_likes')
-    created_date = models.DateTimeField(auto_now_add=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_likes')
+    datetime = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('post', 'user')
+        unique_together = ('post', 'user_id')

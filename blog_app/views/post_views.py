@@ -1,4 +1,4 @@
-from blog_app.models import Blog
+from blog_app.models import *
 from django.shortcuts import render
 
 def post_all(request):

@@ -18,6 +18,12 @@ header {
     margin-bottom: 20px;
 }
 
+header h1 {
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0;
+}
+
 .post-header {
     display: flex;
     justify-content: space-between;
@@ -150,4 +156,25 @@ form input[type="submit"]:hover, form button:hover {
 .action-buttons {
     margin-top: 20px;
     text-align: right;
+}
+
+#post-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2em 0;
+}
+
+#post-table th, #post-table td {
+    padding: 1em;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+#post-table th {
+    background-color: #f4f4f4;
+}
+
+#post-table tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
 }

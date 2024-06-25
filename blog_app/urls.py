@@ -4,8 +4,8 @@ from .views import post_views, upload_views, detail_views
 app_name = 'blog_app'
 
 urlpatterns = [
-    path("", post_views.post_all, name='post_list'),
-    path("upload/", upload_views.post_upload, name='post_upload'),
+    path('', post_views.post_all, name='post_list'),
+    path('upload/', upload_views.post_upload, name='post_upload'),
     path("search/", post_views.search, name='search'),
     path('<int:pk>/', detail_views.post_detail, name='post_detail'),
     path('<int:pk>/like/', detail_views.post_like, name='post_like'),
