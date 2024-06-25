@@ -15,7 +15,7 @@ from django.contrib.auth.models import (
 # 그래서 아래거 사용
 class UserManager(BaseUserManager):
 
-    def create_user(self, username, phone_number, email, user_type, password=None):
+    def create_user(self, username, email, user_type, password=None, phone_number=None):
         if not username:
             raise ValueError("username doesn't exist")
 
@@ -35,8 +35,7 @@ class UserManager(BaseUserManager):
             raise ValueError("username doesn't exist")
 
         user = self.create_user(
-            username=username, password=password, email=email, user_type=user_type
-        )
+            username=username, password=password, email=email, user_type=user_type)
         user.is_superuser = True
 
         user.save(using=self._db)

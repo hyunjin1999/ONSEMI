@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>{{ post.title }}</h1>
+        </div>
+    </header>
+    <div class="container main-content">
+        <h2>{{ post.title }}</h2>
+        <p>{{ post.content }}</p>
+        <p>Published on: {{ post.datetime }}</p>
+        <p>Likes: <span id="like-count">{{ post.post_likes.count }}</span></p>
+        <p>Views: {{ post.views }}</p>
+        
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}">
+        {% endif %}
+        
+        <div class="action-buttons">
+            <button id="like-button" data-url="{% url 'blog_app:post_like' pk=post.pk %}">좋아요</button>
+            {% if user == post.user_id %}
+                <a href="{% url 'blog_app:post_edit' pk=post.pk %}" class="button">글 수정하기</a>
+                <button onclick="confirmDeletePost({{ post.pk }})" class="button">글 삭제하기</button>
+            {% endif %}
+        </div>
+
+        <h2>댓글</h2>
+        {% for comment in comments %}
+            <div style="margin-left: {% if comment.parent %}40px{% endif %};">
+                <p><strong>{{ comment.user_id }}</strong>: {{ comment.content }}</p>
+                <p>{{ comment.datetime }}</p>
+                {% if user == comment.user_id or user == post.user_id %}
+                    <button onclick="confirmDeleteComment({{ post.pk }}, {{ comment.pk }})" class="delete-button">x</button>
+                {% endif %}
+                <p><a href="#" class="reply" data-id="{{ comment.id }}">Reply</a></p>
+                {% if comment.replies %}
+                    {% for reply in comment.replies.all %}
+                        <div style="margin-left: 40px;">
+                            <p><strong>{{ reply.user_id }}</strong>: {{ reply.content }}</p>
+                            <p>{{ reply.datetime }}</p>
+                            {% if user == reply.user_id or user == post.user_id %}
+                                <button onclick="confirmDeleteComment({{ post.pk }}, {{ reply.pk }})" class="delete-button">x</button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <h2>댓글 작성</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <input type="hidden" name="parent_id" id="parent_id">
+            <input type="submit" value="댓글 달기">
+        </form>
+        <button onclick="location.href='{% url 'blog_app:post_list' %}'">목록으로 돌아가기</button>
+    </div>
+
+    <script>
+        document.querySelectorAll('.reply').forEach(function(element) {
+            element.onclick = function(e) {
+                e.preventDefault();
+                document.getElementById('parent_id').value = this.getAttribute('data-id');
+                window.scrollTo(0, document.body.scrollHeight);
+            };
+        });
+
+        document.getElementById('like-button').onclick = function(e) {
+            e.preventDefault();
+            const url = this.getAttribute('data-url');
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('like-count').textContent = data.likes;
+            });
+        };
+
+        function confirmDeletePost(postId) {
+            if (confirm('정말 포스트를 삭제하시겠습니까?')) {
+                fetch(`/blog/${postId}/delete/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        window.location.href = '/blog/';
+                    } else {
+                        alert('Failed to delete the post.');
+                    }
+                });
+            }
+        }
+
+        function confirmDeleteComment(postId, commentId) {
+            if (confirm('정말 댓글을 삭제하시겠습니까?')) {
+                fetch(`/blog/${postId}/comment/${commentId}/delete/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Failed to delete the comment.');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
