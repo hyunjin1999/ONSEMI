@@ -26,6 +26,8 @@ a.button, input[type="submit"] {
     padding:10px 20px;
     font-size:14px;
     border:0;
+    display: inline-block;
+    margin: 10px 0;
 }
 
 a.button.light {
