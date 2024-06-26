@@ -5,7 +5,7 @@ from blog_app.forms import PostForm
 from django.contrib.auth.decorators import login_required
 
 
-
+@login_required
 def post_upload(request):
     print(type(request.user))
     post = Blog()

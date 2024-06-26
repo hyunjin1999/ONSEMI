@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from cart_app.forms import CartAddProductForm
 from .models import Category, Product
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()
@@ -16,7 +17,7 @@ def product_list(request, category_slug=None):
                    'categories': categories,
                    'products': products})
 
-
+@login_required
 def product_detail(request, id, slug):
     product = get_object_or_404(Product,
                                 id=id,

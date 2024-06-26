@@ -2,8 +2,9 @@ from blog_app.models import Blog
 from django.shortcuts import render, get_object_or_404, redirect
 from auth_app.models import User
 from blog_app.forms import NoticeForm
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def notice_upload(request):
     notice = Blog()
     if request.method == 'POST':

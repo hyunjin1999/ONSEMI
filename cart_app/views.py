@@ -3,8 +3,10 @@ from django.views.decorators.http import require_POST
 from shop_app.models import Product
 from .cart import Cart
 from .forms import CartAddProductForm
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 @require_POST
 def cart_add(request, product_id):
     cart = Cart(request)
@@ -17,7 +19,7 @@ def cart_add(request, product_id):
                  override_quantity=cd['override'])
     return redirect('cart_app:cart_detail')
 
-
+@login_required
 @require_POST
 def cart_remove(request, product_id):
     cart = Cart(request)
@@ -25,7 +27,7 @@ def cart_remove(request, product_id):
     cart.remove(product)
     return redirect('cart_app:cart_detail')
 
-
+@login_required
 def cart_detail(request):
     cart = Cart(request)
     for item in cart:
