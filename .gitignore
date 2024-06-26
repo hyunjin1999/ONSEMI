@@ -1,5 +1,19 @@
 .idea/
 
+*.pyc
 
-db.sqlite3
+**/*.pyc
+
+**/*.sqlite3
+
+*/migrations/*
+!*/migrations/__init__.py
+
+**/migrations/*
+!**/migrations/__init__.py
+
+
+
+
+*.sqlite3
 
