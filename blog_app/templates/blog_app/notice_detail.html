@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ notice.title }}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>{{ notice.title }}</h1>
+        </div>
+    </header>
+    <div class="container main-content">
+        <h2>{{ notice.title }}</h2>
+        <p>{{ notice.content }}</p>
+        <p>Published on: {{ notice.datetime }}</p>
+        <p>Views: {{ notice.views }}</p>
+        
+        {% if notice.image %}
+            <img src="{{ notice.image.url }}" alt="{{ notice.title }}">
+        {% endif %}
+        
+        <div class="action-buttons">
+            {% if user == notice.user_id %}
+                <a href="{% url 'blog_app:post_edit' pk=notice.pk %}" class="button">글 수정하기</a>
+                <button onclick="confirmDeletePost({{ notice.pk }})" class="button">글 삭제하기</button>
+            {% endif %}
+        </div>
+        </form>
+        <button onclick="location.href='{% url 'blog_app:notice_list' %}'">목록으로 돌아가기</button>
+    </div>
+
+    <script>
+        function confirmDeletePost(postId) {
+            if (confirm('정말 포스트를 삭제하시겠습니까?')) {
+                fetch(`/blog/${postId}/delete/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        window.location.href = '/blog/';
+                    } else {
+                        alert('Failed to delete the notice.');
+                    }
+                });
+            }
+        }
+
+    </script>
+</body>
+</html>
