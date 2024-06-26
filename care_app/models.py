@@ -29,6 +29,9 @@ class Care(models.Model):
     content = models.TextField(blank=True, null=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="user_id")
     seniors = models.ManyToManyField("Senior", related_name="cares_seniors")
+    care_state = models.CharField(
+        max_length=50, default="NOT_APPROVED"
+    )  # NOT_APPROVED, CONFIRMED, APPROVED
 
     def __str__(self):
         return self.care_type
