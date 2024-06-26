@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'main/onsemi.ico' %}">
+    <link rel="stylesheet" href="{% static 'layout.css' %}">
+    <title>{% block title %}{% endblock %}</title>
+    <!-- 추가적인 스타일시트 및 스크립트 태그들 -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    {% block content %}{% endblock %}
+
+</body>
+</html>
+
