@@ -60,13 +60,36 @@ def add_care(request):
         return redirect("/")
 
 
+def show_one_care(request, care_id):
+    care = Care.objects.get(pk=int(care_id))
+    username = care.user_id.username
+    context = {"care": care}
+
+    return render(request, "care_app/show_one_care.html", context)
+
+
 # @login_required
-def update_care(request):
+def update_care(request, care_id):
     if request.method == "GET":
-        return render(request, "care_app/update_care.html")
+        care = Care.objects.get(pk=int(care_id))
+        seniors = care.seniors.all()
+        context = {"care": care, "seniors": seniors}
+        return render(request, "care_app/update_care.html", context)
 
     if request.method == "POST":
-        pass
+
+        care_type = request.POST.get("care_type")
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+
+        care = Care.objects.get(pk=int(care_id))
+
+        if care_type:
+            care.care_type = care_type
+        if title:
+            care.title = title
+        if content:
+            care.content = content
 
 
 # @login_required
@@ -94,15 +117,30 @@ def add_senior(request):
             phone_number=phone_number,
             user_id=user,
         )
+        if has_parkinsons:
+            senior.has_parkinsons = True
+        if has_alzheimers:
+            senior.has_alzheimers = True
+
         senior.save()
 
-        return redirect("/")
+        return redirect("/care/list/senior/")
 
 
-# @login_required
-def update_senior(request):
-    if request.method == "GET":
-        return render(request, "care_app/update_senior.html")
+# @login_required  
+def update_senior(request, id):
+    senior = get_object_or_404(Senior, id=id)
+    
+    if request.method == 'POST':
+        senior.name = request.POST.get('name')
+        senior.age = request.POST.get('age')
+        senior.gender = request.POST.get('gender')
+        senior.has_alzheimers = 'has_alzheimers' in request.POST
+        senior.has_parkinsons = 'has_parkinsons' in request.POST
+        senior.save()
+        return redirect('/care/list/senior/')
 
-    if request.method == "POST":
-        pass
+    context = {
+        'senior': senior
+    }
+    return render(request, 'care_app/update_senior.html', context)

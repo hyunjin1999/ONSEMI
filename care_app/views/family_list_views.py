@@ -3,6 +3,10 @@ from django.views.generic import ListView
 from care_app.models import Care, Senior
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView
+from care_app.models import Senior
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 
 # 1 -> easy
@@ -22,6 +26,7 @@ from django.contrib.auth.decorators import login_required
 # user(보호자)가 자신이 올린 Care를 확인하는 기능(예상: html 1개 이상)
 # 여러 방면으로 조회할 수 있어야함
 # 위에거랑 같은데 유저별은 없겠죠?
+
 # NOT_APPROVED, CONFIRMED, APPROVED
 
 class UserCareListView(LoginRequiredMixin, ListView):
@@ -64,3 +69,14 @@ class UserCareListView(LoginRequiredMixin, ListView):
         context['selected_senior_id'] = self.request.GET.get('senior_id', '')
         context['selected_order'] = self.request.GET.get('order', 'desc')
         return context
+        
+def list_senior(request):
+    # 현재 로그인한 사용자의 노인 리스트 가져오기
+    user_id = request.user.id
+    seniors = Senior.objects.filter(user_id=user_id)
+
+    context = {
+        'seniors': seniors
+    }
+    return render(request, 'care_app/user_senior_list.html', context)
+
