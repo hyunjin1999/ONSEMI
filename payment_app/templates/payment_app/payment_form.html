@@ -43,91 +43,30 @@
 $(document).ready(function() {
     var IMP = window.IMP;
     IMP.init('imp10781812');  // settings.py에서 가져온 IAMPORT_CODE 사용
-    var totalAmount = parseFloat("{{ order.get_total_cost }}") * 1390; // 실시간으로 달러 환율을 받기 위해서는 Open Exchange Rates API를 사용해야한다 함
+    var totalAmount = parseFloat("{{ order.get_total_cost }}") * 1390; 
 
     $('#payment_button').click(function() {
         IMP.request_pay({
-            pg : 'kakaopay.TC0ONETIME',
-            pay_method : 'card',
-            merchant_uid : 'merchant_' + new Date().getTime(),
-            name : '주문명:결제테스트',
-            amount : totalAmount,
-            buyer_email : 'iamport@siot.do',
-            buyer_name : '구매자이름',
-            buyer_tel : '010-1234-5678',
-            buyer_addr : '서울특별시 강남구 삼성동',
-            buyer_postcode : '123-456',
-            m_redirect_url : '{% url "payment_app:payment_success" order.id %}'
-        }, function(rsp) {
-            if (rsp.success) {
-                var msg = '결제가 완료되었습니다.';
-                msg += '고유ID : ' + rsp.imp_uid;
-                msg += '상점 거래ID : ' + rsp.merchant_uid;
-                msg += '결제 금액 : ' + rsp.paid_amount;
-                msg += '카드 승인번호 : ' + rsp.apply_num;
-                window.location.href = '{% url "payment_app:payment_success" order.id %}';
-            } else {
+            pg: "nice_v2.iamport00m",
+            pay_method: "card",
+            merchant_uid: 'merchant_' + new Date().getTime(),
+            name: "주문명:결제테스트",
+            amount: totalAmount,
+            buyer_email: "test@portone.io",
+            buyer_name: "구매자이름",
+            buyer_tel: "010-1234-5678",
+            buyer_addr: "서울특별시 강남구 삼성동",
+            buyer_postcode: "123-456",
+            m_redirect_url: '{% url "payment_app:payment_success" order.id %}',
+        }, function (rsp) {
+            if (rsp.error) {
                 alert('결제에 실패하였습니다. 에러내용 : ' + rsp.error_msg);
                 window.location.href = '{% url "payment_app:payment_fail" order_id=order.id %}';
+            } else {
+                window.location.href = '{% url "payment_app:payment_success" order.id %}';
             }
         });
     });
 });
 </script>
 {% endblock %}
-
-<!-- {% load static %}
-<!doctype html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>결제하기</title>
-    <link rel="stylesheet" href="{% static 'payment_app/styles.css' %}">
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
-    <script>
-    $(document).ready(function() {
-        var IMP = window.IMP;
-        IMP.init('imp10781812');  // settings.py에서 가져온 IAMPORT_CODE 사용
-        var totalAmount = {{ total_amount|safe }};
-
-        $('#payment_button').click(function() {
-            IMP.request_pay({
-                pg : 'kakaopay.TC0ONETIME',
-                pay_method : 'card',
-                merchant_uid : 'merchant_' + new Date().getTime(),
-                name : '주문명:결제테스트',
-                amount : totalAmount,
-                buyer_email : 'iamport@siot.do',
-                buyer_name : '구매자이름',
-                buyer_tel : '010-1234-5678',
-                buyer_addr : '서울특별시 강남구 삼성동',
-                buyer_postcode : '123-456',
-                m_redirect_url : '{% url "payment_app:payment_success" %}'
-            }, function(rsp) {
-                if (rsp.success) {
-                    var msg = '결제가 완료되었습니다.';
-                    msg += '고유ID : ' + rsp.imp_uid;
-                    msg += '상점 거래ID : ' + rsp.merchant_uid;
-                    msg += '결제 금액 : ' + rsp.paid_amount;
-                    msg += '카드 승인번호 : ' + rsp.apply_num;
-                } else {
-                    alert('결제에 실패하였습니다. 에러내용 : ' + rsp.error_msg);
-                    window.location.href = '{% url "payment_app:payment_fail" order_id=order.id %}';
-                }
-            });
-        });
-    });
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h1>결제하기</h1>
-        <button id="payment_button">Pay</button>
-    </div>
-    <script src="{% static 'js/payment.js' %}"></script>
-</body>
-
-</html> -->
