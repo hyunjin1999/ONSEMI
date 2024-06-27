@@ -137,6 +137,7 @@ def update_senior(request, id):
         senior.name = request.POST.get('name')
         senior.age = request.POST.get('age')
         senior.gender = request.POST.get('gender')
+        senior.phone_number = request.POST.get('phone')
         senior.has_alzheimers = 'has_alzheimers' in request.POST
         senior.has_parkinsons = 'has_parkinsons' in request.POST
 
