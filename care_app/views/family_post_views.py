@@ -50,7 +50,7 @@ def add_care(request):
             care_type=care_type,
             title=title,
             content=content,
-            user_id=user.id,
+            user_id=user,
         )
         care.save()
 
@@ -92,7 +92,7 @@ def add_senior(request):
             age=age,
             gender=gender,
             phone_number=phone_number,
-            use_id=user,
+            user_id=user,
         )
         senior.save()
 
