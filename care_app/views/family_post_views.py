@@ -1,4 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
+from django.db import transaction
+from auth_app.models import User
+from care_app.models import Care, Senior
 
 # Create your views here.
 
@@ -20,3 +26,83 @@ from django.shortcuts import render
 # 여러 방면으로 조회할 수 있어야함
 # 위에거랑 같은데 유저별은 없겠죠?
 # NOT_APPROVED, CONFIRMED, APPROVED
+
+
+# @login_required
+def add_care(request):
+    if request.method == "GET":
+        user = request.user
+        user = User.objects.get(pk=user.id)
+        user_senior_list = user.senior_set.all()
+        context = {"seniors": user_senior_list}
+        return render(request, "care_app/add_care.html", context)
+
+    if request.method == "POST":
+        care_type = request.POST.get("care_type")
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+        senior = request.POST.get("senior")
+
+        user = request.user
+        user = get_object_or_404(User, pk=user.id)
+
+        care = Care(
+            care_type=care_type,
+            title=title,
+            content=content,
+            user_id=user.id,
+        )
+        care.save()
+
+        user_senior = Senior.objects.get(pk=senior)
+        care.seniors.add(user_senior)
+
+        return redirect("/")
+
+
+# @login_required
+def update_care(request):
+    if request.method == "GET":
+        return render(request, "care_app/update_care.html")
+
+    if request.method == "POST":
+        pass
+
+
+# @login_required
+def add_senior(request):
+    if request.method == "GET":
+        context = {"ages": [i for i in range(1, 120)]}
+        return render(request, "care_app/add_senior.html", context)
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        address = request.POST.get("address")
+        age = request.POST.get("age")
+        gender = request.POST.get("gender")
+        phone_number = request.POST.get("phone_number")
+        has_alzheimers = request.POST.get("has_alzheimers")
+        has_parkinsons = request.POST.get("has_parkinsons")
+        user = request.user
+
+        user = User.objects.get(pk=user.id)
+        senior = Senior(
+            name=name,
+            address=address,
+            age=age,
+            gender=gender,
+            phone_number=phone_number,
+            use_id=user,
+        )
+        senior.save()
+
+        return redirect("/")
+
+
+# @login_required
+def update_senior(request):
+    if request.method == "GET":
+        return render(request, "care_app/update_senior.html")
+
+    if request.method == "POST":
+        pass

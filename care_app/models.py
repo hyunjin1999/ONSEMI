@@ -10,8 +10,8 @@ class Senior(models.Model):
     age = models.IntegerField()
     gender = models.CharField(max_length=10)
     phone_number = models.CharField(max_length=15)
-    has_alzheimers = models.BooleanField(default=False, null=True)
-    has_parkinsons = models.BooleanField(default=False, null=True)
+    has_alzheimers = models.BooleanField(default=False, null=True, blank=True)
+    has_parkinsons = models.BooleanField(default=False, null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="user_id")
 
@@ -23,7 +23,7 @@ class Senior(models.Model):
 
 
 class Care(models.Model):
-    care_type = models.CharField(max_length=100)
+    care_type = models.CharField(max_length=100)  # SHOP, VISIT
     datetime = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=200, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
