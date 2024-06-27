@@ -74,7 +74,7 @@ def update_care(request, care_id):
         care = Care.objects.get(pk=int(care_id))
         seniors = care.seniors.all()
         context = {"care": care, "seniors": seniors}
-        return render(request, "care_app/update_care.html", context)
+        return render(request, "care_app/update_one_care.html", context)
 
     if request.method == "POST":
 
@@ -90,6 +90,8 @@ def update_care(request, care_id):
             care.title = title
         if content:
             care.content = content
+        care.save()
+        return redirect(f"/care/care/detail/{care_id}/")
 
 
 # @login_required
@@ -137,6 +139,9 @@ def update_senior(request, id):
         senior.gender = request.POST.get('gender')
         senior.has_alzheimers = 'has_alzheimers' in request.POST
         senior.has_parkinsons = 'has_parkinsons' in request.POST
+
+
+
         senior.save()
         return redirect('/care/list/senior/')
 
