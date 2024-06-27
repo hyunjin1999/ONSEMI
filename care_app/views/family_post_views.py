@@ -92,17 +92,27 @@ def add_senior(request):
             age=age,
             gender=gender,
             phone_number=phone_number,
-            use_id=user,
+            user_id=user,
         )
         senior.save()
 
-        return redirect("/")
+        return redirect("/care/list/senior/")
 
 
-# @login_required
-def update_senior(request):
-    if request.method == "GET":
-        return render(request, "care_app/update_senior.html")
+# @login_required  
+def update_senior(request, id):
+    senior = get_object_or_404(Senior, id=id)
+    
+    if request.method == 'POST':
+        senior.name = request.POST.get('name')
+        senior.age = request.POST.get('age')
+        senior.gender = request.POST.get('gender')
+        senior.has_alzheimers = 'has_alzheimers' in request.POST
+        senior.has_parkinsons = 'has_parkinsons' in request.POST
+        senior.save()
+        return redirect('/care/list/senior/')
 
-    if request.method == "POST":
-        pass
+    context = {
+        'senior': senior
+    }
+    return render(request, 'care_app/update_senior.html', context)
