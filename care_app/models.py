@@ -1,6 +1,6 @@
 from django.db import models
 from auth_app.models import User
-
+from django.utils import timezone
 # Create your models here.
 
 
@@ -24,7 +24,7 @@ class Senior(models.Model):
 
 class Care(models.Model):
     care_type = models.CharField(max_length=100)  # SHOP, VISIT
-    datetime = models.DateTimeField(auto_now=True)
+    datetime = models.DateTimeField(default=timezone.now)
     title = models.CharField(max_length=200, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="user_id")

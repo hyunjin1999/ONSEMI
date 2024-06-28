@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,  redirect, get_object_or_404
 
 # Create your views here.
 
@@ -54,3 +54,18 @@ def care_list(request):
     }
 
     return render(request, "care_app/volunteer_care_list.html", context)
+
+
+def status_update(request, care_id):
+    care = get_object_or_404(Care, id=care_id)
+    
+    if request.method == 'POST':
+        care.care_state = request.POST.get('state')
+        care.save()
+        return redirect('/care/care/list/')
+    
+    context = {
+        'care': care
+    }
+    
+    return render(request, "care_app/volunteer_care_status_update.html", context)

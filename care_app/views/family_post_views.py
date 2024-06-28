@@ -57,7 +57,7 @@ def add_care(request):
         user_senior = Senior.objects.get(pk=senior)
         care.seniors.add(user_senior)
 
-        return redirect("/")
+        return redirect("/care/care/list/")
 
 
 def show_one_care(request, care_id):
@@ -126,7 +126,7 @@ def add_senior(request):
 
         senior.save()
 
-        return redirect("/care/list/senior/")
+        return redirect("/care/senior/list/")
 
 
 # @login_required  
@@ -144,7 +144,7 @@ def update_senior(request, id):
 
 
         senior.save()
-        return redirect('/care/list/senior/')
+        return redirect('/care/senior/list/')
 
     context = {
         'senior': senior

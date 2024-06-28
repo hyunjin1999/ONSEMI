@@ -16,6 +16,13 @@
             background-color: #f4f4f4;
             cursor: pointer;
         }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+        .clickable-row:hover {
+            background-color: #f0f0f0;
+        }
     </style>
 </head>
 <body>
@@ -54,7 +61,7 @@
         </thead>
         <tbody>
             {% for care in cares %}
-                <tr>
+                <tr class="clickable-row" onclick="location.href='/care/care/list/status/update/{{care.id}}/'">
                     <td>{{ care.care_type }}</td>
                     <td>{{ care.datetime }}</td>
                     <td>{{ care.title }}</td>
