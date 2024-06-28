@@ -8,8 +8,8 @@ urlpatterns = [
     path("care/update/<int:care_id>/", family_post_views.update_care),
     path("add/senior/", family_post_views.add_senior),
     path("care/detail/<int:care_id>/", family_post_views.show_one_care),
-
-    path('my-cares/', UserCareListView.as_view(), name='user_care_list'),
+    path("my-cares/", UserCareListView.as_view(), name="user_care_list"),
     path("senior/update/<int:id>/", family_post_views.update_senior),
-    path("list/senior/", family_list_views.list_senior)
+    path("list/senior/", family_list_views.list_senior),
+    path("care/list/", volunteer_list_views.care_list),
 ]

@@ -15,8 +15,42 @@ from django.shortcuts import render
 # user(봉사자)가 user(보호자)가 올린 Care를 확인하는 = 조회하는 기능(예상 :html 1+개?)
 # 여러 방면으로 조회할 수 있어야함 ( 노인 카테고리로 조회, 오름차순, 내림차순, or 유저별로, 지역별로, 날짜별로 오름차순)
 # NOT_APPROVED, CONFIRMED, APPROVED
+
+
 # 4 ->hard
 # user(보호자)가 자신이 올린 Care를 확인하는 기능(예상: html 1개 이상)
 # 여러 방면으로 조회할 수 있어야함
 # 위에거랑 같은데 유저별은 없겠죠?
 # NOT_APPROVED, CONFIRMED, APPROVED
+
+
+from django.shortcuts import render
+from care_app.models import Care
+from auth_app.models import User
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def care_list(request):
+    sort_by = request.GET.get("sort_by", "datetime")
+    order = request.GET.get("order", "asc")
+    user_id = request.GET.get("user", "")
+
+    if order == "desc":
+        sort_by = "-" + sort_by
+
+    cares = Care.objects.all()
+
+    if user_id:
+        cares = cares.filter(user_id=user_id)
+
+    cares = cares.order_by(sort_by)
+    users = User.objects.all()
+
+    context = {
+        "cares": cares,
+        "users": users,
+        "selected_user": user_id,
+    }
+
+    return render(request, "care_app/volunteer_care_list.html", context)
