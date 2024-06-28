@@ -15,7 +15,6 @@ urlpatterns = [
     # 자유게시판 상세 페이지
     path('<int:pk>/', detail_views.post_detail, name='post_detail'),
     path('<int:pk>/like/', detail_views.post_like, name='post_like'),
-    # path('<int:post_pk>/comment/new/', detail_views.comment_create, name='comment_create'),
     path('<int:pk>/delete/', detail_views.post_delete, name='post_delete'),
     path('<int:pk>/edit/', detail_views.post_edit, name='post_edit'),
     path('<int:post_pk>/comment/<int:comment_pk>/delete/', detail_views.comment_delete, name='comment_delete'),

@@ -122,34 +122,3 @@ def comment_delete(request, post_pk, comment_pk):
     
     comment.delete()
     return redirect('blog_app:post_detail', pk=post_pk)
-
-
-# @login_required
-# def post_create(request):
-#     if request.method == 'POST':
-#         form = PostForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             post = form.save(commit=False)
-#             post.user_id = request.user
-#             post.save()
-#             return redirect('blog_app:post_detail', pk=post.pk)
-#     else:
-#         form = PostForm()
-#     return render(request, 'blog_app/post_create.html', {'form': form})
-
-
-# 댓글 작성 및 저장 기능
-# @login_required
-# @require_POST
-# def comment_create(request, post_pk):
-#     post = get_object_or_404(Blog, pk=post_pk)
-#     comment_form = CommentForm(request.POST)
-#     if comment_form.is_valid():
-#         new_comment = comment_form.save(commit=False)
-#         new_comment.user_id = request.user  # 현재 로그인한 사용자를 설정
-#         parent_id = request.POST.get('parent_id')
-#         if parent_id:
-#             new_comment.parent = Comment.objects.get(pk=parent_id)
-#         new_comment.post = post
-#         new_comment.save()
-#     return redirect('blog_app:post_detail', pk=post_pk)
