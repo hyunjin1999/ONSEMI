@@ -57,7 +57,7 @@ def add_care(request):
         user_senior = Senior.objects.get(pk=senior)
         care.seniors.add(user_senior)
 
-        return redirect("/care/care/list/")
+        return redirect("/care/my-cares/")
 
 
 def show_one_care(request, care_id):

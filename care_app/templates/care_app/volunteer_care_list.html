@@ -57,6 +57,7 @@
                 <th>제목</th>
                 <th>상태</th>
                 <th>신청자</th>
+                <th>대상 어르신</th>
             </tr>
         </thead>
         <tbody>
@@ -67,6 +68,9 @@
                     <td>{{ care.title }}</td>
                     <td>{{ care.care_state }}</td>
                     <td>{{ care.user_id.username }}</td>
+                    <td>{% for senior in care.seniors.all %}
+                        {{ senior.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}</td>
                 </tr>
             {% endfor %}
         </tbody>
