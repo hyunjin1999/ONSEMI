@@ -17,7 +17,7 @@
             Your cart:
             <a href="{% url "cart_app:cart_detail" %}">
               {{ total_items }} item{{ total_items|pluralize }},
-              ${{ cart.get_total_price }}
+              {{ cart.get_total_price }}원
             </a>
           {% elif not order %}
             Your cart is empty.
