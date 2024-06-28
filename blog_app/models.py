@@ -1,6 +1,7 @@
 from django.db import models
 from auth_app.models import User
 
+# 게시판(자유게시판, 공지사항)
 class Blog(models.Model):
     blog_id = models.AutoField(primary_key=True, db_column='blog_id')
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
@@ -14,7 +15,9 @@ class Blog(models.Model):
     
     class Meta:
         db_table = "Blog"
+        
 
+# 댓글
 class Comment(models.Model):
     post = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comments')
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
@@ -24,7 +27,9 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.content
+    
 
+# 좋아요
 class Like(models.Model):
     post = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='post_likes')
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_likes')
