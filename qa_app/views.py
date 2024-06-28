@@ -26,6 +26,7 @@ import sqlite3
 from datetime import datetime
 from django.shortcuts import render
 from pytz import timezone
+from django.contrib import messages
 
 # Create your views here.
 
@@ -40,8 +41,10 @@ database = Chroma(persist_directory="./database", embedding_function=embeddings)
 
 
 # 채팅
-@login_required
+
 def chatting(request):
+    if not request.user.is_authenticated:        
+        return JsonResponse({'error': '로그인이 필요한 페이지입니다.', 'login_required': True}, status=403)
     global i
     
     if request.method == 'GET':
