@@ -1,167 +1,198 @@
-* {
-    padding: 0;
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, form, textarea, button {
     margin: 0;
+    padding: 0;
     box-sizing: border-box;
-}
-
-a {
-    text-decoration: none;
+    font-family: 'Arial', sans-serif;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
+    background-color: #f7f7f7;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     height: 100vh;
 }
 
 .chat-container {
     width: 100%;
-    max-width: 800px;
-    height: 70vh; 
-    overflow-y: auto; 
-    background-color: #A8C0D6;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-}
-
-.wrap {
-    padding: 0px 0;
-}
-
-.wrap .chat {
+    max-width: 500px;
+    height: 800px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
     display: flex;
-    align-items: flex-start;
-    padding: 10px 0;
-}
-
-.wrap .chat .icon {
-    position: relative;
+    flex-direction: column;
     overflow: hidden;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #eee;
+    z-index: 1000;
 }
 
-.wrap .chat .icon i {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    font-size: 2.5rem;
-    color: #aaa;
-    transform: translateX(-50%);
-}
-
-.wrap .chat .textbox {
-    position: relative;
-    display: inline-block;
-    max-width: calc(100% - 70px);
-    padding: 10px;
-    margin-top: 7px;
-    font-size: 13px;
-    border-radius: 10px;
-}
-
-.wrap .chat .textbox::before {
-    position: absolute;
-    display: block;
-    top: 0;
-    font-size: 1.5rem;
-}
-
-.wrap .ch1 .textbox {
-    margin-left: 20px;
-    background-color: #ddd;
-}
-
-.wrap .ch1 .textbox::before {
-    left: -15px;
-    content: "◀";
-    color: #ddd;
-}
-
-.wrap .ch2 {
-    flex-direction: row-reverse;
-}
-
-.wrap .ch2 .textbox {
-    margin-right: 20px;
-    background-color: #F9EB54;
-}
-
-.wrap .ch2 .textbox::before {
-    right: -15px;
-    content: "▶";
-    color: #F9EB54;
-}
-
-.input-section {
+.header {
+    background-color: #4caf50;
+    color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    width: 100%;
-    max-width: 800px;
-    padding: 20px;
+    padding: 15px;
+    border-radius: 15px 15px 0 0;
+}
+
+.header-title {
+    font-size: 24px;
+}
+
+.wrap {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.placeholder-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #999;
+    font-size: 18px;
+    text-align: center;
+}
+
+.chat {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.chat.ch1 {
+    justify-content: flex-start;
+}
+
+.chat.ch2 {
+    justify-content: flex-end;
+}
+
+.icon {
+    font-size: 28px;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+}
+
+.bot-icon {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.user-icon {
+    background-color: #ccc;
+}
+
+.textbox {
+    max-width: 70%;
+    padding: 15px 20px;
+    border-radius: 20px;
+    background-color: #f1f1f1;
+    color: #333;
+    font-size: 16px;
+    word-wrap: break-word;
+}
+
+.bot-message {
+    background-color: #e0f7fa;
+    color: #00796b;
+}
+
+.user-message {
+    background-color: #c8e6c9;
+    color: #2e7d32;
+}
+
+.input-section {
+    padding: 15px;
     background-color: #fff;
-    border-top: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
 }
 
 .input-box {
     display: flex;
     align-items: center;
-    width: 800px;
     padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-    background-color: #fff;
+    border: 2px solid #e0e0e0;
+    border-radius: 30px;
 }
 
 textarea {
-    flex: 1;
-    padding: 10px;
+    flex-grow: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
     font-size: 16px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    margin-right: 10px;
+    resize: none;
+    outline: none;
+    overflow : hidden;
 }
 
-button {
-    display: inline-block;
-    width: 12%;
-    height: 70;
+.timestamp {
+    font-size: 12px;
+    color: #999;
+    margin : 20px 5px 0px 5px;
+    
+}
+
+#text-button {
+    background-color: #4caf50;
     color: #fff;
-    background-color: #007BFF;
-    padding: 10px 
-}
-button#reset-button {
-    margin-top: 10px;
-    width: 100;
-    background-color: #dc3545;
-    height: 40px;
+    border: none;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 10px;
 }
 
-.home-button {
-    background-color: #4CAF50; /* Green background */
-    border: none; /* Remove borders */
-    color: white; /* White text */
-    padding: 10px 20px; /* Some padding */
-    text-align: center; /* Centered text */
-    text-decoration: none; /* Remove underline */
-    display: inline-block; /* Get it to display as a block */
-    font-size: 16px; /* Increase font size */
-    cursor: pointer; /* Add a pointer on hover */
-    border-radius: 12px; /* Rounded corners */
-    display: flex;
-    align-items: center;
+#text-button:hover {
+    background-color: #388e3c;
+}
+
+#reset-button {
+    background-color: #f44336;
+    color: #fff;
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    width : 100%;
+}
+
+#reset-button:hover {
+    background-color: #d32f2f;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    background-color: #0030df;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: #0030a0;
 }

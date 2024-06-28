@@ -25,6 +25,7 @@ import os
 import sqlite3
 from datetime import datetime
 from django.shortcuts import render
+from pytz import timezone
 
 # Create your views here.
 
@@ -35,36 +36,19 @@ i = 0
 
 # Chroma 데이터베이스 초기화 - 사전에 database가 완성 되어 있다는 가정하에 진행 - aivleschool_qa.csv 내용이 저장된 상태임
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
-database = Chroma(persist_directory="./database2", embedding_function=embeddings)
+database = Chroma(persist_directory="./database", embedding_function=embeddings)
 
+
+# 채팅
 @login_required
-def chat(request):
-    # SQLite 데이터베이스 경로
-    path = './db_chatlog/chatlog.db'
-    
-    # POST로 받은 question (index.html에서 name속성이 question인 input태그의 value값)을 가져옴
-    query = request.POST.get('question')
-
-    # ChatGPT API 및 LangChain을 사용한 선언
-    chat = ChatOpenAI(model="gpt-3.5-turbo")
-    k = 3
-    retriever = database.as_retriever(search_kwargs={"k": k})
-    qa = RetrievalQA.from_llm(llm=chat, retriever=retriever, return_source_documents=True)
-
-    result = qa(query)
-
-    # 결과를 HTML 템플릿으로 전달하기 위한 context
-    context = {
-        'question': query,
-        'result': result["result"]
-    }
-
-    # 응답을 보여주기 위한 HTML 선택 (context를 함께 전달)
-    return render(request, 'qa/chat.html', context)
-
-@login_required
-def chating(request):
+def chatting(request):
     global i
+    
+    if request.method == 'GET':
+        # 세션의 대화 내역 초기화
+        request.session['conversation'] = []
+        request.session.save()
+        
     conversation = request.session.get('conversation', [])
     memory = ConversationBufferMemory(memory_key="chat_history", input_key="question", output_key="answer", return_messages=True)
     
@@ -72,8 +56,10 @@ def chating(request):
     database = Chroma(persist_directory="./database", embedding_function=embeddings)
     if request.method == 'POST':
         query = request.POST.get('question')
+        
+        seoul_time = datetime.now(timezone('Asia/Seoul')).strftime('%H:%M')
 
-        conversation.append({'user': query})
+        conversation.append({'user': query, 'timestamp': seoul_time})
 
         chat = ChatOpenAI(model="gpt-3.5-turbo")
         
@@ -82,7 +68,7 @@ def chating(request):
         qa = ConversationalRetrievalChain.from_llm(llm=chat, retriever=retriever, memory=memory, return_source_documents=True, output_key="answer")
         result = qa({"question": query})
 
-        conversation.append({'bot': result['answer']})
+        conversation.append({'bot': result['answer'], 'timestamp': seoul_time})
 
         request.session['conversation'] = conversation
         request.session.save()
@@ -136,7 +122,7 @@ def chating(request):
         
         # 벡터 DB 구현 도전
         df = pd.read_csv('answer.csv', encoding='utf-8')
-        df['answer'] = df.apply(lambda row: row['query'] + ", " + row['answer'], axis=1)
+        df['answer'] = df.apply(lambda row: str(row['query']) + ", " + row['answer'], axis=1)
         i = i + 1
         text_list = df.loc[df['id']==i]['answer'].to_list()
         metadata_list = df.loc[df['id']==i]['query'].to_list()
@@ -148,6 +134,7 @@ def chating(request):
         
     return render(request, 'qa/chat.html', {'conversation': conversation})
 
+# 대화 내용 초기화
 @login_required
 def reset(request):
     global i
@@ -180,19 +167,4 @@ def reset(request):
         database.delete(ids=i
     )
     i = 0
-    return redirect('qa:chating')
-
-@login_required
-def new_chat(request):
-    # 현재 대화 내용을 저장
-    messages = get_messages(request)
-    if messages:
-        first_question = messages[0]['text'] if messages[0]['sender'] == 'you' else "No question"
-        title = first_question[:50]  # 제목 설정
-        ChatHistory.objects.create(user=request.user, question=first_question, answer="", title=title, messages=messages)
-    # 세션에서 메시지 초기화
-    request.session['messages'] = []
-    return redirect('qa:chat')
-
-def get_messages(request):
-    return request.session.get('messages', [])
+    return redirect('qa:chatting')
