@@ -12,8 +12,10 @@
 **/migrations/*
 !**/migrations/__init__.py
 
-
-
-
 *.sqlite3
 
+*.wav
+
+*.png
+
+*.DS_Store
