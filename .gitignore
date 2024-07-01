@@ -1,3 +1,22 @@
 .idea/
 
+.pyc
 
+**/.pyc
+
+/*.sqlite3
+
+/migrations/
+!*/migrations/init.py
+
+/migrations/*
+!**/migrations/init.py
+
+*.sqlite3
+
+*.wav
+
+*.png
+
+
+*.DS_Store
