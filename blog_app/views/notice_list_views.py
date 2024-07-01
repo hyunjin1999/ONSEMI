@@ -1,8 +1,6 @@
 from blog_app.models import *
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-
-@login_required
 from django.shortcuts import render
 
 # 공지글 불러오기
