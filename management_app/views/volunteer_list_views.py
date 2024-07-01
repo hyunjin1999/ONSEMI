@@ -1,4 +1,4 @@
-from django.shortcuts import render,  redirect, get_object_or_404
+
 
 # Create your views here.
 
@@ -23,9 +23,8 @@ from django.shortcuts import render,  redirect, get_object_or_404
 # 위에거랑 같은데 유저별은 없겠죠?
 # NOT_APPROVED, CONFIRMED, APPROVED
 
-
-from django.shortcuts import render
-from care_app.models import Care
+from django.shortcuts import render, redirect, get_object_or_404
+from management_app.models import Care
 from auth_app.models import User
 from django.contrib.auth.decorators import login_required
 
@@ -53,7 +52,7 @@ def care_list(request):
         "selected_user": user_id,
     }
 
-    return render(request, "care_app/volunteer_care_list.html", context)
+    return render(request, "management_app/volunteer_care_list.html", context)
 
 
 def status_update(request, care_id):
@@ -62,10 +61,10 @@ def status_update(request, care_id):
     if request.method == 'POST':
         care.care_state = request.POST.get('state')
         care.save()
-        return redirect('/care/care/list/')
+        return redirect('/management/care/list/')
     
     context = {
         'care': care
     }
     
-    return render(request, "care_app/volunteer_care_status_update.html", context)
+    return render(request, "management_app/volunteer_care_status_update.html", context)
