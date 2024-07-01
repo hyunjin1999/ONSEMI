@@ -1,11 +1,14 @@
 from blog_app.models import Blog
-from django.shortcuts import render, get_object_or_404, redirect
-from auth_app.models import User
+from django.shortcuts import render, redirect
 from blog_app.forms import NoticeForm
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
+# 공지사항 게시글 업로드
+# [추가 구현 필요] 공지사항은 ADMIN만 올릴 수 있게 구현
 def notice_upload(request):
     notice = Blog()
+    
     if request.method == 'POST':
         form = NoticeForm(request.POST, request.FILES, instance=notice)
         if form.is_valid():

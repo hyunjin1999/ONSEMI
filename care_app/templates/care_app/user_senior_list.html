@@ -1,0 +1,31 @@
+<!-- care_app/templates/care_app/list_seniors.html -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Seniors</title>
+</head>
+<body>
+    <h1>List of Seniors</h1>
+    {% if seniors %}
+        <ul>
+            {% for senior in seniors %}
+            <a href='/care/senior/update/{{senior.id}}/'>
+                <li>
+                    <strong>Name:</strong>{{ senior.name }}<br>
+                    <strong>Age:</strong> {{ senior.age }}<br>
+                    <strong>Gender:</strong> {{ senior.gender }}<br>
+                    <strong>Phone:</strong> {{ senior.phone_number }}<br>
+                    <strong>치매:</strong> {{ senior.has_alzheimers }}<br>
+                    <strong>파킨슨:</strong> {{ senior.has_parkinsons }}<br>
+                </li></a>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No seniors registered yet.</p>
+    {% endif %}
+    <br>
+    <a href='/care/add/senior/'>Add New Senior</a>
+</body>
+</html>

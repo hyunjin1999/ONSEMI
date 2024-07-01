@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}결제 실패{% endblock %}
+
+{% block content %}
+<div id="content">
+    <div id="main">
+        <h1>결제 실패</h1>
+        <p>결제 중 문제가 발생했습니다. 다시 시도해 주세요.</p>
+        <a class="button" href="{% url 'payment_app:payment_form' order_id=order_id %}">다시 결제 시도하기</a>
+    </div>
+</div>
+{% endblock %}
