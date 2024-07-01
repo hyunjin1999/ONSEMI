@@ -34,6 +34,7 @@ def login_user(request):
 @login_required
 def logout_user(request):
     logout(request)
+    request.session.flush()
     return redirect("/")
 
 

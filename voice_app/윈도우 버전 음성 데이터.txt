@@ -1,0 +1,7 @@
+pip install tensorflow
+
+pip install librosa
+
+pip install soundfile audioread
+
+https://doa-oh.tistory.com/170 -> 이 사이트에서 ffmpeg, ffprobe 설치 및 환경 변수 세팅 법 보고 코드에서 직접 수정해주셔야 합니다.
