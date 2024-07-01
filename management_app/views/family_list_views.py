@@ -1,11 +1,10 @@
 from django.shortcuts import render
 from django.views.generic import ListView
-from care_app.models import Care, Senior
+from management_app.models import Care, Senior
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
-from care_app.models import Senior
 from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 
@@ -31,7 +30,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 class UserCareListView(LoginRequiredMixin, ListView):
     model = Care
-    template_name = 'care_app/user_care_list.html'  # 템플릿 파일 이름
+    template_name = 'management_app/user_care_list.html'  # 템플릿 파일 이름
     context_object_name = 'cares'  # 템플릿에서 사용할 객체 이름
     login_url = '/login/'  # 로그인 페이지 URL (필요 시 수정)
     paginate_by = 10  # 페이지당 항목 수
@@ -78,4 +77,4 @@ def list_senior(request):
     context = {
         'seniors': seniors
     }
-    return render(request, 'care_app/user_senior_list.html', context)
+    return render(request, 'management_app/user_senior_list.html', context)
