@@ -38,7 +38,10 @@
         </p>
         <button type="submit">Update</button>
     </form>
-
+    <form method="post" action="{% url 'delete_senior' senior.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+        {% csrf_token %}
+        <button type="submit" style="color: red;">Delete</button>
+    </form>
     <br>
     <a href='/care/senior/list/'>Back to List</a>
 </body>

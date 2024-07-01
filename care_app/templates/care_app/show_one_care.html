@@ -23,6 +23,12 @@
         <li><strong>상태</strong> {{ care.care_state }}</li>
     </ul>
     <button type="button" onclick="window.location.href = '/care/care/update/{{care.id}}/'">수정하기</button>
-    <button type="button" onclick="window.location.href = '/care/my-cares/'">돌아가기</button>
+    <form method="post" action="{% url 'delete_care' care.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+        {% csrf_token %}
+        <button type="submit" style="color: red;">Delete</button>
+    </form>
+    <br>
+    <a href='/care/my-cares/'>Back to List</a>
+    {% comment %} <button type="button" onclick="window.location.href = '/care/my-cares/'">돌아가기</button> {% endcomment %}
 </body>
 </html>

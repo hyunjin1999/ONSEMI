@@ -93,6 +93,12 @@ def update_care(request, care_id):
         care.save()
         return redirect(f"/care/care/detail/{care_id}/")
 
+def delete_care(request, care_id):
+    care = get_object_or_404(Care, id=care_id)
+    care.delete()
+
+    return redirect('/care/my-cares/') 
+
 
 # @login_required
 def add_senior(request):
@@ -150,3 +156,16 @@ def update_senior(request, id):
         'senior': senior
     }
     return render(request, 'care_app/update_senior.html', context)
+
+def delete_senior(request, id):
+    # 노인 객체 가져오기
+    senior = get_object_or_404(Senior, id=id)
+
+    #if senior.user_id != request.user.id:
+    #    pass
+
+    # 노인 삭제
+    senior.delete()
+
+    # 삭제 후 리디렉션할 URL 설정 (선택 사항)
+    return redirect('/care/senior/list/')  # 사용자의 노인 리스트 화면으로 리디렉션

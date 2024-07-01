@@ -79,4 +79,3 @@ def list_senior(request):
         'seniors': seniors
     }
     return render(request, 'care_app/user_senior_list.html', context)
-
