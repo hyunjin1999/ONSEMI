@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+
     path("admin/", admin.site.urls),
     path("user/", include("auth_app.urls")),
     path("", include("main_app.urls")),
@@ -15,6 +16,7 @@ urlpatterns = [
     path("payment/", include("payment_app.urls", namespace="payment_app")),
     path("voice/", include("voice_app.urls", namespace="voice_app")),
     path("care/", include("care_app.urls")),
+    path("terms/", include("main_app.urls")),
 ]
 
 if settings.DEBUG:
