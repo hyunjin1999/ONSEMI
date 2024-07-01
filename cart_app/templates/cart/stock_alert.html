@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}
+  재고 부족
+{% endblock %}
+
+{% block content %}
+  <h1>재고 부족</h1>
+  <p>선택하신 상품의 재고가 부족합니다. 다시 시도해주세요.</p>
+  <a href="{% url 'shop_app:product_list' %}" class="button">돌아가기</a>
+{% endblock %}

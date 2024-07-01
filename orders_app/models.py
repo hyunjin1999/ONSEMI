@@ -1,7 +1,6 @@
 from django.db import models
 from shop_app.models import Product
 
-# 주문하는 사람에 대한 정보
 class Order(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -25,8 +24,6 @@ class Order(models.Model):
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())
 
-
-# 주문하는 아이템에 대한 정보
 class OrderItem(models.Model):
     order = models.ForeignKey(Order,
                               related_name='items',
