@@ -1,0 +1,83 @@
+body {
+    background-color: #f7fafc; 
+}
+
+header {
+    background-color: #ffffff; 
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+    padding: 1rem; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+.onsemi {
+    width: 80px;
+    height: 80px;
+}
+
+#introduce {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    margin-top:-150px;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 16px;
+}
+
+.rectangle {
+    width: 120px; 
+    height: 160px; 
+    margin-bottom: 8px;
+    background-color: rgb(199, 199, 199);
+    overflow: hidden; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rectangle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+
+.text-center {
+    text-align: center;
+    font-size: 1rem;
+    color: black;
+    margin-top: 8px; 
+}
+.box2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 16px; 
+
+}
+
+.rectangle2 {
+    width: 120px; 
+    height: 160px; 
+    margin-bottom: 8px;
+    background-color: rgb(199, 199, 199);
+    overflow: hidden; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rectangle2 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}

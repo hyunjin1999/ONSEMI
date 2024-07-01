@@ -1,0 +1,67 @@
+@font-face {
+    font-family: 'KCC-Hanbit';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+body {
+    font-family: 'KCC-Hanbit';
+    font-size: 30px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100%;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    
+}
+
+
+.sidebar {
+    width: 50%;
+    height: 100vh;
+    background-color: #f8f8f8;
+    padding: 20px;
+    text-align: center;
+    /* border-right: 1px solid #ddd; */
+    justify-content: center; 
+    align-items: center; 
+}
+.sidebar img {
+    margin-top:100px;
+    width:200px;
+    height: 200px;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    justify-content: center; 
+    align-items: center;
+}
+
+.menu{
+    margin-top: 50px; 
+    padding: 0;
+    list-style-type: none;
+}
+
+.sidebar ul li {
+    margin: 50px 0;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+
+}
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #e7f4fc;
+    text-align: center;
+}
+.content img {
+    width: 50%;
+    margin-top:80px;
+}

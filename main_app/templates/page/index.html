@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}ONSEMI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'base.css' %}">
+{% endblock %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="sidebar">
+        <img src="{% static 'main/onsemi.png' %}" alt="ONSEMI Logo">
+        <ul class="menu">
+            <li><a href="index/">홈</a></li>
+            <li><a href="introduce/">소개</a></li>
+            <li><a href="login/">로그인</a></li>
+            <li><a href="family/">사용자 페이지</a></li>
+            <li><a href="volunteer/">봉사자 페이지</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <img src="{% static 'main/onsemi2.png' %}" alt="ONSEMI Image">
+        <p>함께하면 희망이 솓아나는 우리</p>
+        <p>ONSEMI</p>
+
+    </div>
+</body>
+</html>
+{% endblock %}

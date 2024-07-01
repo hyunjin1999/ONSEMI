@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}ONSEMI{% endblock %}
+<!DOCTYPE html>
+<html lang="ko">
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'family.css' %}">
+{% endblock %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li><a href="/">홈</a></li>
+                <li><a href="mypage">마이페이지</a></li>
+                <li><a href="order">상품주문</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <span>온새미</span>
+                <a href="#" class="logout">로그아웃</a>
+            </div>
+            <div class="dashboard-section">
+                <h2>대시보드</h2>
+                <div class="dashboard">
+                    <div class="box-container">
+                        <div class="small-box" id="date-box">날짜</div>
+                        <div class="small-box" id="status-box">상태(이모지)</div>
+                        <div class="small-box" id="camera-box">
+                            <button class="camera-button">사진(버튼)</button>
+                        </div>
+                    </div>
+                    <h2>봉사자의 전달사항</h2>
+                    <div class="message-box">
+                        테스트중입니다.
+                    </div>
+                </div>
+            </div>
+            <div class="community-section">
+                <h2>커뮤니티</h2>
+                <div class="community">
+                    <table class="table">
+                        <tr>
+                            <th class="num">번호</th>
+                            <th class="title">제목</th>
+                            <th>작성자</th>
+                            <th>작성날짜</th>
+                        </tr>
+                        <script>
+                            var i, day = 20;
+                            for (i = 10; i > 0; i--) {
+                                document.write("<tr class='body'>");
+                                document.write("<td class='num'>" + i +"</td>");
+                                document.write("<td class='title'>제목입니다.</td>");
+                                document.write("<td>작성자</td>");
+                                document.write("<td>24-01-" + day-- + "</td>");
+                                document.write("</tr>");
+                            }
+                        </script>
+                    </table>
+                    <br>
+                    <button class="add-post-button" onclick="location.href='write.html'">글쓰기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('addButton').addEventListener('click', function () {
+            const table = document.getElementById('communityTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+
+            const newRowNumber = table.rows.length; // New row number based on the current number of rows
+
+            cell1.className = 'border px-4 py-2';
+            cell2.className = 'border px-4 py-2';
+            cell3.className = 'border px-4 py-2';
+
+            cell1.innerText = newRowNumber;
+            cell2.innerText = '새 글';
+            cell3.innerText = '새 작성자';
+        });
+    </script>
+</body>
+
+</html>
+{% endblock %}
