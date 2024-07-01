@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}
+Generate Report
+{% endblock %}
+
+{% block content %}
+<h1>Generate Report</h1>
+<form method="post" action="{% url 'monitoring_app:generate_report' %}">
+    {% csrf_token %}
+    <label for="start_date">Start Date:</label>
+    <input type="date" id="start_date" name="start_date">
+    <br>
+    <label for="end_date">End Date:</label>
+    <input type="date" id="end_date" name="end_date">
+    <br>
+    <label for="category">Category:</label>
+    <select id="category" name="category">
+        <option value="">All</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <button type="submit">Generate Report</button>
+</form>
+{% endblock %}
