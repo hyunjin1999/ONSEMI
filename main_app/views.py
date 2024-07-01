@@ -12,3 +12,6 @@ def family(request):
 
 def volunteer(request):
     return render(request,'page/volunteer.html')
+
+def terms(request):
+    return render(request,'page/terms.html')
