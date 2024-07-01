@@ -15,11 +15,10 @@
     <div class="sidebar">
         <img src="{% static 'main/onsemi.png' %}" alt="ONSEMI Logo">
         <ul class="menu">
-            <li><a href="index/">홈</a></li>
             <li><a href="introduce/">소개</a></li>
-            <li><a href="login/">로그인</a></li>
+            <li><a href="user/login/">로그인</a></li>
             <li><a href="family/">사용자 페이지</a></li>
-            <li><a href="volunteer/">봉사자 페이지</a></li>
+            <li><a href="qa/chatting/" id="chat-link">채팅</a></li>
         </ul>
     </div>
     <div class="content">
@@ -28,6 +27,33 @@
         <p>ONSEMI</p>
 
     </div>
+
+    <script>
+        // 로그인 안 하고 채팅을 클릭했을 때
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatLink = document.getElementById('chat-link'); // 채팅 링크의 ID가 'chat-link'라고 가정
+        
+            chatLink.addEventListener('click', function(e) {
+                e.preventDefault(); // 기본 링크 동작 방지
+        
+                fetch('qa/chatting/') // 채팅 URL에 대한 요청
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = 'qa/chatting/'; // 로그인이 되어 있으면 채팅 페이지로 이동
+                        } else {
+                            return response.json(); // 오류 메시지를 JSON 형태로 받기
+                        }
+                    })
+                    .then(data => {
+                        if (data && data.login_required) {
+                            alert(data.error); // 경고창으로 메시지 표시
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+        </script>
+        
 </body>
 </html>
 {% endblock %}
