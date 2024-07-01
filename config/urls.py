@@ -15,6 +15,7 @@ urlpatterns = [
     path("payment/", include("payment_app.urls", namespace="payment_app")),
     path("voice/", include("voice_app.urls", namespace="voice_app")),
     path("care/", include("care_app.urls")),
+    path("monitoring/", include("monitoring_app.urls", namespace = 'monitoring_app')),
 ]
 
 if settings.DEBUG:
