@@ -1,0 +1,40 @@
+<!-- templates/care_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care Form</title>
+</head>
+<body>
+    <h2>케어 작성</h2>
+    <form method="post">
+        {% csrf_token %}
+        
+        <label>케어 종류</label><br>
+        <input type="radio" id="care_type_a" name="care_type" value="VISIT" required>
+        <label for="care_type_a">VISIT</label><br>
+        
+        <input type="radio" id="care_type_b" name="care_type" value="SHOP" required>
+        <label for="care_type_b">SHOP</label><br>
+
+        <label for="title">제목</label>
+        <input type="text" id="title" name="title" maxlength="200"><br>
+
+        <label for="content">내용</label>
+        <textarea id="content" name="content"></textarea><br>
+
+        <div class="form-group">
+            <label> 시니어</label>
+            <div class="radio-group">
+                {% for senior in seniors %}
+                <label><input type="radio" name="senior" value="{{ senior.id }}" required> {{ senior.name }}</label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button type="submit">요청</button>
+        <button type="button" onclick="window.location.href = '/care/my-cares/'">취소</button>
+    </form>
+</body>
+</html>

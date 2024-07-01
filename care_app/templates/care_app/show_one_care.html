@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care Detail</title>
+</head>
+<body>
+    <h1>케어 상세</h1>
+    <ul>
+        <li><strong>케어 종류</strong> {{ care.care_type }}</li>
+        <li><strong>등록 시간</strong> {{ care.datetime }}</li>
+        <li><strong>제목</strong> {{ care.title }}</li>
+        <li><strong>내용</strong> {{ care.content }}</li>
+        <li><strong>등록인</strong> {{ care.user_id.username }}</li>
+        <li><strong>시니어</strong>
+            <ul>
+                {% for senior in care.seniors.all %}
+                    <li>{{ senior.name }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li><strong>상태</strong> {{ care.care_state }}</li>
+    </ul>
+    <button type="button" onclick="window.location.href = '/care/care/update/{{care.id}}/'">수정하기</button>
+    <form method="post" action="{% url 'delete_care' care.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+        {% csrf_token %}
+        <button type="submit" style="color: red;">Delete</button>
+    </form>
+    <br>
+    <a href='/care/my-cares/'>Back to List</a>
+    {% comment %} <button type="button" onclick="window.location.href = '/care/my-cares/'">돌아가기</button> {% endcomment %}
+</body>
+</html>
