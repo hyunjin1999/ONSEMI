@@ -1,0 +1,11 @@
+<!-- templates/voice_app/result.html -->
+{% extends "base.html" %}
+
+{% block title %}Prediction Result{% endblock %}
+
+{% block content %}
+<h1>Prediction Result</h1>
+<p>Here is the prediction result for the uploaded audio:</p>
+<p><strong>{{ prediction }}</strong></p>
+<a href="{% url 'voice_app:upload' %}">Upload another audio</a>
+{% endblock %}

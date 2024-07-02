@@ -1,6 +1,9 @@
 from blog_app.models import *
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+@login_required
 # 공지글 불러오기
 def notice_all(request):
     
@@ -11,6 +14,7 @@ def notice_all(request):
     return render(request, 'blog_app/notice_list.html', context)
 
 
+@login_required
 # 공지글 검색 기능
 def search(request):
     query = Blog.objects.filter(title__contains=request.GET.get('search'))

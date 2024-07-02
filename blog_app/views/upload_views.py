@@ -5,6 +5,8 @@ from blog_app.forms import PostForm
 from django.contrib.auth.decorators import login_required
 
 
+
+@login_required
 # 게시글 업로드 기능
 def post_upload(request):
     post = Blog()
