@@ -19,9 +19,9 @@ def terms(request):
 def user_page(request):
     user_type = request.user.user_type
     if user_type == 'FAMILY':
-        return render(request, 'page/family.html')
+        return render(request, 'management_app/user_senior_list.html')
     elif user_type == 'VOLUNTEER':
-        return render(request, 'page/volunteer.html')
+        return render(request, 'management_app/volunteer_care_list.html')
     elif user_type == 'ADMIN':
         return render(request, 'admin_dashboard')
     return render(request, 'default_dashboard') 
