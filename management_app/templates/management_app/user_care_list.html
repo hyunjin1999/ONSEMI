@@ -32,10 +32,10 @@
             <button type="submit">Filter</button>
         </form>
     </div>
-    <a href='/care/add/care/'>Add New Care</a>
+    <a href='/management/add/care/'>Add New Care</a>
     <ul>
         {% for care in cares %}
-            <a href="/care/care/detail/{{ care.id }}/">
+            <a href="/management/care/detail/{{ care.id }}/">
                 <li>
                 <h2>{{ care.title }}</h2>
                 <p>Type: {{ care.care_type }}</p>

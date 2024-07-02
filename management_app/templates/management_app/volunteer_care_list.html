@@ -62,7 +62,7 @@
         </thead>
         <tbody>
             {% for care in cares %}
-                <tr class="clickable-row" onclick="location.href='/care/care/list/status/update/{{care.id}}/'">
+                <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
                     <td>{{ care.care_type }}</td>
                     <td>{{ care.datetime }}</td>
                     <td>{{ care.title }}</td>

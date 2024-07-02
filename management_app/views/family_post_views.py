@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.db import transaction
 from auth_app.models import User
-from care_app.models import Care, Senior
+from management_app.models import Care, Senior
 
 # Create your views here.
 
@@ -35,7 +35,7 @@ def add_care(request):
         user = User.objects.get(pk=user.id)
         user_senior_list = user.senior_set.all()
         context = {"seniors": user_senior_list}
-        return render(request, "care_app/add_care.html", context)
+        return render(request, "management_app/add_care.html", context)
 
     if request.method == "POST":
         care_type = request.POST.get("care_type")
@@ -57,7 +57,7 @@ def add_care(request):
         user_senior = Senior.objects.get(pk=senior)
         care.seniors.add(user_senior)
 
-        return redirect("/care/my-cares/")
+        return redirect("/management/my_cares/")
 
 
 def show_one_care(request, care_id):
@@ -65,7 +65,7 @@ def show_one_care(request, care_id):
     username = care.user_id.username
     context = {"care": care}
 
-    return render(request, "care_app/show_one_care.html", context)
+    return render(request, "management_app/show_one_care.html", context)
 
 
 # @login_required
@@ -74,7 +74,7 @@ def update_care(request, care_id):
         care = Care.objects.get(pk=int(care_id))
         seniors = care.seniors.all()
         context = {"care": care, "seniors": seniors}
-        return render(request, "care_app/update_one_care.html", context)
+        return render(request, "management_app/update_one_care.html", context)
 
     if request.method == "POST":
 
@@ -91,20 +91,20 @@ def update_care(request, care_id):
         if content:
             care.content = content
         care.save()
-        return redirect(f"/care/care/detail/{care_id}/")
+        return redirect(f"/management/care/detail/{care_id}/")
 
 def delete_care(request, care_id):
     care = get_object_or_404(Care, id=care_id)
     care.delete()
 
-    return redirect('/care/my-cares/') 
+    return redirect('/management/my_cares/') 
 
 
 # @login_required
 def add_senior(request):
     if request.method == "GET":
         context = {"ages": [i for i in range(1, 120)]}
-        return render(request, "care_app/add_senior.html", context)
+        return render(request, "management_app/add_senior.html", context)
 
     if request.method == "POST":
         name = request.POST.get("name")
@@ -132,7 +132,7 @@ def add_senior(request):
 
         senior.save()
 
-        return redirect("/care/senior/list/")
+        return redirect("/management/senior/list/")
 
 
 # @login_required  
@@ -150,12 +150,12 @@ def update_senior(request, id):
 
 
         senior.save()
-        return redirect('/care/senior/list/')
+        return redirect('/management/senior/list/')
 
     context = {
         'senior': senior
     }
-    return render(request, 'care_app/update_senior.html', context)
+    return render(request, 'management_app/update_senior.html', context)
 
 def delete_senior(request, id):
     # 노인 객체 가져오기
@@ -168,4 +168,4 @@ def delete_senior(request, id):
     senior.delete()
 
     # 삭제 후 리디렉션할 URL 설정 (선택 사항)
-    return redirect('/care/senior/list/')  # 사용자의 노인 리스트 화면으로 리디렉션
+    return redirect('/management/senior/list/')  # 사용자의 노인 리스트 화면으로 리디렉션
