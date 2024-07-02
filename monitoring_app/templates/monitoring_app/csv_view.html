@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>CSV View</title>
     <style>
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
         table, th, td {
             border: 1px solid black;
@@ -14,17 +16,24 @@
             padding: 10px;
             text-align: left;
         }
+        .download-link {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>CSV View</h1>
-    {% if filtered_orders %}
-    <p><a href="{% url 'monitoring_app:download_csv' %}">csv 파일 다운로드</a></p> 
+    {% if data_type == 'order' %}
+        <div class="download-link">
+            <a href="{% url 'monitoring_app:download_order_csv' %}">주문 데이터 CSV 파일 다운로드</a>
+        </div>
+        <h2>주문 데이터</h2>
         <table>
             <thead>
                 <tr>
                     <th>Order ID</th>
                     <th>Product</th>
+                    <th>Category</th>
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Total Cost</th>
@@ -34,8 +43,9 @@
             <tbody>
                 {% for order in filtered_orders %}
                     <tr>
-                        <td>{{ order.id }}</td>
+                        <td>{{ order.ID }}</td>
                         <td>{{ order.Product }}</td>
+                        <td>{{ order.Category }}</td>
                         <td>{{ order.Price }}</td>
                         <td>{{ order.Quantity }}</td>
                         <td>{{ order.TotalCost }}</td>
@@ -43,9 +53,30 @@
                     </tr>
                 {% endfor %}
             </tbody>
+        </table>  
+    {% elif data_type == 'care' %}
+        <div class="download-link">
+            <a href="{% url 'monitoring_app:download_care_csv' %}">서비스 요청 데이터 CSV 파일 다운로드</a>
+        </div>
+        <h2>서비스 요청 데이터</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Care Type</th>
+                    <th>Datetime</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for care in filtered_cares %}
+                    <tr>
+                        <td>{{ care.care_type }}</td>
+                        <td>{{ care.datetime }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
     {% else %}
-        <p>No orders available.</p>
+        <p>No service requests available.</p>
     {% endif %}
 </body>
 </html>
