@@ -18,6 +18,7 @@ def payment_success(request, order_id):
         product = item.product
         if product.stock >= item.quantity:
             product.stock -= item.quantity
+            order.paid = True
             product.save()
         else:
             messages.error(request, f'{product.name}의 재고가 부족합니다.')

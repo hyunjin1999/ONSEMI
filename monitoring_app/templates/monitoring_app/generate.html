@@ -1,26 +1,62 @@
-{% extends "base.html" %}
-{% block title %}
-Generate Report
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Monitoring</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>기간 선택 & 필터링</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn">Generate Report</button>
+            </form>
+        </div>
+        <div class="main-content">
+            <h2>주문 모니터링</h2>
+            <p><a href="{% url 'monitoring_app:csv_view' %}">자세히 보기</a></p> 
+            {% if pie_chart_url %}
+                <div class="chart-container">
+                    <h3>카테고리별 분포</h3>
+                    <img src="{{ pie_chart_url }}" alt="Category Distribution Pie Chart">
+                </div>
+            {% endif %}
+            {% if graph_url %}
+                <div class="chart-container">
+                    <h3>카테고리별 일간 주문량</h3>
+                    <img src="{{ graph_url }}" alt="Daily Order Quantity by Category">
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
 
-{% block content %}
-<h1>Generate Report</h1>
-<form method="post" action="{% url 'monitoring_app:generate_report' %}">
-    {% csrf_token %}
-    <label for="start_date">Start Date:</label>
-    <input type="date" id="start_date" name="start_date">
-    <br>
-    <label for="end_date">End Date:</label>
-    <input type="date" id="end_date" name="end_date">
-    <br>
-    <label for="category">Category:</label>
-    <select id="category" name="category">
-        <option value="">All</option>
-        {% for category in categories %}
-        <option value="{{ category.id }}">{{ category.name }}</option>
-        {% endfor %}
-    </select>
-    <br>
-    <button type="submit">Generate Report</button>
-</form>
-{% endblock %}
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>주문 모니터링</title>
+</head>
+<body>
+    <h1>주문 모니터링</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">주문량 조회</button>
+    </form>
+    {% if pie_chart_url %}
+    <h2>카테고리별 분포</h2>
+    <img src="{{ pie_chart_url }}" alt="Category Distribution Pie Chart">
+    {% endif %}
+    {% if graph_url %}
+        <h2>카테고리별 일간 주문량</h2>
+        <img src="{{ graph_url }}" alt="Daily Order Quantity Graph">
+        <p><a href="{% url 'monitoring_app:csv_view' %}">자세히 보기</a></p> 
+    {% endif %}
+
+</body>
+</html> -->
