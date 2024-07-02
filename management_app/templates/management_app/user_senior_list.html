@@ -11,7 +11,7 @@
     {% if seniors %}
         <ul>
             {% for senior in seniors %}
-            <a href='/care/senior/update/{{senior.id}}/'>
+            <a href='/management/senior/update/{{senior.id}}/'>
                 <li>
                     <strong>Name:</strong>{{ senior.name }}<br>
                     <strong>Age:</strong> {{ senior.age }}<br>
@@ -26,6 +26,6 @@
         <p>No seniors registered yet.</p>
     {% endif %}
     <br>
-    <a href='/care/add/senior/'>Add New Senior</a>
+    <a href='/management/add/senior/'>Add New Senior</a>
 </body>
 </html>
