@@ -19,6 +19,26 @@
         .download-link {
             margin-bottom: 20px;
         }
+        .approval-bar-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .approval-bar {
+            height: 20px;
+            background-color: #4caf50;
+            border-radius: 25px;
+            text-align: right;
+            color: white;
+            line-height: 20px;
+        }
+        .approval-bar span {
+            position: absolute;
+            right: 10px;
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -54,9 +74,14 @@
                 {% endfor %}
             </tbody>
         </table>  
-    {% elif data_type == 'care' %}
+        {% elif data_type == 'care' %}
         <div class="download-link">
             <a href="{% url 'monitoring_app:download_care_csv' %}">서비스 요청 데이터 CSV 파일 다운로드</a>
+        </div>
+        <div class="approval-bar-container">
+            <div class="approval-bar" style="width: {{ approval_rate|floatformat:1 }}%;">
+                <span>{{ approval_rate|floatformat:1 }}%</span>
+            </div>
         </div>
         <h2>서비스 요청 데이터</h2>
         <table>
@@ -75,8 +100,9 @@
                 {% endfor %}
             </tbody>
         </table>
+        
     {% else %}
-        <p>No service requests available.</p>
+        <p>서비스 이용 내역이 없습니다.</p>
     {% endif %}
 </body>
 </html>
