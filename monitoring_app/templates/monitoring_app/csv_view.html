@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSV View</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSV View</h1>
+    {% if filtered_orders %}
+    <p><a href="{% url 'monitoring_app:download_csv' %}">csv 파일 다운로드</a></p> 
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total Cost</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in filtered_orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.Product }}</td>
+                        <td>{{ order.Price }}</td>
+                        <td>{{ order.Quantity }}</td>
+                        <td>{{ order.TotalCost }}</td>
+                        <td>{{ order.Created }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No orders available.</p>
+    {% endif %}
+</body>
+</html>
