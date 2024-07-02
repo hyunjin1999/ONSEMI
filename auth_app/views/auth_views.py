@@ -26,7 +26,7 @@ def login_user(request):
 
         if user:
             login(request, user)
-            return render(request, "auth_app/profile.html")
+            return redirect("/")
 
         return redirect("/user/login")
 
