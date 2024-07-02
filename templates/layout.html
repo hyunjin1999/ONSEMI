@@ -14,7 +14,7 @@
     <div class="wrapper">
         {% block content %}{% endblock %}
     </div>
-
+    {% if request.user.is_authenticated %}
     <div id="chat-link-container">
         <a href="qa/chatting/" id="chat-link">
             <span class="material-symbols-outlined">
@@ -22,6 +22,7 @@
             </span>
         </a>
     </div>
+    {% endif %}
 
     <footer>
         <div class="footer-content">
