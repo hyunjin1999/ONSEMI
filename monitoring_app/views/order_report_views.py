@@ -13,7 +13,7 @@ from shop_app.models import Category
 from datetime import datetime, time
 import csv
 
-# 맥 전용 한글 폰트        
+# 맥 전용 한글 폰트
 from matplotlib import rc
 rc('font', family='AppleGothic')
 
@@ -62,6 +62,7 @@ def generate(request):
         
         if not df.empty:
             # 꺾은선 그래프 생성
+            # 서비스 요청에 대한 변화 그래프
             plt.figure(figsize=(10, 6))
 
             if category == 'all':
