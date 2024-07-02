@@ -1,27 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ notice.title }}</title>
+    {% extends "layout.html" %}
     {% load static %}
+    <meta charset="UTF-8">
+    {% block title %}<title>{{ notice.title }}</title>{% endblock %}
+    {% block extra_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <style>
+        div.header{
+            background-color: #fff;
+        }
+        
+    </style>
+    {% endblock %}
 </head>
-
 <body>
+    {% block content %}
+    <div class="header">
+        <img src="{% static 'main/onsemi.png' %}" alt="Logo">
+        <nav>
+            <a href="/">홈</a>
+            <a href="introduce/">소개</a>
+            {% if request.user.is_authenticated %}
+            <a href="/user/logout/" class="logout">로그아웃</a>
+            {% else %}
+            <a href="user/login/">로그인</a>
+            {% endif %}
+            
+            {% if request.user.is_authenticated %}
+            <a href="user/profile/">나의 정보</a>
+            {% else %}
+            <a href="user/register/">회원가입</a>
+            {% endif %}
+            <a href="blog/notice_list/">공지사항</a>
+            <a href="user_page/">사용자 페이지</a>
+
+            {% if request.user.is_authenticated %}
+            {% endif %}
+    </div>
     <header>
         <div class="container">
             <h1>{{ notice.title }}</h1>
         </div>
     </header>
-    <div class="container main-content">
-        <h2>{{ notice.title }}</h2>
+    <div class="container main-content-post">
         <p>{{ notice.content }}</p>
-        <p>Published on: {{ notice.datetime }}</p>
-        <p>Views: {{ notice.views }}</p>
+        
         
         {% if notice.image %}
             <img src="{{ notice.image.url }}" alt="{{ notice.title }}">
         {% endif %}
+        <p>Published on: {{ notice.datetime }}</p>
+        <p>Views: {{ notice.views }}</p>
         
         <div class="action-buttons">
             {% if user == notice.user_id %}
@@ -51,5 +83,6 @@
             }
         }
     </script>
+    {% endblock %}
 </body>
 </html>
