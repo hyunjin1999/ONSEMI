@@ -12,3 +12,6 @@ def family(request):
 
 def volunteer(request):
     return render(request,'page/volunteer.html')
+
+def monitor(request):
+    return render(request,'page/monitor.html')
