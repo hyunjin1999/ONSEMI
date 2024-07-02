@@ -82,6 +82,7 @@ def generate(request):
             data_care.append({
                 'care_type': care.care_type,
                 'datetime': care.datetime.isoformat(),
+                'care_state': care.care_state,
             })
         df_care = pd.DataFrame(data_care)
         df_care['datetime'] = pd.to_datetime(df_care['datetime'], format='ISO8601', errors='coerce')
@@ -170,6 +171,10 @@ def csv_view(request):
         approval_rate = request.session.get('approval_rate', 0)
         if category_service and category_service != 'all':
             filtered_cares = [care for care in filtered_cares if care['care_type'] == category_service]
+
+        # 세션 데이터 출력 (디버그용)
+        print(filtered_cares)
+
         return render(request, 'monitoring_app/csv_view.html', {
             'filtered_cares': filtered_cares, 
             'data_type': 'care',
@@ -216,10 +221,10 @@ def download_care_csv(request):
     response['Content-Disposition'] = 'attachment; filename="filtered_cares.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['Care Type', 'Datetime'])
+    writer.writerow(['Care Type', 'Datetime', 'Care State'])
 
     for care in filtered_cares:
-        writer.writerow([care['care_type'], care['datetime']])
+        writer.writerow([care['care_type'], care['datetime'], care['care_state']])
 
     return response
 
