@@ -15,5 +15,6 @@ class BlogAdmin(admin.ModelAdmin):
             return self.readonly_fields
         return ('views', 'datetime', 'user_id')
 
+
 admin.site.register(Blog, BlogAdmin)
 admin.site.register(Comment)

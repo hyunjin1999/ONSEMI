@@ -6,10 +6,12 @@ class PostForm(forms.ModelForm):
         model = Blog
         fields = ['title', 'content', 'image']
 
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
+
 
 class NoticeForm(forms.ModelForm):
     class Meta:

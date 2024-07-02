@@ -42,7 +42,13 @@ INSTALLED_APPS = [
     "auth_app",
     "main_app",
     "blog_app",
-    "care_app",
+    "qa_app",
+    'shop_app',
+    'cart_app',
+    'orders_app',
+    'payment_app',
+    'voice_app',
+    "management_app",
 ]
 
 MIDDLEWARE = [
@@ -60,7 +66,8 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        # "DIRS": [BASE_DIR / "templates"],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -68,6 +75,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'cart_app.context_processors.cart'
             ],
         },
     },
@@ -131,7 +139,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-import os
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+CART_SESSION_ID = 'cart'
+
+IAMPORT_API_KEY = 'imp10781812'
+IAMPORT_API_SECRET = 'tVZHIXzhBmmOvdJjhmEVd3osXkAE2Td1BLlrKtz5vrGIgFLTzv4RqeqKkaGP5boVbH6HFlUQHLr6qtlj'
+
+IAMPORT_CODE = 'imp10781812'
