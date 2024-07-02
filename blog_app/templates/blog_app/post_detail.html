@@ -1,18 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ post.title }}</title>
+    {% extends "layout.html" %}
     {% load static %}
+    <meta charset="UTF-8">
+    {% block title %}<title>{{ post.title }}</title>{% endblock %}
+
+    {% block extra_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <style>
+        div.header {
+            background-color: #fff;
+        }
+    </style>
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
+    <div class="header">
+        <img src="{% static 'main/onsemi.png' %}" alt="Logo">
+        <nav>
+            <a href="/">홈</a>
+            <a href="introduce/">소개</a>
+            {% if request.user.is_authenticated %}
+            <a href="/user/logout/" class="logout">로그아웃</a>
+            {% else %}
+            <a href="user/login/">로그인</a>
+            {% endif %}
+            
+            {% if request.user.is_authenticated %}
+            <a href="user/profile/">나의 정보</a>
+            {% else %}
+            <a href="user/register/">회원가입</a>
+            {% endif %}
+            <a href="blog/notice_list/">공지사항</a>
+            <a href="user_page/">사용자 페이지</a>
+
+            {% if request.user.is_authenticated %}
+            {% endif %}
+        </nav>
+    </div>
     <header>
         <div class="container">
             <h1>{{ post.title }}</h1>
         </div>
     </header>
-    <div class="container main-content">
+    <div class="container main-content-post">
         <h2>{{ post.title }}</h2>
         <p>{{ post.content }}</p>
         <p>Published on: {{ post.datetime }}</p>
@@ -31,41 +65,47 @@
             {% endif %}
         </div>
 
-        <h2>댓글</h2>
-        {% for comment in comments %}
-            <div style="margin-left: {% if comment.parent %}40px{% endif %};">
-                <p><strong>{{ comment.user_id }}</strong>: {{ comment.content }}</p>
-                <p>{{ comment.datetime }}</p>
-                {% if user == comment.user_id or user == post.user_id %}
-                    <button onclick="confirmDeleteComment({{ post.pk }}, {{ comment.pk }})" class="delete-button">x</button>
-                {% endif %}
-                <p><a href="#" class="reply" data-id="{{ comment.id }}">Reply</a></p>
-                {% if comment.replies %}
-                    {% for reply in comment.replies.all %}
-                        <div style="margin-left: 40px;">
-                            <p><strong>{{ reply.user_id }}</strong>: {{ reply.content }}</p>
-                            <p>{{ reply.datetime }}</p>
-                            {% if user == reply.user_id or user == post.user_id %}
-                                <button onclick="confirmDeleteComment({{ post.pk }}, {{ reply.pk }})" class="delete-button">x</button>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-        {% endfor %}
+        <div class="comment-section">
+            <h2>댓글</h2>
+            {% for comment in comments %}
+                <div class="comment" style="margin-left: {% if comment.parent %}40px{% endif %};">
+                    <p><span class="comment-author">{{ comment.user_id }}</span> <span class="comment-time">{{ comment.datetime }}</span></p>
+                    <p>{{ comment.content }}</p>
+                    <div class="comment-actions">
+                        {% if user == comment.user_id or user == post.user_id %}
+                            <button onclick="confirmDeleteComment({{ post.pk }}, {{ comment.pk }})" class="delete-button">댓글 삭제</button>
+                        {% endif %}
+                        <span class="reply-link" data-id="{{ comment.id }}">답글</span>
+                    </div>
+                    {% if comment.replies %}
+                        {% for reply in comment.replies.all %}
+                            <div class="reply">
+                                <p><span class="comment-author">{{ reply.user_id }}</span> <span class="comment-time">{{ reply.datetime }}</span></p>
+                                <p>{{ reply.content }}</p>
+                                <div class="comment-actions">
+                                    {% if user == reply.user_id or user == post.user_id %}
+                                        <button onclick="confirmDeleteComment({{ post.pk }}, {{ reply.pk }})" class="delete-button">댓글 삭제</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
 
-        <h2>댓글 작성</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ comment_form.as_p }}
-            <input type="hidden" name="parent_id" id="parent_id">
-            <input type="submit" value="댓글 달기">
-        </form>
-        <button onclick="location.href='{% url 'blog_app:post_list' %}'">목록으로 돌아가기</button>
+            <h2>댓글 작성</h2>
+            <form method="post" class="comment-form">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <input type="hidden" name="parent_id" id="parent_id">
+                <input type="submit" value="댓글 달기">
+            </form>
+            <button onclick="location.href='{% url 'blog_app:post_list' %}'">목록으로 돌아가기</button>
+        </div>
     </div>
 
     <script>
-        document.querySelectorAll('.reply').forEach(function(element) {
+        document.querySelectorAll('.reply-link').forEach(function(element) {
             element.onclick = function(e) {
                 e.preventDefault();
                 document.getElementById('parent_id').value = this.getAttribute('data-id');
@@ -124,5 +164,6 @@
             }
         }
     </script>
+    {% endblock %}
 </body>
 </html>

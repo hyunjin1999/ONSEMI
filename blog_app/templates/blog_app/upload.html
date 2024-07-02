@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% extends "layout.html" %}
     {% load static %}
     <meta charset="UTF-8">
-    <title>새로운 글 등록</title>
+    {% block title %}<title>새로운 글 등록</title>{% endblock %}
+    {% block extra_css %}
     <style>
+        div.header {
+            background-color: #fff;
+        }
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -56,8 +61,34 @@
             background-color: #218838;
         }
     </style>
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
+    <div class="header">
+        <img src="{% static 'main/onsemi.png' %}" alt="Logo">
+        <nav>
+            <a href="/">홈</a>
+            <a href="introduce/">소개</a>
+            {% if request.user.is_authenticated %}
+            <a href="/user/logout/" class="logout">로그아웃</a>
+            {% else %}
+            <a href="user/login/">로그인</a>
+            {% endif %}
+            
+            {% if request.user.is_authenticated %}
+            <a href="user/profile/">나의 정보</a>
+            {% else %}
+            <a href="user/register/">회원가입</a>
+            {% endif %}
+            <a href="blog/notice_list/">공지사항</a>
+            <a href="user_page/">사용자 페이지</a>
+
+            {% if request.user.is_authenticated %}
+            {% endif %}
+        </nav>
+    </div>
     <main>
         <h1>새로운 글 등록</h1>
             <form method="post" enctype="multipart/form-data">
@@ -67,4 +98,5 @@
         </form>
     </main>
 </body>
+{% endblock %}
 </html>
