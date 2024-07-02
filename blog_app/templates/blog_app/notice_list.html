@@ -11,12 +11,38 @@
             margin: 0;
             padding: 0;
         }
+        header {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
         main {
             width: 80%;
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        nav {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #218838;
+        }
+        nav a#selected{
+            color: red;
         }
         table {
             width: 100%;
@@ -64,6 +90,10 @@
 </head>
 <body>
     <main>
+        <nav>
+            <a href="{% url 'blog_app:post_list' %}">자유게시판</a>
+            <a id='selected' href=''>공지사항</a>
+        </nav>
         {% if notice_list %}
         <table id="container">
             <thead>

@@ -6,6 +6,7 @@
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
+
 <body>
     <header>
         <div class="container">
@@ -24,7 +25,7 @@
         
         <div class="action-buttons">
             {% if user == notice.user_id %}
-                <a href="{% url 'blog_app:post_edit' pk=notice.pk %}" class="button">글 수정하기</a>
+                <a href="{% url 'blog_app:notice_edit' pk=notice.pk %}" class="button">글 수정하기</a>
                 <button onclick="confirmDeletePost({{ notice.pk }})" class="button">글 삭제하기</button>
             {% endif %}
         </div>
@@ -42,14 +43,13 @@
                     }
                 }).then(response => {
                     if (response.ok) {
-                        window.location.href = '/blog/';
+                        window.location.href = '/blog/notice_list';
                     } else {
                         alert('Failed to delete the notice.');
                     }
                 });
             }
         }
-
     </script>
 </body>
 </html>
