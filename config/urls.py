@@ -14,7 +14,7 @@ urlpatterns = [
     path("orders/", include("orders_app.urls", namespace="orders_app")),
     path("payment/", include("payment_app.urls", namespace="payment_app")),
     path("voice/", include("voice_app.urls", namespace="voice_app")),
-    path("care/", include("management_app.urls")),
+    path("management/", include("management_app.urls")),
     path("monitoring/", include("monitoring_app.urls", namespace = 'monitoring_app')),
 ]
 
