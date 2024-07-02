@@ -170,6 +170,7 @@
     </style>
 </head>
 <body>
+
     <div class="wrapper">
         <div class="header">
             <img src="{% static 'main/onsemi.png' %}" alt="Logo">
@@ -191,29 +192,36 @@
                     <option value="senior3">어르신3</option>
                 </select>
                 <h2>기간 선택 & 필터링</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn">Generate Report</button>
-                </form>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.start_date.label_tag }} {{ form.start_date }}
+                {{ form.end_date.label_tag }} {{ form.end_date }}
+                {{ form.category_order.label_tag }} {{ form.category_order }}
+                {{ form.category_service.label_tag }} {{ form.category_service }}
+                <button type="submit" class="btn">Generate Report</button>
+            </form>
             </div>
             <div class="main-content">
-                <h2>주문 모니터링</h2>
+                <h2>보호자 모니터링</h2>
+                {% if request.method == 'POST' %}
+                    <p><a href="{% url 'monitoring_app:csv_view' %}?type=order">주문 내역 자세히 보기</a></p>
+                {% endif %}
                 {% if pie_chart_url %}
                     <div class="chart-container">
                         <h3>카테고리별 분포</h3>
                         <img src="{{ pie_chart_url }}" alt="Category Distribution Pie Chart">
                     </div>
-                    <p><a href="{% url 'monitoring_app:csv_view' %}">상세 보기</a></p>
                 {% endif %}
                 {% if graph_url %}
                     <div class="chart-container">
-                        <h3>돌봄 요청 현황</h3>
+                        <h3>카테고리별 서비스 주간 요청량</h3>
+                        {% if request.method == 'POST' %}
+                            <p><a href="{% url 'monitoring_app:csv_view' %}?type=care">서비스 요청 데이터 자세히 보기</a></p>
+                        {% endif %}
                         <img src="{{ graph_url }}" alt="Daily Order Quantity by Category">
                     </div>
-                    <p><a href="{% url 'monitoring_app:csv_view' %}">상세 보기</a></p>
                 {% endif %}
-            </div>
+
         </div>
     </div>
 </body>
