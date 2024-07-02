@@ -100,7 +100,7 @@ def delete_care(request, care_id):
     return redirect('/management/my_cares/') 
 
 
-# @login_required
+@login_required
 def add_senior(request):
     if request.method == "GET":
         context = {"ages": [i for i in range(1, 120)]}
@@ -114,9 +114,13 @@ def add_senior(request):
         phone_number = request.POST.get("phone_number")
         has_alzheimers = request.POST.get("has_alzheimers")
         has_parkinsons = request.POST.get("has_parkinsons")
+        photo = request.FILES.get("photo")
         user = request.user
 
-        user = User.objects.get(pk=user.id)
+        # user = User.objects.get(pk=user.id)
+
+        # 기존에 재홍님께서 작성한 코드로는 이상하게 오류가 발생해서 새롬게 작성
+        user = request.user
         senior = Senior(
             name=name,
             address=address,
@@ -124,6 +128,7 @@ def add_senior(request):
             gender=gender,
             phone_number=phone_number,
             user_id=user,
+            photo = photo,
         )
         if has_parkinsons:
             senior.has_parkinsons = True

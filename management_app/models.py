@@ -14,6 +14,7 @@ class Senior(models.Model):
     has_parkinsons = models.BooleanField(default=False, null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="user_id")
+    photo = models.ImageField(upload_to='senior_photos/', null=True, blank=True)
 
     def __str__(self):
         return self.name

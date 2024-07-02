@@ -13,6 +13,9 @@
             {% for senior in seniors %}
             <a href='/management/senior/update/{{senior.id}}/'>
                 <li>
+                    {% if senior.photo %}
+                        <img src="{{ senior.photo.url }}" alt="{{ senior.name }}'s photo" style="max-width:200px; max-height:200px;"><br>
+                    {% endif %}
                     <strong>Name:</strong>{{ senior.name }}<br>
                     <strong>Age:</strong> {{ senior.age }}<br>
                     <strong>Gender:</strong> {{ senior.gender }}<br>
