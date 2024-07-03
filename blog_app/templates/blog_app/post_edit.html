@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% extends "layout.html" %}
+    {% load static %}
+    {% block title %}<title>Edit Post</title>{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <style>
+        div.header {
+            background-color: #fff;
+        }
+    </style>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    <div class="container">
+        <h1>Edit Post</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">저장하기</button>
+        </form>
+    </div>
+</body>
+{% endblock %}
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends "layout.html" %}
+    {% load static %}
+    <meta charset="UTF-8">
+    {% block title %}Post List{% endblock %}
+
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <style>
+        div.header{
+            background-color: #fff;
+        }
+        main {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        nav {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #218838;
+        }
+        nav a#selected{
+            color: red;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+        .new a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 0;
+            background-color: #28a745;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .new a:hover {
+            background-color: #218838;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: calc(100% - 120px);
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    <main>
+        <nav>
+            <a id='selected' href="">자유게시판</a>
+            <a href="{% url 'blog_app:notice_list' %}">공지사항</a>
+        </nav>
+        {% if post_list %}
+        <table id="container">
+            <thead>
+                <tr>
+                    <th>등록 일자</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>이미지</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in post_list %}
+                <tr onclick="location.href='{% url 'blog_app:post_detail' post.pk %}';">
+                    <td>{{ post.datetime }} </td>
+                    <td>{{ post.title }}</td>
+                    <td>{{ post.name }}</td>
+                    <td>
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}" width=80 height=120>
+                    {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No posts available.</p>
+        {% endif %}
+
+        <div class="new">
+            <a href="upload"> + New</a>
+        </div>
+        
+        <div>
+            <form action="{% url 'blog_app:search' %}" method="get">
+                <label for="search">Search: </label>
+                <input type="text" id="search" name="search" placeholder="검색어를 입력하세요">
+            </form>
+        </div>
+    </main>
+{% endblock %}
+</body>
+</html>

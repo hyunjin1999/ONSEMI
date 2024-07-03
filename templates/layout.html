@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'main/onsemi.ico' %}">
+    <link rel="stylesheet" href="{% static 'layout.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <title>{% block title %}{% endblock %}</title>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="header">
+        <img src="{% static 'main/onsemi.png' %}" alt="Logo">
+        <nav>
+            <a href="/">홈</a>
+            <a href="/introduce/">소개</a>
+            {% if request.user.is_authenticated %}
+            <a href="/user/logout/" class="logout">로그아웃</a>
+            {% else %}
+            <a href="/user/login/">로그인</a>
+            {% endif %}
+            {% if request.user.is_authenticated %}
+            <a href="/user/profile/">나의 정보</a>
+            {% else %}
+            <a href="/user/register/">회원가입</a>
+            {% endif %}
+            <a href="/blog/notice_list/">공지사항</a>
+            <a href="/user_page/">사용자 페이지</a>
+
+
+            {% if request.user.is_authenticated %}
+            {% endif %}
+    </div>
+    <div class="wrapper">
+        {% block content %}{% endblock %}
+    </div>
+    {% if request.user.is_authenticated %}
+    <div id="chat-link-container">
+        <a href="qa/chatting/" id="chat-link">
+            <span class="material-symbols-outlined">
+                chat
+            </span>
+        </a>
+    </div>
+    {% endif %}
+
+    <footer>
+        <div class="footer-content">
+            <p><a href="terms/">이용약관</a></p>
+            <p>
+                (주)케이티 경기도 성남시 분당구 불정로 90 (정자동) 대표자명: 김영섭 사업자등록번호: 102-81-42945 통신판매업신고: 2002-경기성남-0048
+            </p>
+            <p>&copy; 2024 ONSEMI. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
+{% block script %}
+{% endblock %}

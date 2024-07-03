@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    {% block title %}Care List{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+            cursor: pointer;
+        }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+        .clickable-row:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    <h1>케어 목록</h1>
+
+    <form method="get">
+        <label for="sort_by">정렬:</label>
+        <select name="sort_by" id="sort_by">
+            <option value="care_type">케어 타입</option>
+            <option value="datetime">시간</option>
+            <option value="care_state">케어 상태</option>
+        </select>
+        <select name="order" id="order">
+            <option value="asc">오름차순</option>
+            <option value="desc">내림차순</option>
+        </select>
+        <label for="user">신청자:</label>
+        <select name="user" id="user">
+            <option value="">All</option>
+            {% for user in users %}
+                <option value="{{ user.id }}" {% if user.id == selected_user %}selected{% endif %}>{{ user.username }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Apply</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>케어타입</th>
+                <th>시간</th>
+                <th>제목</th>
+                <th>상태</th>
+                <th>신청자</th>
+                <th>대상 어르신</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for care in cares %}
+                <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
+                    <td>{{ care.care_type }}</td>
+                    <td>{{ care.datetime }}</td>
+                    <td>{{ care.title }}</td>
+                    <td>{{ care.care_state }}</td>
+                    <td>{{ care.user_id.username }}</td>
+                    <td>{% for senior in care.seniors.all %}
+                        {{ senior.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
+
+</body>
+</html>

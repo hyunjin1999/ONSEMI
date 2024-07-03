@@ -35,8 +35,7 @@ class UserManager(BaseUserManager):
             raise ValueError("username doesn't exist")
 
         user = self.create_user(
-            username=username, password=password, email=email, user_type=user_type
-        )
+            username=username, password=password, email=email, user_type=user_type)
         user.is_superuser = True
 
         user.save(using=self._db)
