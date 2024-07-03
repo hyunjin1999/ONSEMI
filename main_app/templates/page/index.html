@@ -16,29 +16,7 @@
 <body>
 
 {% block content %}
-    <div class="header">
-        <img src="{% static 'main/onsemi.png' %}" alt="Logo">
-        <nav>
-            <a href="/">홈</a>
-            <a href="introduce/">소개</a>
-            {% if request.user.is_authenticated %}
-            <a href="/user/logout/" class="logout">로그아웃</a>
-            {% else %}
-            <a href="user/login/">로그인</a>
-            {% endif %}
-            
-            {% if request.user.is_authenticated %}
-            <a href="user/profile/">나의 정보</a>
-            {% else %}
-            <a href="user/register/">회원가입</a>
-            {% endif %}
-            <a href="blog/notice_list/">공지사항</a>
-            <a href="user_page/">사용자 페이지</a>
-
-            {% if request.user.is_authenticated %}
-            {% endif %}
-
-    </div>
+    
     <div class="main-content">
         <div class="text-container">
             <h1>함께하면 희망이 솟아나는 우리</h1>
