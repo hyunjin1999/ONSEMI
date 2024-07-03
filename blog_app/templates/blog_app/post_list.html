@@ -1,25 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Post List</title>
+    {% extends "layout.html" %}
     {% load static %}
+    <meta charset="UTF-8">
+    {% block title %}Post List{% endblock %}
+
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #28a745;
-            color: #fff;
-            padding: 10px 0;
-            text-align: center;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 24px;
+        div.header{
+            background-color: #fff;
         }
         main {
             width: 80%;
@@ -87,8 +78,10 @@
             border-radius: 5px;
         }
     </style>
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
     <main>
         <nav>
             <a id='selected' href="">자유게시판</a>
@@ -134,5 +127,6 @@
             </form>
         </div>
     </main>
+{% endblock %}
 </body>
 </html>
