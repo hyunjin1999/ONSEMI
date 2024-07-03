@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from auth_app.utils import family_required
 # Create your views here.
 
 # 1 -> easy
@@ -68,7 +69,9 @@ class UserCareListView(LoginRequiredMixin, ListView):
         context['selected_senior_id'] = self.request.GET.get('senior_id', '')
         context['selected_order'] = self.request.GET.get('order', 'desc')
         return context
-        
+
+@login_required
+@family_required 
 def list_senior(request):
     # 현재 로그인한 사용자의 노인 리스트 가져오기
     user_id = request.user.id

@@ -22,6 +22,10 @@ def payment_success(request, order_id):
         else:
             messages.error(request, f'{product.name}의 재고가 부족합니다.')
             return redirect('payment_app:payment_fail', order_id=order.id)
+    
+    # 결제 완료로 주문 상태를 업데이트합니다.
+    order.paid = True
+    order.save()
 
     return render(request, 'orders/order/created.html', {'order': order})
 
