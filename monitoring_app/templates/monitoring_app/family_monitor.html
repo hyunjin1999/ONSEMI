@@ -1,0 +1,150 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}ONSEMI{% endblock %}
+<!DOCTYPE html>
+<html lang="ko">
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'family.css' %}">
+{% endblock %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .clickable-row {
+            cursor: pointer;
+        }
+        .clickable-row:hover {
+            background-color: #f0f0f0;
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .image-container {
+            flex: 1;
+            margin-right: 20px;
+        }
+        
+        .content-container {
+            flex: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li>어르신 내용</li>
+                <li><a href="{% url 'management:list_senior' %}">등록된 어르신 리스트</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <span>온새미</span>
+                <a href="/">홈</a>
+                <a href="/user/logout" class="logout">로그아웃</a>
+                <a href="{% url 'management:add_senior' %}">어르신 등록</a>
+            </div>
+        <div class="flex-container">
+            <div class="image-container">
+                <img src="{% static 'main/onsemi.png' %}">
+            </div>
+            <div class="content-container">
+                <h2>건강 상태</h2>
+                <h2>특이 사항 없음</h2>
+            </div>
+        </div>
+            <div>
+                <h2>주문 및 돌봄 내역</h2>
+                <div>
+                    <form method="get">
+                        <label for="care_state">Care State:</label>
+                        <select name="care_state" id="care_state">
+                            <option value="">All</option>
+                            {% for state in care_states %}
+                                <option value="{{ state }}" {% if selected_care_state == state %}selected{% endif %}>{{ state }}</option>
+                            {% endfor %}
+                        </select>
+            
+                        <label for="senior_id">Senior:</label>
+                        <select name="senior_id" id="senior_id">
+                            <option value="">All</option>
+                            {% for senior in seniors %}
+                                <option value="{{ senior.id }}" {% if selected_senior_id == senior.id|stringformat:"s" %}selected{% endif %}>{{ senior.name }}</option>
+                            {% endfor %}
+                        </select>
+            
+                        <label for="order">Order:</label>
+                        <select name="order" id="order">
+                            <option value="desc" {% if selected_order == "desc" %}selected{% endif %}>Newest First</option>
+                            <option value="asc" {% if selected_order == "asc" %}selected{% endif %}>Oldest First</option>
+                        </select>
+            
+                        <button type="submit">Filter</button>
+                    </form>
+                </div>
+                <a href='/management/add/care/'>Add New Care</a>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>State</th>
+                            <th>Content</th>
+                            <th>Seniors</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for care in cares %}
+                        <tr class="clickable-row" onclick="location.href='/management/care/detail/{{ care.id }}/'">
+                            <td>{{ care.title }}</td>
+                            <td>{{ care.care_type }}</td>
+                            <td>{{ care.datetime }}</td>
+                            <td>{{ care.care_state }}</td>
+                            <td>{{ care.content }}</td>
+                            <td>
+                                {% for senior in care.seniors.all %}
+                                    {{ senior.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                        </a>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>                
+            </div>
+        </div>
+        
+    </div>
+</body>
+
+</html>
+{% endblock %}

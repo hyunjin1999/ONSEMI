@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import order_report_views
+from .views import order_report_views, monitor_views
 
 app_name = 'monitoring_app'
 
@@ -7,4 +7,5 @@ urlpatterns = [
     path('generate/', order_report_views.generate, name='generate'),
     path('download_csv/', order_report_views.download_csv, name='download_csv'),
     path('csv_view/', order_report_views.csv_view, name='csv_view'),
+    path('family_monitor/', monitor_views.family_monitor, name='family_monitor'),
 ]
