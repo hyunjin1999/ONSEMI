@@ -5,6 +5,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+
     {% block title %}List of Seniors{% endblock %}
     {% block extra_css %}
     <link rel="stylesheet" href="{% static 'base.css' %}">
@@ -34,7 +35,10 @@
         <p>No seniors registered yet.</p>
     {% endif %}
     <br>
-    <a href='/management/add/senior/'>Add New Senior</a>
+
+    <a href='/management/add/senior/'>Add New Senior</a><br>
+    <a href="{% url 'monitoring_app:family_monitor' %}">뒤로 가기</a>
     {% endblock %}
+
 </body>
 </html>

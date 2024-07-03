@@ -7,3 +7,4 @@ class ManagementAppConfig(AppConfig):
 
     def ready(self):
         import management_app.signals  # 신호 연결
+

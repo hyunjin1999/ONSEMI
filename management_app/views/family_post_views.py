@@ -7,6 +7,7 @@ from auth_app.models import User
 from management_app.models import Care, Senior
 from auth_app.utils import family_required  # 해당 페이지는 보호자로 로그인했을 때만 접근이 가능하게 수정!!
 
+
 # Create your views here.
 
 # 1 -> easy
@@ -62,6 +63,7 @@ def add_care(request):
         return redirect("/management/my_cares/")
 
 
+
 @login_required
 @family_required
 def show_one_care(request, care_id):
@@ -106,15 +108,15 @@ def update_care(request, care_id):
         care.save()
         return redirect(f"/management/care/detail/{care_id}/")
 
+
 @login_required
 @family_required
 def delete_care(request, care_id):
     care = get_object_or_404(Care, id=care_id)
     care.delete()
+    return redirect('/monitoring/family_monitor/') 
 
-    return redirect('/management/my_cares/') 
-
-
+  
 @login_required
 @family_required
 def add_senior(request):
@@ -178,6 +180,7 @@ def update_senior(request, id):
         'senior': senior
     }
     return render(request, 'management_app/update_senior.html', context)
+
 
 @login_required
 @family_required

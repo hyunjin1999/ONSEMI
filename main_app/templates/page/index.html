@@ -15,6 +15,21 @@
 </head>
 <body>
 
+    <div class="sidebar">
+        <img src="{% static 'main/onsemi.png' %}" alt="ONSEMI Logo">
+        <ul class="menu">
+            <li><a href="introduce/">소개</a></li>
+            <li><a href="user/login/">로그인</a></li>
+            <li><a href="family/">사용자 페이지</a></li>
+            <li><a href="/monitoring/family_monitor/">모니터링 페이지</a></li>
+            <li><a href="qa/chatting/" id="chat-link">채팅</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <img src="{% static 'main/onsemi2.png' %}" alt="ONSEMI Image">
+        <p>함께하면 희망이 솓아나는 우리</p>
+        <p>ONSEMI</p>
+
 {% block content %}
     <div class="main-content">
         <div class="text-container">
