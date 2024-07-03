@@ -13,6 +13,7 @@ def family(request):
 def volunteer(request):
     return render(request,'page/volunteer.html')
 
+
 def terms(request):
     return render(request,'page/terms.html')
 
@@ -24,4 +25,5 @@ def user_page(request):
         return render(request, 'management_app/volunteer_care_list.html')
     elif user_type == 'ADMIN':
         return render(request, 'admin_dashboard')
-    return render(request, 'default_dashboard')
+    return render(request, 'default_dashboard') 
+
