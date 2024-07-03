@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import path, include
 from .views.family_list_views import UserCareListView
 from .views import family_list_views, family_post_views, volunteer_list_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'management'
 urlpatterns = [
@@ -17,3 +19,6 @@ urlpatterns = [
     path("care/list/", volunteer_list_views.care_list),
     path("care/list/status/update/<int:care_id>/", volunteer_list_views.status_update),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

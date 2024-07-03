@@ -5,7 +5,8 @@ app_name = 'monitoring_app'
 
 urlpatterns = [
     path('generate/', order_report_views.generate, name='generate'),
-    path('download_csv/', order_report_views.download_csv, name='download_csv'),
+    path('download_order_csv/', order_report_views.download_order_csv, name='download_order_csv'),
+    path('download_care_csv/', order_report_views.download_care_csv, name='download_care_csv'),
     path('csv_view/', order_report_views.csv_view, name='csv_view'),
     path('family_monitor/', monitor_views.family_monitor, name='family_monitor'),
 ]
