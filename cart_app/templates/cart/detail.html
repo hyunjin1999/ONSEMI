@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+{{ block.super }}
   <h1>Your shopping cart</h1>
   {% if insufficient_stock %}
     <p class="error">재고가 부족합니다.</p>
