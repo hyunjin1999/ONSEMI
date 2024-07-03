@@ -1,12 +1,18 @@
 <!-- templates/care_form.html -->
+{% extends "layout.html" %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Care Form</title>
+    {% block title %}Care Form{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
     <h2>케어 작성</h2>
     <form method="post">
         {% csrf_token %}
@@ -31,7 +37,8 @@
         </div>
 
         <button type="submit">요청</button>
-        <button type="button" onclick="window.location.href = '/management/my_cares/'">취소</button>
+        <button type="button" onclick="window.location.href = '/'">취소</button>
     </form>
+    {% endblock %}
 </body>
 </html>
