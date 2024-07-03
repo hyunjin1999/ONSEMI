@@ -1,11 +1,18 @@
+{% extends "layout.html" %}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senior Form</title>
+    {% block title %}Senior Form{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
     <h1>시니어 등록</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -55,5 +62,6 @@
         <input type="submit" value="저장">
         <button type="button" onclick="window.location.href = '/management/senior/list/'">취소</button>
     </form>
+    {% endblock %}
 </body>
 </html>
