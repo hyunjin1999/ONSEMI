@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% extends "layout.html" %}
     {% load static %}
     <meta charset="UTF-8">
-    <title>새로운 글 등록</title>
+    {% block title %}<title>새로운 글 등록</title>{% endblock %}
+    {% block extra_css %}
     <style>
+        div.header {
+            background-color: #fff;
+        }
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -56,8 +61,11 @@
             background-color: #218838;
         }
     </style>
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
     <main>
         <h1>새로운 글 등록</h1>
             <form method="post" enctype="multipart/form-data">
@@ -67,4 +75,5 @@
         </form>
     </main>
 </body>
+{% endblock %}
 </html>
