@@ -4,178 +4,11 @@
     <meta charset="UTF-8">
     <title>Order Monitoring</title>
     {% load static %}
-    {% comment %} 
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'css/base.css' %}"> 
-    {% endcomment %}
-    <style>
-        @font-face {
-            font-family: 'KCC-Hanbit';
-            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-        }
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script src="{% static 'js/scripts.js' %}"></script>
 
-        body {
-            font-family: 'KCC-Hanbit', Arial, sans-serif;
-            font-size: 16px;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
 
-        .wrapper {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .header {
-            background-color: #f9f9f9;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .header img {
-            height: 50px;
-        }
-
-        .header nav a {
-            margin: 0 15px;
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .container {
-            display: flex;
-            flex: 1;
-        }
-
-        .sidebar {
-            width: 260px;
-            background-color: #e7f5fe;
-            color: black;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar h2 {
-            margin-top: 0;
-            font-size: 1.6em;
-        }
-
-        .sidebar form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar form .btn {
-            background-color: #1abc9c;
-            border: none;
-            padding: 12px;
-            color: #fff;
-            cursor: pointer;
-            margin-top: 10px;
-            border-radius: 5px;
-            font-size: 1em;
-            font-weight: bold;
-        }
-
-        .sidebar form .btn:hover {
-            background-color: #16a085;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-
-        .main-content h2 {
-            color: #34495e;
-            font-size: 1.8em;
-            text-align: center;
-            margin-bottom: 20px;
-            margin-top: -20px;
-
-        }
-
-        .chart-container {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .chart-container h3 {
-            margin-top: 0;
-            font-size: 1.4em;
-            color: #34495e;
-        }
-
-        .chart-container img {
-            max-width: 80%;
-            border-radius: 5px;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .main-content a {
-            display: block;
-            width: fit-content;
-            margin: 20px auto;
-            padding: 10px 20px;
-            font-size: 1.2em;
-            color: black;
-            background-color: #e7f5fe;
-            border: 2px solid #e7f5fe;
-            border-radius: 5px;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .main-content a:hover {
-            background-color: #d0eaff;
-            border-color: #d0eaff;
-            text-decoration: underline;
-        }
-
-        img.senior-profile {
-            width: 100px;
-            height: 100px;
-            display: block;
-            margin: 0 auto 10px;
-        }
-
-        .sidebar h3 {
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 1.3em;
-        }
-
-        .sidebar select {
-            margin-bottom: 20px;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        select.select-senior {
-            margin-bottom: 20px;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin-left: 45px;
-        }
-    </style>
 </head>
 <body>
 
@@ -187,18 +20,22 @@
                 <a href="introduce/">소개</a>
                 <a href="user/login/">로그인</a>
                 <a href="user/register/">회원가입</a>
+                <img src="{% static 'images/person.png' %}" alt="MyPage" id="seniorImage">
+                <div id="infoBox" class="info-box">
+                    <p>알림1</p>
+                    <p>알림2</p>
+                    <a href="{% url 'monitoring_app:family_monitor' %}">
+                    <button id="navigateButton">모니터링</button>
+                </a>
+                </div>
             </nav>
         </div>
         <div class="container">
             <div class="sidebar">
                 <img class="senior-profile" src="{% static 'main/senior_default_profile.png' %}">
-                <h3>OOO어르신</h3>
-                <select class="select-senior">
-                    <option value="">어르신을 선택하세요.</option>
-                    <option value="senior1">어르신1</option>
-                    <option value="senior2">어르신2</option>
-                    <option value="senior3">어르신3</option>
-                </select>
+                <h3>어르신</h3>
+                
+                    <li><a href="{% url 'management:list_senior' %}">등록된 어르신 리스트</a></li>
                 <h2>기간 선택 & 필터링</h2>
             <form method="post">
                 {% csrf_token %}
