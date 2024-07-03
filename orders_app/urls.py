@@ -5,4 +5,5 @@ app_name = 'orders_app'
 
 urlpatterns = [
     path('create/', views.order_create, name='order_create'),
+    path('csv/', views.export_orders_to_csv, name='export_orders_to_csv'),
 ]
