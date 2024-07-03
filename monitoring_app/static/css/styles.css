@@ -29,7 +29,10 @@ body {
     justify-content: space-between;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
+li{
+    list-style-type: none;
+    text-align: center;
+}
 .header img {
     height: 50px;
 }
@@ -225,6 +228,7 @@ th {
     justify-content: center;
     text-align: center;
     border-radius: 30px;
+    z-index: 1000; 
 }
 #navigateButton {
     margin-top: auto;
@@ -270,15 +274,18 @@ th {
 .photo-box {
     grid-column: span ;
     height: 300px; /* Set the desired height */
+    z-index: 500; 
 }
 
 .health-box {
     height: 300px; /* Set the desired height */
+    z-index: 500; 
 }
 
 .order-box {
     grid-column: span 2;
-    height: 150px; /* Set the desired height */
+    height: auto; /* Set the desired height */
+    z-index: 500; 
 }
 
 .photo-box, .health-box, .order-box {
@@ -308,4 +315,11 @@ th {
 
 .plus-button:hover {
     background-color: #0056b3;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+.clickable-row:hover {
+    background-color: #f0f0f0;
 }
