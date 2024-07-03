@@ -97,7 +97,7 @@ def delete_care(request, care_id):
     care = get_object_or_404(Care, id=care_id)
     care.delete()
 
-    return redirect('/management/my_cares/') 
+    return redirect('/monitoring/family_monitor/') 
 
 
 @login_required
