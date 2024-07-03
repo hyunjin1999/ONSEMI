@@ -330,3 +330,8 @@ form div.field {
     color:#666;
     border-radius:4px;
 }
+
+img{
+    wide : 300px;
+    height : 300px;
+}
