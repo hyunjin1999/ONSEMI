@@ -1,12 +1,17 @@
 <!-- care_app/templates/care_app/list_seniors.html -->
-
+{% extends "layout.html" %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>List of Seniors</title>
+    {% block title %}List of Seniors{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
     <h1>List of Seniors</h1>
     {% if seniors %}
         <ul>
@@ -30,5 +35,6 @@
     {% endif %}
     <br>
     <a href='/management/add/senior/'>Add New Senior</a>
+    {% endblock %}
 </body>
 </html>
