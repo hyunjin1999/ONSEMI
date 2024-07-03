@@ -27,9 +27,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from management_app.models import Care
 from auth_app.models import User
 from django.contrib.auth.decorators import login_required
-
+from auth_app.utils import volunteer_required
 
 @login_required
+@volunteer_required
 def care_list(request):
     sort_by = request.GET.get("sort_by", "datetime")
     order = request.GET.get("order", "asc")
@@ -54,7 +55,8 @@ def care_list(request):
 
     return render(request, "management_app/volunteer_care_list.html", context)
 
-
+@login_required
+@volunteer_required
 def status_update(request, care_id):
     care = get_object_or_404(Care, id=care_id)
     
