@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.db import transaction
 from auth_app.models import User
 from management_app.models import Care, Senior
+from auth_app.utils import family_required  # 해당 페이지는 보호자로 로그인했을 때만 접근이 가능하게 수정!!
+
 
 # Create your views here.
 
@@ -28,7 +30,8 @@ from management_app.models import Care, Senior
 # NOT_APPROVED, CONFIRMED, APPROVED
 
 
-# @login_required
+@login_required
+@family_required
 def add_care(request):
     if request.method == "GET":
         user = request.user
@@ -60,15 +63,27 @@ def add_care(request):
         return redirect("/management/my_cares/")
 
 
+
+@login_required
+@family_required
 def show_one_care(request, care_id):
     care = Care.objects.get(pk=int(care_id))
-    username = care.user_id.username
-    context = {"care": care}
+    if request.method == 'POST':
+        care_state = request.POST.get('care_state')
+        admin_message = request.POST.get('admin_message')
 
+        if care_state in ['APPROVED', 'REJECT']:
+            care.care_state = care_state
+        care.admin_message = admin_message
+        care.save()
+        return redirect('show_one_care', care_id=care_id)
+
+    context = {"care": care}
     return render(request, "management_app/show_one_care.html", context)
 
 
-# @login_required
+@login_required
+@family_required
 def update_care(request, care_id):
     if request.method == "GET":
         care = Care.objects.get(pk=int(care_id))
@@ -93,14 +108,17 @@ def update_care(request, care_id):
         care.save()
         return redirect(f"/management/care/detail/{care_id}/")
 
+
+@login_required
+@family_required
 def delete_care(request, care_id):
     care = get_object_or_404(Care, id=care_id)
     care.delete()
-
     return redirect('/monitoring/family_monitor/') 
 
-
+  
 @login_required
+@family_required
 def add_senior(request):
     if request.method == "GET":
         context = {"ages": [i for i in range(1, 120)]}
@@ -140,7 +158,8 @@ def add_senior(request):
         return redirect("/management/senior/list/")
 
 
-# @login_required  
+@login_required
+@family_required
 def update_senior(request, id):
     senior = get_object_or_404(Senior, id=id)
     
@@ -162,6 +181,9 @@ def update_senior(request, id):
     }
     return render(request, 'management_app/update_senior.html', context)
 
+
+@login_required
+@family_required
 def delete_senior(request, id):
     # 노인 객체 가져오기
     senior = get_object_or_404(Senior, id=id)

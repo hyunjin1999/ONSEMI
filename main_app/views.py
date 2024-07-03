@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-# Create your views here.
+#Create your views here.
 def index(request):
     return render(request, 'page/index.html')
 
@@ -12,4 +12,18 @@ def family(request):
 
 def volunteer(request):
     return render(request,'page/volunteer.html')
+
+
+def terms(request):
+    return render(request,'page/terms.html')
+
+def user_page(request):
+    user_type = request.user.user_type
+    if user_type == 'FAMILY':
+        return render(request, 'management_app/user_senior_list.html')
+    elif user_type == 'VOLUNTEER':
+        return render(request, 'management_app/volunteer_care_list.html')
+    elif user_type == 'ADMIN':
+        return render(request, 'admin_dashboard')
+    return render(request, 'default_dashboard') 
 

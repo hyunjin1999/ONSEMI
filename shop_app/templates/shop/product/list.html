@@ -6,6 +6,8 @@
 {% endblock %}
 
 {% block content %}
+{{ block.super }}
+<div id="content">
   <div id="sidebar">
     <h3>Categories</h3>
     <ul>
@@ -32,4 +34,5 @@
       </div>
     {% endfor %}
   </div>
+</div>
 {% endblock %}

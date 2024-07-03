@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+{{ block.super }}
   <h1>Checkout</h1>
   <div class="order-info">
     <h3>Your order</h3>
@@ -19,8 +20,40 @@
     <p>Total: ${{ cart.get_total_price }}</p>
   </div>
   <form method="post">
-    {{ form.as_p }}
-    <p><input type="submit" value="Place order"></p>
     {% csrf_token %}
+    {{ form.non_field_errors }}
+    <p>
+        {{ form.name.label_tag }}<br>
+        {{ form.name }}
+    </p>
+    <p>
+        {{ form.email.label_tag }}<br>
+        {{ form.email }}
+    </p>
+    <p>
+        {{ form.address.label_tag }}<br>
+        {{ form.address }}
+    </p>
+    <p>
+        {{ form.phone.label_tag }}<br>
+        {{ form.phone }}
+    </p>
+    <p>
+        {{ form.senior.label_tag }}<br>
+        {{ form.senior }}
+    </p>
+
+    <p><input type="submit" value="Place order"></p>
   </form>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const phoneInput = document.getElementById("id_phone");
+        phoneInput.addEventListener("input", function() {
+            if (phoneInput.value === "000-0000-0000") {
+                phoneInput.value = "";
+            }
+        });
+    });
+  </script>
 {% endblock %}
