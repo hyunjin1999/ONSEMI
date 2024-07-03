@@ -1,0 +1,44 @@
+<!-- care_app/templates/care_app/list_seniors.html -->
+{% extends "layout.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+
+    {% block title %}List of Seniors{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    <h1>List of Seniors</h1>
+    {% if seniors %}
+        <ul>
+            {% for senior in seniors %}
+            <a href='/management/senior/update/{{senior.id}}/'>
+                <li>
+                    {% if senior.photo %}
+                        <img src="{{ senior.photo.url }}" alt="{{ senior.name }}'s photo" style="max-width:200px; max-height:200px;"><br>
+                    {% endif %}
+                    <strong>성함:</strong>{{ senior.name }}<br>
+                    <strong>연세:</strong> {{ senior.age }}<br>
+                    <strong>성별:</strong> {{ senior.gender }}<br>
+                    <strong>핸드폰 번호:</strong> {{ senior.phone_number }}<br>
+                    <strong>치매 유무:</strong> {{ senior.has_alzheimers }}<br>
+                    <strong>파킨슨 유무:</strong> {{ senior.has_parkinsons }}<br>
+                </li></a>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No seniors registered yet.</p>
+    {% endif %}
+    <br>
+
+    <a href='/management/add/senior/'>Add New Senior</a><br>
+    <a href="{% url 'monitoring_app:family_monitor' %}">뒤로 가기</a>
+    {% endblock %}
+
+</body>
+</html>

@@ -18,3 +18,12 @@
 *.wav
 
 *.png
+
+
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
+
+*voice_app/models
+

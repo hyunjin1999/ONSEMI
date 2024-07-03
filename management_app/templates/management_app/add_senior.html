@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}Senior Form{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    <h1>시니어 등록</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="name">이름:</label>
+        <input type="text" id="name" name="name" maxlength="100" required>
+        <br>
+
+        <label for="address">주소:</label>
+        <input type="text" id="address" name="address" maxlength="255" required>
+        <br>
+
+        <label for="age">나이:</label>
+        <select id="age" name="age">
+            {% for i in ages %}
+                <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label>성별:</label>
+        <input type="radio" id="male" name="gender" value="Male" required>
+        <label for="male">Male</label>
+        <input type="radio" id="female" name="gender" value="Female" required>
+        <label for="female">Female</label>
+        <br>
+
+        <label for="phone_number">전화번호:</label>
+        <input type="text" id="phone_number" name="phone_number" maxlength="15" required>
+        <br>
+
+        <label for="has_alzheimers">알츠하이머 병 유:</label>
+        <input type="checkbox" id="has_alzheimers" name="has_alzheimers" value="True">
+        <label for="has_alzheimers_no">알츠하이머 병 무:</label>
+        <input type="checkbox" id="has_alzheimers_no" name="has_alzheimers" value="False">
+        <br>
+
+        <label for="has_parkinsons">파킨슨 병 유:</label>
+        <input type="checkbox" id="has_parkinsons" name="has_parkinsons" value="True">
+        <label for="has_parkinsons_no">파킨슨 병 무:</label>
+        <input type="checkbox" id="has_parkinsons_no" name="has_parkinsons" value="False">
+        <br>
+
+        <label for="photo">사진:</label>
+        <input type="file" id="photo" name="photo">
+        <br>
+
+        <input type="submit" value="저장">
+        <button type="button" onclick="window.location.href = '/management/senior/list/'">취소</button>
+    </form>
+    {% endblock %}
+</body>
+</html>
