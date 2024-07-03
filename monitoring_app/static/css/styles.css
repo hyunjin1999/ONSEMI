@@ -322,3 +322,73 @@ th {
 .clickable-row:hover {
     background-color: #f0f0f0;
 }
+
+
+.left-content {
+    width: 40%;
+    background-color: #f3f2f2;
+    height: 100%;
+    border-radius: 25px;
+    border-color: #b7b5b5;
+    border-width: 2px;
+    border-style: solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    float:left;
+}
+
+.doctors-box {
+    border-radius: 25px;
+    border-color: #b7b5b5;
+    border-width: 2px;
+    border-style: solid;
+    padding: 30px;
+    margin-top: 10px;
+    width: 80%;
+    text-align: center;
+}
+
+.right-content {
+    width: 55%;
+    background-color: #f3f2f2;
+    height: 100%;
+    border-radius: 25px;
+    border-color: #b7b5b5;
+    border-width: 2px;
+    border-style: solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    float: right;
+    margin-right : 20px;
+}
+
+.to_parents {
+    border-radius: 25px;
+    border-color: #b7b5b5;
+    border-width: 2px;
+    border-style: solid;
+    padding: 30px;
+    margin-top: 10px;
+    width: 80%;
+    height: 35%;
+    text-align: center;
+}
+
+.pictures img {
+    width : 80%;
+    height: 80%;
+}
+
+.pictures {
+    border-radius: 25px;
+    border-color: #b7b5b5;
+    border-width: 2px;
+    border-style: solid;
+    padding: 30px;
+    margin-top: 50px;
+    width: 80%;
+    height: 35%;
+    text-align: center;
+}
