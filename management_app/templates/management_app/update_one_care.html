@@ -1,11 +1,17 @@
+{% extends "layout.html" %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Care Update</title>
+    {% block title %}Care Update{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
     <h1>케어 수정</h1>
     <form method="post">
         {% csrf_token %}
@@ -35,5 +41,6 @@
         <input type="submit" value="수정">
         <button type="button" onclick="window.location.href = '/management/my_cares/'">취소</button>
     </form>
+    {% endblock %}
 </body>
 </html>

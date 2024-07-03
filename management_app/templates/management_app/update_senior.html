@@ -1,10 +1,16 @@
+{% extends "layout.html" %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Update Senior</title>
+    {% block title %}Update Senior{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
     <h1>Update {{ senior.name }}'s Details</h1>
 
     <form method="post">
@@ -44,5 +50,6 @@
     </form>
     <br>
     <a href='/management/senior/list/'>Back to List</a>
+    {% endblock %}
 </body>
 </html>

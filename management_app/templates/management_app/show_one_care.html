@@ -1,11 +1,17 @@
+{% extends "layout.html" %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Care Detail</title>
+    {% block title %}Care Detail{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
     <h1>케어 상세</h1>
     <ul>
         <li><strong>케어 종류</strong> {{ care.care_type }}</li>
@@ -30,5 +36,6 @@
     <br>
     <a href='/management/my_cares/'>Back to List</a>
     {% comment %} <button type="button" onclick="window.location.href = '/management/my-cares/'">돌아가기</button> {% endcomment %}
+    {% endblock %}
 </body>
 </html>
