@@ -42,13 +42,13 @@ INSTALLED_APPS = [
     "auth_app",
     "main_app",
     "blog_app",
+    "qa_app",
     'shop_app',
     'cart_app',
     'orders_app',
     'payment_app',
     'voice_app',
-    "care_app",
-
+    "management_app",
 ]
 
 MIDDLEWARE = [
