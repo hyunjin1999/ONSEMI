@@ -1,13 +1,19 @@
+{% extends "layout.html" %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Update Senior</title>
+    {% block title %}Update Senior{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
     <h1>Update {{ senior.name }}'s Details</h1>
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <p>
             <label for="name">Name:</label>
@@ -29,12 +35,28 @@
             <input type="text" id="phone" name="phone" value="{{ senior.phone_number }}">
         </p>
         <p>
-            <label for="has_alzheimers">치매:</label>
-            <input type="checkbox" id="has_alzheimers" name="has_alzheimers" {% if senior.has_alzheimers %}checked{% endif %}>
+            <label for="has_alzheimers">치매 유:</label>
+            <input type="radio" id="has_alzheimers_yes" name="has_alzheimers" value="True" {% if senior.has_alzheimers %}checked{% endif %}>
+            <label for="has_alzheimers_yes">유</label>
+            <input type="radio" id="has_alzheimers_no" name="has_alzheimers" value="False" {% if not senior.has_alzheimers %}checked{% endif %}>
+            <label for="has_alzheimers_no">무</label>
         </p>
         <p>
-            <label for="has_parkinsons">파킨슨:</label>
-            <input type="checkbox" id="has_parkinsons" name="has_parkinsons" {% if senior.has_parkinsons %}checked{% endif %}>
+            <label for="has_parkinsons">파킨슨 유:</label>
+            <input type="radio" id="has_parkinsons_yes" name="has_parkinsons" value="True" {% if senior.has_parkinsons %}checked{% endif %}>
+            <label for="has_parkinsons_yes">유</label>
+            <input type="radio" id="has_parkinsons_no" name="has_parkinsons" value="False" {% if not senior.has_parkinsons %}checked{% endif %}>
+            <label for="has_parkinsons_no">무</label>
+        </p>
+        <p>
+            <label for="photo">사진:</label>
+            <input type="file" id="photo" name="photo">
+            {% if senior.photo %}
+                <br>
+                <img src="{{ senior.photo.url }}" alt="{{ senior.name }}'s photo" style="max-width:200px; max-height:200px;"><br>
+                <label for="delete_photo">사진 삭제:</label>
+                <input type="checkbox" id="delete_photo" name="delete_photo" value="True">
+            {% endif %}
         </p>
         <button type="submit">Update</button>
     </form>
@@ -44,5 +66,6 @@
     </form>
     <br>
     <a href='/management/senior/list/'>Back to List</a>
+    {% endblock %}
 </body>
 </html>
