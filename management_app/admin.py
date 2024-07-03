@@ -23,3 +23,4 @@ class SeniorAdmin(admin.ModelAdmin):
 
 admin.site.register(Care, CareAdmin)
 admin.site.register(Senior, SeniorAdmin)
+

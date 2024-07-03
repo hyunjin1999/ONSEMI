@@ -10,11 +10,11 @@
             <label for="care_state">케어 상태:</label>
             <select name="care_state" id="care_state">
                 <option value="">전체</option>
+
                 {% for state in care_states %}
                     <option value="{{ state }}" {% if selected_care_state == state %}selected{% endif %}>{{ state }}</option>
                 {% endfor %}
             </select>
-
             <label for="senior_id">시니어:</label>
             <select name="senior_id" id="senior_id">
                 <option value="">전체</option>
@@ -22,7 +22,6 @@
                     <option value="{{ senior.id }}" {% if selected_senior_id == senior.id|stringformat:"s" %}selected{% endif %}>{{ senior.name }}</option>
                 {% endfor %}
             </select>
-
             <label for="order">정렬 순서:</label>
             <select name="order" id="order">
                 <option value="desc" {% if selected_order == "desc" %}selected{% endif %}>최신순</option>

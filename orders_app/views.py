@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
-from .models import OrderItem
+from .models import OrderItem, Order
 from .forms import OrderCreateForm
 from cart_app.cart import Cart
 from django.contrib.auth.decorators import login_required
+import csv
+from django.http import HttpResponse
 from management_app.models import Care
+
 
 @login_required
 def order_create(request):
@@ -39,3 +42,19 @@ def order_create(request):
     return render(request,
                   'orders/order/create.html',
                   {'cart': cart, 'form': form})
+
+@login_required
+def export_orders_to_csv(request):
+    orders = Order.objects.filter(email=request.user.email, paid=True)
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="orders.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Order ID', 'Product', 'Price', 'Quantity', 'Total Cost', 'Created'])
+
+    for order in orders:
+        for item in order.items.all():
+            writer.writerow([order.id, item.product.name, item.price, item.quantity, item.get_cost(), order.created])
+
+    return response
