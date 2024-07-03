@@ -24,4 +24,4 @@ def user_page(request):
         return render(request, 'management_app/volunteer_care_list.html')
     elif user_type == 'ADMIN':
         return render(request, 'admin_dashboard')
-    return render(request, 'default_dashboard')
+    return render(request, 'default_dashboard') 
