@@ -4,6 +4,8 @@ from .views import family_list_views, family_post_views, volunteer_list_views, r
 from django.conf import settings
 from django.conf.urls.static import static
 
+app_name = 'management_app'
+
 urlpatterns = [
     path("add/care/", family_post_views.add_care, name='add_care'),
     path("care/update/<int:care_id>/", family_post_views.update_care, name='update_care'),
@@ -13,7 +15,7 @@ urlpatterns = [
     path("senior/update/<int:id>/", family_post_views.update_senior, name='update_senior'),
     path("senior/delete/<int:id>/", family_post_views.delete_senior, name='delete_senior'),
 
-    path("senior/list/", family_list_views.list_senior),
+    path("senior/list/", family_list_views.list_senior, name='list_senior'),
     path("care/list/", volunteer_list_views.care_list),
     path("care/list/status/update/<int:care_id>/", volunteer_list_views.status_update),
     # 전체 보고서 목록 조회 및 필터링
