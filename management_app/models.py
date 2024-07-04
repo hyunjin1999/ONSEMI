@@ -1,11 +1,12 @@
+# models.py
+
 from django.db import models
 from auth_app.models import User
 from django.utils import timezone
-from voice_app.models import VoiceData
-from django.db.models.signals import post_save
+from datetime import datetime
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import os
-from datetime import datetime
 
 class Senior(models.Model):
     id = models.AutoField(primary_key=True)
@@ -44,9 +45,8 @@ class Care(models.Model):
 
     care_state = models.CharField(
         max_length=50, default="요청 승인 대기",  choices=CARE_STATE_CHOICES
-    )  # NOT_APPROVED, CONFIRMED, APPROVED, REJECT
-    admin_message = models.TextField(blank=True, null=True)  # 관리자가 거절 사유 혹은 요청에 대한 질문이나 전달할 말이 있을 경우를 위해 메시지 필드 추가
-
+    )
+    admin_message = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.care_type
@@ -56,13 +56,11 @@ class Care(models.Model):
 
 
 def upload_to(instance, filename):
-    today = datetime.today().strftime('%Y%m%d_%H%M%S')
-    user_id = instance.user.id
-    senior_id = instance.care.seniors.first().id
-    care_id = instance.care.id
+    today = datetime.today().strftime('%Y%m%d')
+    base_filename = os.path.splitext(filename)[0]
     extension = filename.split('.')[-1]
-    new_filename = f"{today}.{extension}"
-    return os.path.join(f'volunteer_report/{user_id}/{care_id}/image', new_filename)
+    new_filename = f"{base_filename}_{today}.{extension}"
+    return os.path.join(f'volunteer_report/{instance.user.id}/{instance.care.id}/image', new_filename)
 
 
 class Report(models.Model):
@@ -91,13 +89,18 @@ class Report(models.Model):
         return f"Report for Care ID {self.care.id}"
 
 
+# Report가 생성될 때 care_status를 'COMPLETED'로 변경하는 시그널
 @receiver(post_save, sender=Report)
-def set_audio_test_result(sender, instance, created, **kwargs):
+def update_care_status_on_report_create(sender, instance, created, **kwargs):
     if created:
-        voice_data = VoiceData.objects.filter(care=instance.care).first()
-        if voice_data and voice_data.result:
-            instance.audio_test_result = voice_data.result
-        else:
-            instance.audio_test_result = '결과 분석 중입니다.'
-        instance.save()
+        care = instance.care
+        care.care_state = 'COMPLETED'
+        care.save()
 
+
+# Report가 삭제될 때 care_status를 'APPROVED'로 변경하는 시그널
+@receiver(models.signals.post_delete, sender=Report)
+def update_care_status_on_report_delete(sender, instance, **kwargs):
+    care = instance.care
+    care.care_state = 'APPROVED'
+    care.save()

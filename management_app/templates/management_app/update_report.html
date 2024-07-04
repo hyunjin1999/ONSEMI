@@ -47,23 +47,15 @@
         </ul>
         <button type="submit" name="delete_all_images">Delete All Images</button>
 
-        <h3>Upload Audios</h3>
-        <input type="file" name="file" multiple>
-        <button type="submit" name="add_audio">Upload Audios</button>
-        <ul>
-            {% for audio in audios %}
-                <li>{{ audio.file.name }} <button type="submit" name="delete_audio" value="{{ audio.id }}">Delete</button></li>
-            {% endfor %}
-        </ul>
-        <button type="submit" name="delete_all_audios">Delete All Audios</button>
-
         <h3>Doctor's Opinion</h3>
-        <textarea name="doctor_opinion"></textarea>
-        <button type="submit" name="add_text">Upload Text</button>
+        <textarea name="doctor_opinion">{{ report.doctor_opinion }}</textarea>
+        <button type="submit" name="update_text">Update Doctor's Opinion</button>
 
         <h3>User's Request</h3>
-        <textarea name="user_request"></textarea>
-        <button type="submit" name="add_text">Upload Text</button>
+        <textarea name="user_request">{{ report.user_request }}</textarea>
+        <button type="submit" name="update_text">Update User's Request</button>
+
+        <button type="submit" name="delete_report">Delete Report</button>
 
         <h2>Uploaded Texts</h2>
         <ul>
@@ -88,13 +80,6 @@
     <ul>
         {% for image in images %}
             <li><img src="{{ image.file.url }}" alt="Image">{{ image.file.name }}</li>
-        {% endfor %}
-    </ul>
-
-    <h2>Uploaded Audios</h2>
-    <ul>
-        {% for audio in audios %}
-            <li><audio controls src="{{ audio.file.url }}"></audio>{{ audio.file.name }}</li>
         {% endfor %}
     </ul>
 </body>
