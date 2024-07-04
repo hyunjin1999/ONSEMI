@@ -1,13 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
-
-
-from .views.family_list_views import UserCareListView
 from .views import family_list_views, family_post_views, volunteer_list_views, report_post_views, report_list_views
 from django.conf import settings
 from django.conf.urls.static import static
-
-
 
 urlpatterns = [
     path("add/care/", family_post_views.add_care, name='add_care'),
@@ -28,9 +23,9 @@ urlpatterns = [
     # 기존 보고서 관리
     path('report/manage/<int:report_id>/', report_post_views.manage_report, name='manage_report'),
     # 파일 삭제
-    path('report/delete/<str:file_type>/<int:pk>/', report_post_views.delete_file, name='delete_file'),
+    # path('report/delete/<str:file_type>/<int:pk>/', report_post_views.delete_file, name='delete_file'),
     # 모든 파일 삭제
-    path('report/delete_all/<int:report_id>/<str:file_type>/', report_post_views.delete_all_files, name='delete_all_files'),
+    # path('report/delete_all/<int:report_id>/<str:file_type>/', report_post_views.delete_all_files, name='delete_all_files'),
 
 ]
 
