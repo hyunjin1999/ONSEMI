@@ -1,8 +1,11 @@
 from django.db import models
 from auth_app.models import User
 from django.utils import timezone
-# Create your models here.
-
+from voice_app.models import VoiceData
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+import os
+from datetime import datetime
 
 class Senior(models.Model):
     address = models.CharField(max_length=255)
@@ -49,81 +52,49 @@ class Care(models.Model):
     class Meta:
         db_table = "care"
 
-# 이상 부위 체크박스 결과
-class CheckboxResult(models.Model):
-    report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='checkbox_results')
-    eye = models.BooleanField(default=False)
-    teeth = models.BooleanField(default=False)
-    skin = models.BooleanField(default=False)
-    back = models.BooleanField(default=False)
-    other = models.BooleanField(default=False)
-    other_text = models.CharField(max_length=255, blank=True, null=True)
-    no_issue = models.BooleanField(default=False)
-    
-    def __str__(self):
-        return f"CheckboxResult for Report ID {self.report.id}"
 
-# 봉사자가 작성하는 Report
+def upload_to(instance, filename):
+    today = datetime.today().strftime('%Y%m%d_%H%M%S')
+    user_id = instance.user.id
+    senior_id = instance.care.seniors.first().id
+    care_id = instance.care.id
+    extension = filename.split('.')[-1]
+    new_filename = f"{today}.{extension}"
+    return os.path.join(f'volunteer_report/{user_id}/{care_id}/image', new_filename)
+
+
 class Report(models.Model):
     care = models.ForeignKey(Care, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, default='미등록')
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+    audio_test_result = models.CharField(max_length=255, default='결과 분석 중입니다.')
+
+    # 이상 부위 정보 필드 추가
+    no_issue = models.BooleanField(default=False)
+    eye = models.BooleanField(default=False)
+    teeth = models.BooleanField(default=False)
+    skin = models.BooleanField(default=False)
+    back = models.BooleanField(default=False)
+    other = models.BooleanField(default=False)
+    other_text = models.CharField(max_length=255, blank=True, null=True)
+    doctor_opinion = models.TextField(blank=True, null=True)
+    user_request = models.TextField(blank=True, null=True)
+
+    # 이미지 파일 필드 추가
+    images = models.ImageField(upload_to=upload_to, blank=True, null=True)
 
     def __str__(self):
         return f"Report for Care ID {self.care.id}"
 
-# 
-class TextEntry(models.Model):
-    report = models.ForeignKey(Report, related_name='texts', on_delete=models.CASCADE)
-    text = models.TextField()
-    text_type = models.CharField(max_length=20, choices=[('의사 소견', '의사 소견'), ('보호자 요구', '보호자 요구')])
-    created_at = models.DateTimeField(auto_now=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    senior = models.ForeignKey(Senior, on_delete=models.CASCADE)
-    care = models.ForeignKey(Care, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f"{self.text_type}: {self.text[:50]}"
-
-# 이미지와 음성 파일을 실제 서버에 upload?하는 역할
-def upload_to(instance, filename, folder):
-    today = datetime.today().strftime('%Y%m%d_%H%M%S')
-    user_id = instance.user.id
-    senior_id = instance.senior.id
-    care_id = instance.care.id
-    extension = filename.split('.')[-1]
-    new_filename = f"{today}.{extension}"
-    return os.path.join(f'volunteer_report/{user_id}/{senior_id}/{care_id}/{folder}', new_filename)
-
-
-def image_upload_to(instance, filename):
-    return upload_to(instance, filename, 'image')
-
-
-def audio_upload_to(instance, filename):
-    return upload_to(instance, filename, 'voice')
-
-# 이미지 파일 업로드 기록
-class ImageUpload(models.Model):
-    file = models.FileField(upload_to=image_upload_to)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    senior = models.ForeignKey(Senior, on_delete=models.CASCADE)
-    care = models.ForeignKey(Care, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.file.name
-
-# 오디오 파일 업로드 기록
-class AudioUpload(models.Model):
-    file = models.FileField(upload_to=audio_upload_to)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    senior = models.ForeignKey(Senior, on_delete=models.CASCADE)
-    care = models.ForeignKey(Care, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.file.name
+@receiver(post_save, sender=Report)
+def set_audio_test_result(sender, instance, created, **kwargs):
+    if created:
+        voice_data = VoiceData.objects.filter(care=instance.care).first()
+        if voice_data and voice_data.result:
+            instance.audio_test_result = voice_data.result
+        else:
+            instance.audio_test_result = '결과 분석 중입니다.'
+        instance.save()
