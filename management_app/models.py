@@ -30,9 +30,6 @@ class Care(models.Model):
     content = models.TextField(blank=True, null=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="user_id")
     seniors = models.ManyToManyField("Senior", related_name="cares_seniors")
-    care_state = models.CharField(
-        max_length=50, default="NOT_APPROVED"
-    )  # NOT_APPROVED, CONFIRMED, APPROVED
 
     CARE_STATE_CHOICES = [
         ('NOT_APPROVED', '요청 승인 대기'),
@@ -42,7 +39,7 @@ class Care(models.Model):
     ]
 
     care_state = models.CharField(
-        max_length=50, default="NOT_APPROVED",  choices=CARE_STATE_CHOICES
+        max_length=50, default="요청 승인 대기",  choices=CARE_STATE_CHOICES
     )  # NOT_APPROVED, CONFIRMED, APPROVED, REJECT
     admin_message = models.TextField(blank=True, null=True)  # 관리자가 거절 사유 혹은 요청에 대한 질문이나 전달할 말이 있을 경우를 위해 메시지 필드 추가
 
