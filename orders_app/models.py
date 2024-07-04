@@ -3,6 +3,19 @@ from shop_app.models import Product
 from auth_app.models import User
 from management_app.models import Care, Senior
 
+# 실제 서비스에서 작동할 코드
+# class Order(models.Model):
+#     first_name = models.CharField(max_length=50)
+#     last_name = models.CharField(max_length=50)
+#     email = models.EmailField()
+#     address = models.CharField(max_length=250)
+#     postal_code = models.CharField(max_length=20)
+#     city = models.CharField(max_length=100)
+#     created = models.DateTimeField(auto_now_add=True)
+#     updated = models.DateTimeField(auto_now=True)
+#     paid = models.BooleanField(default=False)
+
+# 데이터 조작용 코드
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     senior = models.ForeignKey(Senior, on_delete=models.CASCADE, default=1)
@@ -13,7 +26,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     paid = models.BooleanField(default=False)
-
+######################################################################
     class Meta:
         ordering = ['-created']
         indexes = [

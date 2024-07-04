@@ -55,6 +55,7 @@ def care_list(request):
 
     return render(request, "management_app/volunteer_care_list.html", context)
 
+
 @login_required
 @volunteer_required
 def status_update(request, care_id):
