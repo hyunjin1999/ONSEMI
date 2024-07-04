@@ -139,7 +139,7 @@ def generate(request):
 
 ####################################################################################
         # 전체 데이터 기반 원형 그래프 생성
-        all_orders = Order.objects.filter(email=request.user.email)
+        all_orders = Order.objects.filter(user_id=request.user)
         if start_date:
             all_orders = all_orders.filter(created__gte=start_date)
         if end_date:
