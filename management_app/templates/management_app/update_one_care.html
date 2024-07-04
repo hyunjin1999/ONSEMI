@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     {% block title %}Care Update{% endblock %}
     {% block extra_css %}
     <link rel="stylesheet" href="{% static 'base.css' %}">
@@ -39,6 +40,7 @@
         <br>
 
         <input type="submit" value="수정">
+
         <button type="button" onclick="window.location.href = '/'">취소</button>
     </form>
     {% endblock %}

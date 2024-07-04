@@ -6,12 +6,14 @@ body {
 }
 
 .container {
-    max-width: 800px;
+    width: 800px;
     margin: 20px auto;
     padding: 20px;
     background-color: white;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
 }
+
 
 header {
     text-align: center;
@@ -56,18 +58,18 @@ header h1 {
     color: #333;
 }
 
-.main-content h2 {
+.main-content-post h2 {
     font-size: 20px;
     color: #333;
 }
 
-.main-content p {
+.main-content-post p {
     line-height: 1.6;
     color: #666;
     margin: 10px 0;
 }
 
-.main-content img {
+.main-content-post img {
     max-width: 100%;
     height: auto;
     margin: 20px 0;
@@ -177,4 +179,32 @@ form input[type="submit"]:hover, form button:hover {
 #post-table tr:hover {
     background-color: #f1f1f1;
     cursor: pointer;
+}
+
+.comment, .reply {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    text-align: left;
+}
+
+.reply {
+    margin-left: 40px;
+}
+.comment-author {
+    font-weight: bold;
+}
+.comment-time {
+    font-size: 0.9em;
+    color: #888;
+}
+.comment-actions {
+    margin-top: 10px;
+}
+.reply-link {
+    color: #007BFF;
+    cursor: pointer;
+    text-decoration: underline;
 }
