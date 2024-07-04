@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from management_app.models import Senior, Care, Report
+from voice_app.models import VoiceData
 from auth_app.models import User
 
 @login_required
