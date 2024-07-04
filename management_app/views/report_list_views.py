@@ -12,7 +12,6 @@ def report_list(request):
     status_filter = request.GET.get('status_filter', 'all')
 
     reports = Report.objects.all().order_by(sort_by)
-    pending_reports_count = Care.objects.filter(care_state='completed').exclude(report__isnull=False).count()
 
     if user_id:
         reports = reports.filter(user_id=user_id)
@@ -32,6 +31,9 @@ def report_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    # 작성해야 할 보고서 개수 계산
+    pending_reports_count = Care.objects.filter(care_state='APPROVED').exclude(id__in=Report.objects.values('care_id')).count()
+
     return render(request, 'management_app/volunteer_report_list.html', {
         'page_obj': page_obj,
         'sort_by': sort_by,
@@ -40,5 +42,5 @@ def report_list(request):
         'selected_senior_ids': senior_ids,
         'status_filter': status_filter,
         'users': User.objects.all(),
-        'pending_reports_count': pending_reports_count,
+        'pending_reports_count': pending_reports_count,  # 작성해야 할 보고서 개수 전달
     })

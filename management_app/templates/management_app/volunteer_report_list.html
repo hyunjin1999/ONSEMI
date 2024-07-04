@@ -24,21 +24,10 @@
             background-color: #f0f0f0;
         }
     </style>
-    <script>
-        // 보고서 작성 버튼 클릭 시, 작성해야 할 보고서 개수에 따라 알림 표시
-        function checkPendingReports(count) {
-            if (count > 0) {
-                alert('보고서를 작성할 수 있습니다.');
-            } else {
-                alert('작성할 보고서가 없습니다.');
-            }
-        }
-    </script>
 </head>
 <body>
     <h1>보고서 목록</h1>
 
-    <!-- 필터링 및 정렬 옵션 폼 -->
     <form method="get">
         <label for="sort_by">정렬:</label>
         <select name="sort_by" id="sort_by">
@@ -67,13 +56,11 @@
         <button type="submit">적용</button>
     </form>
 
-    <!-- 작성해야 할 보고서 개수 표시 및 보고서 작성 버튼 -->
     <div>
         <h2>작성해야 할 보고서: {{ pending_reports_count }}개</h2>
         <button type="button" onclick="checkPendingReports({{ pending_reports_count }})">보고서 작성하기</button>
     </div>
 
-    <!-- 보고서 목록 테이블 -->
     <table>
         <thead>
             <tr>
@@ -101,7 +88,6 @@
         </tbody>
     </table>
 
-    <!-- 페이지네이션 -->
     <div class="pagination">
         <span class="step-links">
             {% if page_obj.has_previous %}
@@ -121,3 +107,13 @@
     </div>
 </body>
 </html>
+
+<script>
+    function checkPendingReports(pendingReportsCount) {
+        if (pendingReportsCount === 0) {
+            alert('작성해야 할 보고서가 없습니다.');
+        } else {
+            location.href = '{% url "create_report" care.id %}';
+        }
+    }
+</script>
