@@ -4,6 +4,8 @@ from .views import family_list_views, family_post_views, volunteer_list_views, r
 from django.conf import settings
 from django.conf.urls.static import static
 
+app_name = 'management_app'
+
 urlpatterns = [
     path("add/care/", family_post_views.add_care, name='add_care'),
     path("care/update/<int:care_id>/", family_post_views.update_care, name='update_care'),
