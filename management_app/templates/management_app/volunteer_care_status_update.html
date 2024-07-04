@@ -21,11 +21,9 @@
         <p>
             <label for="state">state:</label>
             <input type="radio" id="NOT_APPROVED" name="state" value="NOT_APPROVED" {% if care.care_state == 'NOT_APPROVED' %}checked{% endif %}>
-            <label for="NOT_APPROVED">NOT_APPROVED</label>
-            <input type="radio" id="CONFIRMED" name="state" value="CONFIRMED" {% if care.care_state == 'CONFIRMED' %}checked{% endif %}>
-            <label for="CONFIRMED">CONFIRMED</label>
+            <label for="NOT_APPROVED">요청 접수 거절</label>
             <input type="radio" id="APPROVED" name="state" value="APPROVED" {% if scare.care_state == 'APPROVED' %}checked{% endif %}>
-            <label for="APPROVED">APPROVED</label>
+            <label for="APPROVED">요청 접수 완료</label>
         </p>
         <button type="submit">Update</button>
     </form>

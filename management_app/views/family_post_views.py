@@ -60,8 +60,7 @@ def add_care(request):
         user_senior = Senior.objects.get(pk=senior)
         care.seniors.add(user_senior)
 
-        return redirect("/management/my_cares/")
-
+        return redirect("/monitoring/family_monitor/")
 
 
 @login_required
