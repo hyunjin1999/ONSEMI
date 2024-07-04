@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from management_app.models import Care, Report
-from voice_app.models import VoiceData
+from management_app.models import Senior, Care, Report
+from auth_app.models import User
+from django.urls import reverse  # reverse를 추가했습니다.
 
 @login_required
 def create_report(request, care_id):
@@ -11,12 +12,6 @@ def create_report(request, care_id):
 
     if request.method == 'POST':
         report = Report.objects.create(care=care, user=request.user)
-
-        voice_data = VoiceData.objects.filter(care=care).first()
-        if voice_data and voice_data.result:
-            report.audio_test_result = voice_data.result
-        else:
-            report.audio_test_result = '결과 분석 중입니다.'
 
         # 이미지 파일 업로드
         image_files = request.FILES.getlist('images')
@@ -37,7 +32,7 @@ def create_report(request, care_id):
         report.other_text = request.POST.get('other_text', '')
 
         report.save()
-        return redirect('management_app:manage_report', report_id=report.id)
+        return redirect('manage_report', report_id=report.id)
 
     return render(request, 'management_app/add_report.html', {'care': care})
 
@@ -67,9 +62,44 @@ def manage_report(request, report_id):
             report.save()
         elif 'delete_image' in request.POST:
             report.images.delete()
+        elif 'delete_report' in request.POST:
+            report.delete()
+            return redirect('volunteer_report_list')  # Redirect to the report list after deletion
         return redirect('manage_report', report_id=report.id)
 
     return render(request, 'management_app/update_report.html', {
         'report': report,
         'images': report.images,
     })
+
+@login_required
+def delete_report(request, report_id):
+    report = get_object_or_404(Report, id=report_id)
+    report.delete()
+    return redirect('volunteer_report_list')
+
+@login_required
+def delete_image(request, image_id):
+    image = get_object_or_404(Report.images, id=image_id)
+    report_id = image.report.id
+    image.delete()
+    return redirect('manage_report', report_id=report_id)
+
+@login_required
+def delete_all_files(request, report_id):
+    report = get_object_or_404(Report, id=report_id)
+    report.images.all().delete()
+    return redirect('manage_report', report_id=report.id)
+
+@login_required
+def update_report(request, report_id):
+    report = get_object_or_404(Report, id=report_id)
+    if request.method == 'POST':
+        # 업데이트 로직 추가
+        pass
+    return render(request, 'management_app/update_report.html', {'report': report})
+
+@login_required
+def refresh_pending_reports(request):
+    # 미등록 보고서 갱신 로직 추가
+    return redirect('management_app:report_list')  # namespace를 포함하여 정확한 URL 참조
