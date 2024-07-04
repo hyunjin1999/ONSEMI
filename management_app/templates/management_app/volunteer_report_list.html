@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+            cursor: pointer;
+        }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+        .clickable-row:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>보고서 목록</h1>
+
+    <form method="get">
+        <label for="sort_by">정렬:</label>
+        <select name="sort_by" id="sort_by">
+            <option value="-created_at">최신순</option>
+            <option value="created_at">오래된 순</option>
+        </select>
+        <label for="status_filter">상태:</label>
+        <select name="status_filter" id="status_filter">
+            <option value="all">전체</option>
+            <option value="completed">등록완료</option>
+            <option value="not_completed">미등록</option>
+        </select>
+        <label for="user">신청자:</label>
+        <select name="user" id="user">
+            <option value="">전체</option>
+            {% for user in users %}
+                <option value="{{ user.id }}" {% if user.id == user_id %}selected{% endif %}>{{ user.username }}</option>
+            {% endfor %}
+        </select>
+        <label for="senior">대상 어르신:</label>
+        <select name="senior_ids" id="senior" multiple>
+            {% for senior in seniors %}
+                <option value="{{ senior.id }}" {% if senior.id in selected_senior_ids %}selected{% endif %}>{{ senior.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">적용</button>
+    </form>
+
+    <div>
+        <h2>작성해야 할 보고서: {{ pending_reports_count }}개</h2>
+        {% for care in cares %}
+            <button type="button" onclick="checkPendingReports({{ pending_reports_count }}, {{ care.id }})">보고서 작성하기 ({{ care.title }})</button>
+        {% endfor %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>보고서 상태</th>
+                <th>등록 시간</th>
+                <th>제목</th>
+                <th>상태</th>
+                <th>신청자</th>
+                <th>대상 어르신</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in page_obj %}
+                <tr class="clickable-row" onclick="location.href='{% url 'manage_report' report.id %}'">
+                    <td>{{ report.status }}</td>
+                    <td>{{ report.created_at }}</td>
+                    <td>{{ report.care.title }}</td>
+                    <td>{{ report.care.care_state }}</td>
+                    <td>{{ report.user.username }}</td>
+                    <td>{% for senior in report.care.seniors.all %}
+                        {{ senior.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; 처음</a>
+                <a href="?page={{ page_obj.previous_page_number }}">이전</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">다음</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">마지막 &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</body>
+</html>
+
+<script>
+    function checkPendingReports(pendingReportsCount, careId) {
+        if (pendingReportsCount === 0) {
+            alert('작성해야 할 보고서가 없습니다.');
+        } else {
+            location.href = '{% url "management_app:create_report" 0 %}'.replace('0', careId);
+        }
+    }
+</script>
