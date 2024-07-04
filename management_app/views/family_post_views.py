@@ -60,8 +60,7 @@ def add_care(request):
         user_senior = Senior.objects.get(pk=senior)
         care.seniors.add(user_senior)
 
-        return redirect("/management/my_cares/")
-
+        return redirect("/monitoring/family_monitor/")
 
 
 @login_required
@@ -164,15 +163,16 @@ def update_senior(request, id):
     senior = get_object_or_404(Senior, id=id)
     
     if request.method == 'POST':
-        senior.name = request.POST.get('name')
-        senior.age = request.POST.get('age')
-        senior.gender = request.POST.get('gender')
-        senior.phone_number = request.POST.get('phone')
-        senior.has_alzheimers = 'has_alzheimers' in request.POST
-        senior.has_parkinsons = 'has_parkinsons' in request.POST
+        senior.name = request.POST.get('name', senior.name)
+        senior.age = request.POST.get('age', senior.age)
+        senior.gender = request.POST.get('gender', senior.gender)
+        senior.phone_number = request.POST.get('phone', senior.phone_number)
+        senior.has_alzheimers = request.POST.get('has_alzheimers') == 'on'
+        senior.has_parkinsons = request.POST.get('has_parkinsons') == 'on'
 
-
-
+        if 'photo' in request.FILES:
+            senior.photo = request.FILES['photo']
+        
         senior.save()
         return redirect('/management/senior/list/')
 
@@ -195,4 +195,4 @@ def delete_senior(request, id):
     senior.delete()
 
     # 삭제 후 리디렉션할 URL 설정 (선택 사항)
-    return redirect('/management/senior/list/')  # 사용자의 노인 리스트 화면으로 리디렉션
+    return redirect('management:list_senior')  # 사용자의 노인 리스트 화면으로 리디렉션

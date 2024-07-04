@@ -32,14 +32,17 @@
             <div class="sidebar">
                 <img class="senior-profile" src="{% static 'main/senior_default_profile.png' %}">
                 <h3>어르신</h3>
-                <select>
+                <ul>
                     <li><a href="{% url 'management:list_senior' %}">등록된 어르신 리스트</a></li>
-                </select>
+                </ul>
                 <h2>기간 선택 & 필터링</h2>
                 <form method="post">
                     {% csrf_token %}
                     {{ form.start_date.label_tag }} {{ form.start_date }}
                     {{ form.end_date.label_tag }} {{ form.end_date }}
+                    {{ form.category_order.label_tag }} {{ form.category_order }}
+                    {{ form.category_service.label_tag }} {{ form.category_service }}
+                    {{ form.selected_senior.label_tag }} {{ form.selected_senior }}
                     <button type="submit" class="btn">Generate Report</button>
                 </form>
             </div>
@@ -69,15 +72,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for order in orders %}
-                            <tr>
-                                <td>{{ order.ID }}</td>
-                                <td>{{ order.Product }}</td>
-                                <td>{{ order.Category }}</td>
-                                <td>{{ order.Price }}</td>
-                                <td>{{ order.Quantity }}</td>
-                                <td>{{ order.TotalCost }}</td>
-                                <td>{{ order.Created }}</td>
+                        {% for order in filtered_orders %}
+                                <tr>
+                                    <td>{{ order.Order_ID }}</td>
+                                    <td>{{ order.Product }}</td>
+                                    <td>{{ order.Category }}</td>
+                                    <td>{{ order.Price }}</td>
+                                    <td>{{ order.Quantity }}</td>
+                                    <td>{{ order.Total_Cost }}</td>
+                                    <td>{{ order.Created }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -94,8 +97,8 @@
                     </div>
                 </div>
                 <div class="approval-bar-container">
-                    <div class="approval-bar" style="width: {{ approval_rate|floatformat:1 }}%;">
-                        <span>{{ approval_rate|floatformat:1 }}%</span>
+                    <div class="completed-bar" style="width: {{ completed_rate|floatformat:1 }}%;">
+                        <span>{{ completed_rate|floatformat:1 }}%</span>
                     </div>
                 </div>
                 <table>
@@ -103,6 +106,7 @@
                         <tr>
                             <th>Care Type</th>
                             <th>Datetime</th>
+                            <th>Care State</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,6 +114,7 @@
                             <tr>
                                 <td>{{ care.care_type }}</td>
                                 <td>{{ care.datetime }}</td>
+                                <td>{{ care.care_state }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
