@@ -35,10 +35,10 @@ class Care(models.Model):
     )  # NOT_APPROVED, CONFIRMED, APPROVED
 
     CARE_STATE_CHOICES = [
-        ('NOT_APPROVED', '승인 대기'),
-        ('CONFIRMED', '확인됨'),
-        ('APPROVED', '승인'),
-        ('REJECT', '거절'),
+        ('NOT_APPROVED', '요청 승인 대기'),
+        ('COMPLETED', '요청 처리 완료'),
+        ('APPROVED', '요청 승인 완료'),
+        ('REJECT', '요청 거절'),
     ]
 
     care_state = models.CharField(
