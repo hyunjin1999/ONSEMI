@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>새로운 보고서 작성</title>
+</head>
+<body>
+    <h1>새로운 보고서 작성</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>이상 부위:</label><br>
+        <input type="checkbox" name="no_issue"> 특이사항 없음<br>
+        <input type="checkbox" name="eye"> 눈<br>
+        <input type="checkbox" name="teeth"> 치아<br>
+        <input type="checkbox" name="skin"> 피부<br>
+        <input type="checkbox" name="back"> 허리<br>
+        <input type="checkbox" name="other" id="other-checkbox"> 기타<br>
+        <input type="text" name="other_text" id="other-text" style="display:none;"><br>
+
+        <label>이미지 업로드:</label><br>
+        <input type="file" name="images" multiple><br>
+
+        <label>음성 업로드:</label><br>
+        <input type="file" name="audios" multiple><br>
+
+        <label>의사 소견:</label><br>
+        <textarea name="doctor_opinion"></textarea><br>
+
+        <label>보호자 요구:</label><br>
+        <textarea name="user_request"></textarea><br>
+
+        <button type="submit">보고서 작성하기</button>
+    </form>
+
+    <script>
+        // '기타' 체크박스 선택 시, 텍스트 입력 필드 표시
+        document.getElementById('other-checkbox').addEventListener('change', function() {
+            document.getElementById('other-text').style.display = this.checked ? 'block' : 'none';
+        });
+    </script>
+</body>
+</html>
