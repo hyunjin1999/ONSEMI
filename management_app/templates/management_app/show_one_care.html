@@ -141,7 +141,7 @@
     {% endif %}
     
     <button type="button" onclick="window.location.href = '/management/care/update/{{care.id}}/'"class="submit">수정</button>
-    <form method="post" action="{% url 'delete_care' care.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+    <form method="post" action="{% url 'management_app:delete_care' care.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
 
         {% csrf_token %}
         <button type="submit" class="delete">Delete</button>
