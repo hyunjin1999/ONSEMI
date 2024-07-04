@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Report</title>
+</head>
+<body>
+    <h1>Manage Report for Care ID: {{ report.care.id }}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <h3>Status</h3>
+        <div>
+            <label><input type="radio" name="status" value="미등록" {% if report.status == '미등록' %}checked{% endif %}> 미등록</label>
+            <label><input type="radio" name="status" value="등록완료" {% if report.status == '등록완료' %}checked{% endif %}> 등록완료</label>
+        </div>
+
+        <h3>Notes</h3>
+        <div>
+            <label><input type="checkbox" name="no_issue" {% if checkbox_result.no_issue %}checked{% endif %}> 특이사항 없음</label>
+        </div>
+        <div>
+            <label><input type="checkbox" name="eye" {% if checkbox_result.eye %}checked{% endif %}> 눈</label>
+        </div>
+        <div>
+            <label><input type="checkbox" name="teeth" {% if checkbox_result.teeth %}checked{% endif %}> 치아</label>
+        </div>
+        <div>
+            <label><input type="checkbox" name="skin" {% if checkbox_result.skin %}checked{% endif %}> 피부</label>
+        </div>
+        <div>
+            <label><input type="checkbox" name="back" {% if checkbox_result.back %}checked{% endif %}> 허리</label>
+        </div>
+        <div>
+            <label><input type="checkbox" name="other" id="other" {% if checkbox_result.other %}checked{% endif %}> 기타</label>
+            <input type="text" name="other_text" id="other_text" value="{{ checkbox_result.other_text }}" {% if not checkbox_result.other %}style="display:none;"{% endif %}>
+        </div>
+        <button type="submit" name="update_notes">Update Notes</button>
+
+        <h3>Upload Images</h3>
+        <input type="file" name="file" multiple>
+        <button type="submit" name="add_image">Upload Images</button>
+        <ul>
+            {% for image in images %}
+                <li>{{ image.file.name }} <button type="submit" name="delete_image" value="{{ image.id }}">Delete</button></li>
+            {% endfor %}
+        </ul>
+        <button type="submit" name="delete_all_images">Delete All Images</button>
+
+        <h3>Upload Audios</h3>
+        <input type="file" name="file" multiple>
+        <button type="submit" name="add_audio">Upload Audios</button>
+        <ul>
+            {% for audio in audios %}
+                <li>{{ audio.file.name }} <button type="submit" name="delete_audio" value="{{ audio.id }}">Delete</button></li>
+            {% endfor %}
+        </ul>
+        <button type="submit" name="delete_all_audios">Delete All Audios</button>
+
+        <h3>Doctor's Opinion</h3>
+        <textarea name="doctor_opinion"></textarea>
+        <button type="submit" name="add_text">Upload Text</button>
+
+        <h3>User's Request</h3>
+        <textarea name="user_request"></textarea>
+        <button type="submit" name="add_text">Upload Text</button>
+
+        <h2>Uploaded Texts</h2>
+        <ul>
+            {% for text in texts %}
+                <li>{{ text.text_type }}: {{ text.text }}</li>
+            {% endfor %}
+        </ul>
+    </form>
+
+    <script>
+        document.getElementById('other').addEventListener('change', function() {
+            var otherText = document.getElementById('other_text');
+            if (this.checked) {
+                otherText.style.display = 'block';
+            } else {
+                otherText.style.display = 'none';
+            }
+        });
+    </script>
+
+    <h2>Uploaded Images</h2>
+    <ul>
+        {% for image in images %}
+            <li><img src="{{ image.file.url }}" alt="Image">{{ image.file.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Uploaded Audios</h2>
+    <ul>
+        {% for audio in audios %}
+            <li><audio controls src="{{ audio.file.url }}"></audio>{{ audio.file.name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
