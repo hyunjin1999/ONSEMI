@@ -1,10 +1,16 @@
+{% extends "layout.html" %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Update state</title>
+    {% block title %}Update state{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
     <h1>Update care status</h1>
 
     <form method="post">
@@ -26,5 +32,6 @@
 
     <br>
     <a href='/management/care/list/'>Back to List</a>
+    {% endblock %}
 </body>
 </html>
