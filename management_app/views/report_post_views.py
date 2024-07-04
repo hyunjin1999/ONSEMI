@@ -37,7 +37,7 @@ def create_report(request, care_id):
         report.other_text = request.POST.get('other_text', '')
 
         report.save()
-        return redirect('manage_report', report_id=report.id)
+        return redirect('management_app:manage_report', report_id=report.id)
 
     return render(request, 'management_app/add_report.html', {'care': care})
 

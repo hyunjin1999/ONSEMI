@@ -58,7 +58,9 @@
 
     <div>
         <h2>작성해야 할 보고서: {{ pending_reports_count }}개</h2>
-        <button type="button" onclick="checkPendingReports({{ pending_reports_count }})">보고서 작성하기</button>
+        {% for care in cares %}
+            <button type="button" onclick="checkPendingReports({{ pending_reports_count }}, {{ care.id }})">보고서 작성하기 ({{ care.title }})</button>
+        {% endfor %}
     </div>
 
     <table>
@@ -109,11 +111,11 @@
 </html>
 
 <script>
-    function checkPendingReports(pendingReportsCount) {
+    function checkPendingReports(pendingReportsCount, careId) {
         if (pendingReportsCount === 0) {
             alert('작성해야 할 보고서가 없습니다.');
         } else {
-            location.href = '{% url "create_report" care.id %}';
+            location.href = '{% url "management_app:create_report" 0 %}'.replace('0', careId);
         }
     }
 </script>
