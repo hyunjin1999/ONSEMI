@@ -1,26 +1,96 @@
-{% extends "layout.html" %}
-{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care Form</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group.inline {
+            display: flex;
+            align-items: center;
+        }
+        .form-group.inline label {
+            margin-right: 10px;
+        }
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        /* input[type="submit"]와 button의 공통 스타일 */
+        input[type="submit"],
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+       
+        .cancle {
+            background-color: #dc3545;
+            margin-top: 10px;
+        }
+        
+        .submit {
+            background-color: blue;
+        }
 
-    {% block title %}Care Update{% endblock %}
-    {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'base.css' %}">
-    {% endblock %}
+        input[type="submit"]:hover,
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #content {
+            height: 150px;
+            width: 100%;
+            /* 다른 스타일 속성들도 추가할 수 있습니다 */
+        }
+    </style>
 </head>
 <body>
-    {% block content %}
+    <div class="container">
     <h1>케어 수정</h1>
     <form method="post">
         {% csrf_token %}
         
         <label for="care_type">케어 종류:</label>
         <select id="care_type" name="care_type" required>
-            <option value="SHOP" {% if care.care_type == 'SHOP' %}selected{% endif %}>SHOP</option>
-            <option value="VISIT" {% if care.care_type == 'VISIT' %}selected{% endif %}>VISIT</option>
+            <option value="방문" {% if care.care_type == '방문' %}selected{% endif %}>방문</option>
+            <option value="병원" {% if care.care_type == '병원' %}selected{% endif %}>병원</option>
             <!-- 다른 care_type 옵션들 추가 가능 -->
         </select>
         <br>
@@ -35,14 +105,18 @@
 
         <label for="seniors">시니어:</label><br>
         {% for senior in seniors %}
-           <p> {{ senior.name }} </p>
+            <label>
+                <input type="radio" name="senior" value="{{ senior.id }}" 
+                    {% if senior in care.seniors.all %}checked{% endif %} required> 
+                {{ senior.name }}
+            </label>
         {% endfor %}
         <br>
 
-        <input type="submit" value="수정">
+        <button type="submit" class="submit">수정</button>
 
-        <button type="button" onclick="window.location.href = '/'">취소</button>
+        <button type="button" onclick="window.location.href = '/monitoring/family_monitor/'" class="cancle">취소</button>
     </form>
-    {% endblock %}
+</div>
 </body>
 </html>

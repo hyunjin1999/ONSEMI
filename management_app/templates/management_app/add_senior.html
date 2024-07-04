@@ -105,17 +105,20 @@
                 <input type="text" id="phone_number" name="phone_number" maxlength="15" required>
             </div>
             <div class="form-group inline">
-                <label for="has_alzheimers">알츠하이머 병 유:</label>
-                <input type="checkbox" id="has_alzheimers" name="has_alzheimers" value="True">
-                <label for="has_alzheimers_no">알츠하이머 병 무:</label>
-                <input type="checkbox" id="has_alzheimers_no" name="has_alzheimers" value="False">
+                <label>알츠하이머 병:</label>
+                <input type="radio" id="has_alzheimers_yes" name="has_alzheimers" value="True">
+                <label for="has_alzheimers_yes">유</label>
+                <input type="radio" id="has_alzheimers_no" name="has_alzheimers" value="False">
+                <label for="has_alzheimers_no">무</label>
             </div>
             <div class="form-group inline">
-                <label for="has_parkinsons">파킨슨 병 유:</label>
-                <input type="checkbox" id="has_parkinsons" name="has_parkinsons" value="True">
-                <label for="has_parkinsons_no">파킨슨 병 무:</label>
-                <input type="checkbox" id="has_parkinsons_no" name="has_parkinsons" value="False">
+                <label>파킨슨 병:</label>
+                <input type="radio" id="has_parkinsons_yes" name="has_parkinsons" value="True">
+                <label for="has_parkinsons_yes">유</label>
+                <input type="radio" id="has_parkinsons_no" name="has_parkinsons" value="False">
+                <label for="has_parkinsons_no">무</label>
             </div>
+            
             <div class="form-group">
                 <label for="photo">사진:</label>
                 <input type="file" id="photo" name="photo">
