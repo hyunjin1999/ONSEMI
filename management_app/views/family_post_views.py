@@ -63,6 +63,7 @@ def add_care(request):
         return redirect("/monitoring/family_monitor/")
 
 
+
 @login_required
 @family_required
 def show_one_care(request, care_id):
@@ -149,8 +150,12 @@ def add_senior(request):
         )
         if has_parkinsons:
             senior.has_parkinsons = True
+        else:
+            senior.has_parkinsons = False
         if has_alzheimers:
             senior.has_alzheimers = True
+        else:
+            senior.has_alzheimers = False
 
         senior.save()
 
@@ -167,8 +172,8 @@ def update_senior(request, id):
         senior.age = request.POST.get('age', senior.age)
         senior.gender = request.POST.get('gender', senior.gender)
         senior.phone_number = request.POST.get('phone', senior.phone_number)
-        senior.has_alzheimers = request.POST.get('has_alzheimers') == 'on'
-        senior.has_parkinsons = request.POST.get('has_parkinsons') == 'on'
+        senior.has_alzheimers = request.POST.get('has_alzheimers') 
+        senior.has_parkinsons = request.POST.get('has_parkinsons')
 
         if 'photo' in request.FILES:
             senior.photo = request.FILES['photo']
