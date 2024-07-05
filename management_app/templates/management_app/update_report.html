@@ -72,7 +72,20 @@
 
         <h3>Upload Images</h3>
         <input type="file" name="images" multiple>
-        <button type="submit" name="add_image">Upload Images</button>
+        {% comment %} <button type="submit" name="add_image">Upload Images</button> {% endcomment %}
+         <!-- 이미 등록된 이미지들 표시 -->
+        {% if report.images.exists %}
+            <h3>Already Uploaded Images</h3>
+            <ul>
+                {% for image in report.images.all %}
+                    <li>
+                        <img src="{{ image.image.url }}" style="max-width: 200px; max-height: 200px;">
+                        <button type="submit" name="delete_image" value="{{ image.id }}">Delete</button>
+                        {% comment %} <button type="submit" name="delete_image" value="{{ image.id }}">Delete</button> {% endcomment %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% comment %} <ul>
             {% for image in images %}
                 <li>{{ image.image.url }} <button type="submit" name="delete_image" value="{{ image.id }}">Delete</button></li>
@@ -89,12 +102,6 @@
         <br>
         <input type="submit" value="등록">
         <button type="submit" name="delete_report">삭제</button>
-        
-        {% comment %} <h2>Uploaded Images</h2>
-            <ul>
-            {% for image in images %}
-                <li><img src="{{ image.image.url }}" alt="Image">{{ image.image.name }}</li>
-            {% endfor %} {% endcomment %}
     </form>
 </body>
 </html>

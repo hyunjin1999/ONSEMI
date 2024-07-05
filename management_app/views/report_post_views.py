@@ -13,11 +13,11 @@ def create_report(request, care_id):
     if request.method == 'POST':
         report = Report.objects.create(care=care, user=request.user)
 
-        # # 이미지 파일 업로드
-        # image_files = request.FILES.getlist('images')
-        # for f in image_files:
-        #     # report.images = f
-        #     ReportImage.objects.create(report=report, image=f)
+         # 이미지 파일 업로드 부분
+        if 'images' in request.FILES:
+            image_files = request.FILES.getlist('images')  # 다중 파일을 가져옴
+            for f in image_files:
+                ReportImage.objects.create(report=report, image=f)
 
         # 텍스트 입력
         report.doctor_opinion = request.POST.get('doctor_opinion', '')
@@ -49,18 +49,18 @@ def manage_report(request, report_id):
         
         
         # 이미지 추가 처리
-        # if 'add_image' in request.POST:
-        #     files = request.FILES.getlist('file')
-        #     for f in files:
-        #         report.images = f
+        #if 'add_image' in request.POST:
+        #files = request.FILES.getlist('file')
+        for f in request.FILES.getlist('images'):
+            ReportImage.objects.create(report=report, image=f)
             
         # 텍스트 업데이트 처리
         report.doctor_opinion = request.POST.get('doctor_opinion', '')
         report.user_request = request.POST.get('user_request', '')
 
-        # 상태 변경 처리
-        if 'change_status' in request.POST:
-            report.status = request.POST.get('status', '')
+        # # 상태 변경 처리
+        # if 'change_status' in request.POST:
+        #     report.status = request.POST.get('status', '')
 
         # 체크박스 업데이트 처리
         report.no_issue = 'no_issue' in request.POST
@@ -71,11 +71,14 @@ def manage_report(request, report_id):
         report.other = 'other' in request.POST
         report.other_text = request.POST.get('other_text', '')
 
-        # # 이미지 삭제 처리
-        # if 'delete_image' in request.POST:
-        #     image_id = request.POST.get('delete_image')
-        #     image = get_object_or_404(ReportImage, id=image_id)
-        #     image.delete()
+        previous_url = request.META.get('HTTP_REFERER')
+        
+        # 이미지 삭제 처리
+        if 'delete_image' in request.POST:
+            image_id = request.POST.get('delete_image')
+            image = get_object_or_404(ReportImage, id=image_id)
+            image.delete()
+            return redirect(previous_url)
 
         # # 모든 이미지 삭제 처리
         # if 'delete_all_images' in request.POST:
