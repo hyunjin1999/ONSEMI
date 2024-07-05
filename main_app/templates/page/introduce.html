@@ -4,6 +4,7 @@
 {% block title %}ONSEMI{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'introduce.css' %}">
+<link rel="stylesheet" href="{% static 'base.css' %}">
 {% endblock %}
 {% block content %}
 <!DOCTYPE html>
@@ -16,12 +17,6 @@
 </head>
 <body class="bg-gray-100">
     <div class="min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="flex justify-center items-center p-4">
-            <a href="/">
-                <img src="{% static 'main/onsemi.png' %}" alt="ONSEMI Logo" class="onsemi">
-            </a>
-        </header>
         <div class="flex justify-center items-center flex-grow">
             <div id="introduce" class="flex flex-wrap justify-center">
                 <div class="box">
