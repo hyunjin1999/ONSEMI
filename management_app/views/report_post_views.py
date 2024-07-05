@@ -13,11 +13,11 @@ def create_report(request, care_id):
     if request.method == 'POST':
         report = Report.objects.create(care=care, user=request.user)
 
-        # 이미지 파일 업로드
-        image_files = request.FILES.getlist('images')
-        for f in image_files:
-            # report.images = f
-            ReportImage.objects.create(report=report, image=f)
+        # # 이미지 파일 업로드
+        # image_files = request.FILES.getlist('images')
+        # for f in image_files:
+        #     # report.images = f
+        #     ReportImage.objects.create(report=report, image=f)
 
         # 텍스트 입력
         report.doctor_opinion = request.POST.get('doctor_opinion', '')
@@ -32,8 +32,9 @@ def create_report(request, care_id):
         report.other = 'other' in request.POST
         report.other_text = request.POST.get('other_text', '')
 
+        report.status = '등록'
         report.save()
-        return redirect('management_app:manage_report', report_id=report.id)
+        return redirect('/management/report/list/')
 
     return render(request, 'management_app/add_report.html', {'care': care})
 
@@ -77,14 +78,14 @@ def manage_report(request, report_id):
         # if 'delete_all_images' in request.POST:
         #     report.images.all().delete()
 
-        # # 보고서 삭제 처리
-        # if 'delete_report' in request.POST:
-        #     report.delete()
-        #     return redirect('management_app:report_list')
+        # 보고서 삭제 처리
+        if 'delete_report' in request.POST:
+            report.delete()
+            return redirect('management_app:report_list')
 
         report.status = '등록'
         report.save()
-        return redirect('/management/report/list/')
+        return redirect('management_app:report_list')
 
     return render(request, 'management_app/update_report.html', {
         'report': report,
