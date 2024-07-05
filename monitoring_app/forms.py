@@ -12,4 +12,3 @@ class FilterForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['category_order'].choices = [('all', '전체')] + [(category.name, category.name) for category in Category.objects.all()]
-        self.fields['selected_senior'].choices = [('all', 'All')] + [(senior.id, senior.name) for senior in Senior.objects.all()]
