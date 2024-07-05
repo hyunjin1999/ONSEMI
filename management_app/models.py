@@ -1,5 +1,3 @@
-# models.py
-
 from django.db import models
 from auth_app.models import User
 from django.utils import timezone
@@ -82,11 +80,21 @@ class Report(models.Model):
     doctor_opinion = models.TextField(blank=True, null=True)
     user_request = models.TextField(blank=True, null=True)
 
-    # 이미지 파일 필드 추가
-    images = models.ImageField(upload_to=upload_to, blank=True, null=True)
+    # # 이미지 파일 필드 추가
+    # images = models.ImageField(upload_to=upload_to, blank=True, null=True)
 
     def __str__(self):
         return f"Report for Care ID {self.care.id}"
+
+class ReportImage(models.Model):
+    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to=upload_to, blank=True, null=True)
+
+    def __str__(self):
+        return f"Image for Report ID {self.report.id}"
+
+    class Meta:
+        db_table = "report_image"
 
 
 # Report가 생성될 때 care_status를 'COMPLETED'로 변경하는 시그널
@@ -104,3 +112,4 @@ def update_care_status_on_report_delete(sender, instance, **kwargs):
     care = instance.care
     care.care_state = 'APPROVED'
     care.save()
+

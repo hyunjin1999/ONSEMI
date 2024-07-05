@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from management_app.models import Senior, Care, Report
+from management_app.models import Senior, Care, Report, ReportImage
 from django.http import JsonResponse
 from django.urls import reverse
 
@@ -16,7 +16,8 @@ def create_report(request, care_id):
         # 이미지 파일 업로드
         image_files = request.FILES.getlist('images')
         for f in image_files:
-            report.images = f
+            # report.images = f
+            ReportImage.objects.create(report=report, image=f)
 
         # 텍스트 입력
         report.doctor_opinion = request.POST.get('doctor_opinion', '')
