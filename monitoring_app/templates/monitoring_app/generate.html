@@ -35,7 +35,7 @@
                 <img class="senior-profile" src="{% static 'main/senior_default_profile.png' %}">
                 <h3>어르신</h3>
                 
-                    <li><a href="{% url 'management:list_senior' %}">등록된 어르신 리스트</a></li>
+                    <li><a href="{% url 'management_app:list_senior' %}">등록된 어르신 리스트</a></li>
                 <h2>기간 선택 & 필터링</h2>
             <form method="post">
                 {% csrf_token %}
@@ -43,6 +43,7 @@
                 {{ form.end_date.label_tag }} {{ form.end_date }}
                 {{ form.category_order.label_tag }} {{ form.category_order }}
                 {{ form.category_service.label_tag }} {{ form.category_service }}
+                {{ form.selected_senior.label_tag }} {{ form.selected_senior }}
                 <button type="submit" class="btn">Generate Report</button>
             </form>
             </div>
