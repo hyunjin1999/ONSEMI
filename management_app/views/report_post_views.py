@@ -41,36 +41,55 @@ def manage_report(request, report_id):
     report = get_object_or_404(Report, id=report_id)
 
     if request.method == 'POST':
-        if 'add_image' in request.POST:
-            files = request.FILES.getlist('file')
-            for f in files:
-                report.images = f
-        elif 'update_text' in request.POST:
-            report.doctor_opinion = request.POST.get('doctor_opinion', '')
-            report.user_request = request.POST.get('user_request', '')
-        elif 'change_status' in request.POST:
-            report.status = request.POST.get('status')
-            report.save()
-        elif 'update_notes' in request.POST:
-            report.no_issue = 'no_issue' in request.POST
-            report.eye = 'eye' in request.POST
-            report.teeth = 'teeth' in request.POST
-            report.skin = 'skin' in request.POST
-            report.back = 'back' in request.POST
-            report.other = 'other' in request.POST
-            report.other_text = request.POST.get('other_text', '')
-            report.save()
-        elif 'delete_image' in request.POST:
-            report.images.delete()
-        elif 'delete_report' in request.POST:
-            report.delete()
-            return redirect('management_app:report_list')  # Redirect to the report list after deletion
-        return redirect('management_app:manage_report', report_id=report.id)
+        
+        
+        # 이미지 추가 처리
+        # if 'add_image' in request.POST:
+        #     files = request.FILES.getlist('file')
+        #     for f in files:
+        #         report.images = f
+            
+        # 텍스트 업데이트 처리
+        report.doctor_opinion = request.POST.get('doctor_opinion', '')
+        report.user_request = request.POST.get('user_request', '')
+
+        # 상태 변경 처리
+        if 'change_status' in request.POST:
+            report.status = request.POST.get('status', '')
+
+        # 체크박스 업데이트 처리
+        report.no_issue = 'no_issue' in request.POST
+        report.eye = 'eye' in request.POST
+        report.teeth = 'teeth' in request.POST
+        report.skin = 'skin' in request.POST
+        report.back = 'back' in request.POST
+        report.other = 'other' in request.POST
+        report.other_text = request.POST.get('other_text', '')
+
+        # # 이미지 삭제 처리
+        # if 'delete_image' in request.POST:
+        #     image_id = request.POST.get('delete_image')
+        #     image = get_object_or_404(ReportImage, id=image_id)
+        #     image.delete()
+
+        # # 모든 이미지 삭제 처리
+        # if 'delete_all_images' in request.POST:
+        #     report.images.all().delete()
+
+        # # 보고서 삭제 처리
+        # if 'delete_report' in request.POST:
+        #     report.delete()
+        #     return redirect('management_app:report_list')
+
+        report.status = '등록'
+        report.save()
+        return redirect('/management/report/list/')
 
     return render(request, 'management_app/update_report.html', {
         'report': report,
-        'images': report.images,
+        'images': report.images
     })
+
 
 @login_required
 def delete_report(request, report_id):
