@@ -47,12 +47,13 @@ def manage_report(request, report_id):
 
     if request.method == 'POST':
         
-        
+        previous_url = request.META.get('HTTP_REFERER')
         # 이미지 추가 처리
-        #if 'add_image' in request.POST:
+        if 'add_image' in request.POST:
         #files = request.FILES.getlist('file')
-        for f in request.FILES.getlist('images'):
-            ReportImage.objects.create(report=report, image=f)
+            for f in request.FILES.getlist('images'):
+                ReportImage.objects.create(report=report, image=f)
+            return redirect(previous_url)
             
         # 텍스트 업데이트 처리
         report.doctor_opinion = request.POST.get('doctor_opinion', '')
@@ -71,8 +72,6 @@ def manage_report(request, report_id):
         report.other = 'other' in request.POST
         report.other_text = request.POST.get('other_text', '')
 
-        previous_url = request.META.get('HTTP_REFERER')
-        
         # 이미지 삭제 처리
         if 'delete_image' in request.POST:
             image_id = request.POST.get('delete_image')
