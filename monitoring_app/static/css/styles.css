@@ -75,6 +75,7 @@ li{
 .sidebar h2 {
     margin-top: 0;
     font-size: 1.6em;
+    text-align: center;
 }
 
 .sidebar form {
@@ -170,7 +171,6 @@ img.senior-profile {
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    margin-left: 40px;
 }
 
 .heading-download-container {
