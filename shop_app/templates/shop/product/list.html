@@ -23,6 +23,9 @@
   </div>
   <div id="main" class="product-list">
     <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
+    <div class="my-orders-button">
+      <a href="{% url 'orders_app:my_orders' %}" class="btn btn-primary">My Orders</a>
+    </div>
     {% for product in products %}
       <div class="item">
         <a href="{{ product.get_absolute_url }}">
