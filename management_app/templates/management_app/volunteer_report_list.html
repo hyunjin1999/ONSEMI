@@ -58,7 +58,9 @@
 
     <div>
         <h2>작성해야 할 보고서: {{ pending_reports_count }}개</h2>
-        <button type="button" onclick="refreshPendingReports()">새 보고서 확인</button>
+        {% for care in cares %}
+            <button type="button" onclick="checkPendingReports({{ pending_reports_count }}, {{ care.id }})">보고서 작성하기 ({{ care.title }})</button>
+        {% endfor %}
     </div>
 
     <table>

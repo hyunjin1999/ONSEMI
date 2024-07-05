@@ -71,11 +71,11 @@
         </div>
 
         <h3>Upload Images</h3>
-        <input type="file" name="file" multiple>
+        <input type="file" name="images" multiple>
         <button type="submit" name="add_image">Upload Images</button>
         {% comment %} <ul>
             {% for image in images %}
-                <li>{{ image.file.name }} <button type="submit" name="delete_image" value="{{ image.id }}">Delete</button></li>
+                <li>{{ image.image.url }} <button type="submit" name="delete_image" value="{{ image.id }}">Delete</button></li>
             {% endfor %}
         </ul> 
         <button type="submit" name="delete_all_images">Delete All Images</button>{% endcomment %}
