@@ -24,15 +24,6 @@ def order_create(request):
                                          quantity=item['quantity'])
             # 주문 생성 후 장바구니 비우기
             cart.clear()
-            
-            # Care 객체 생성
-            care_content = "\n".join([f"{item.quantity}x {item.product.name}" for item in order.items.all()])
-            Care.objects.create(
-                care_type="SHOP",
-                user_id=request.user,
-                content=care_content,
-                title=f'SHOP 서비스 요청 - {order.id}'
-            )
 
             return redirect('payment_app:payment_form', order_id=order.id)
         

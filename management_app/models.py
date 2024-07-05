@@ -26,7 +26,7 @@ class Senior(models.Model):
     class Meta:
         db_table = "senior"
 
-
+#UNIQUE constraint failed: care.title, care.user_id
 class Care(models.Model):
     care_type = models.CharField(max_length=100)  # SHOP, VISIT
     datetime = models.DateTimeField(default=timezone.now)
@@ -53,6 +53,9 @@ class Care(models.Model):
 
     class Meta:
         db_table = "care"
+        constraints = [
+            models.UniqueConstraint(fields=['title', 'user_id'], name='unique_care_request')
+        ]
 
 
 def upload_to(instance, filename):
