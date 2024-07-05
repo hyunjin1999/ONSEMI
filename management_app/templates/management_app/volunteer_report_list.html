@@ -110,19 +110,11 @@
 </html>
 
 <script>
-    function checkPendingReports(pendingReportsCount, careId) {
-        if (pendingReportsCount === 0) {
-            alert('작성해야 할 보고서가 없습니다.');
-        } else {
-            location.href = '{% url "management_app:create_report" 0 %}'.replace('0', careId);
-        }
-    }
-
     function refreshPendingReports() {
         fetch('{% url "management_app:refresh_pending_reports" %}')
             .then(response => response.json())
             .then(data => {
-                alert('새로운 보고서가 생성되었습니다. 페이지를 새로고침 해주세요.');
+                alert(data.message);
                 location.reload();
             });
     }
