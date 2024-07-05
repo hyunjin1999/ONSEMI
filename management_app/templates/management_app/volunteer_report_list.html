@@ -55,6 +55,7 @@
             background-color: #d5869d;
         }
     </style>
+    
 </head>
 <body>
     <h1>보고서 목록</h1>
@@ -71,19 +72,23 @@
             <option value="completed">등록완료</option>
             <option value="not_completed">미등록</option>
         </select>
-        <label for="user">신청자:</label>
+        {% comment %} <label for="user">신청자:</label>
         <select name="user" id="user">
             <option value="">전체</option>
             {% for user in users %}
-                <option value="{{ user.id }}" {% if user.id == user_id %}selected{% endif %}>{{ user.username }}</option>
+                {% if user.user_type == 'FAMILY' %}
+                    <option value="{{ user.id }}" {% if user.id == user_id %}selected{% endif %}>{{ user.username }}</option>
+                {% endif %}
             {% endfor %}
-        </select>
+        </select> {% endcomment %}
         <label for="senior">대상 어르신:</label>
         <select name="senior_ids" id="senior" multiple>
+            <option value="">전체</option>
             {% for senior in seniors %}
-                <option value="{{ senior.id }}" {% if senior.id in selected_senior_ids %}selected{% endif %}>{{ senior.name }}</option>
+                <option value="{{ senior.id }}" {% if senior.id|stringformat:"s" in senior_ids %}selected{% endif %}>{{ senior.name }}</option>
             {% endfor %}
         </select>
+
         <button type="submit">적용</button>
     </form>
     <div>
@@ -96,7 +101,7 @@
                 <th>케어 신청 날짜</th>
                 <th>제목</th>
                 <th>내용</th>
-                <th>케어 상태</th>
+                <th>대상 어르신</th>
                 <th></th>
             </tr>
         </thead>
@@ -107,7 +112,9 @@
                     <td>{{ care.datetime }}</td>
                     <td>{{ care.title }}</td>
                     <td>{{ care.content }}</td>
-                    <td>{{ care.care_state }}</td>
+                    <td>{% for senior in care.seniors.all %}
+                        {{ senior.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}</td>
                     <td class="button-cell">
                         <button type="button" onclick="location.href='{% url 'management_app:create_report' care.id %}'">보고서 작성 버튼</button>
                     </td>
@@ -116,14 +123,13 @@
         </tbody>
     </table>
 
-    <h2>작성된 보고서 list</h2>
+    <h2>작성된 보고서 리스트</h2>
     <table class="table-report">
         <thead>
             <tr>
                 <th>보고서 상태</th>
                 <th>등록 시간</th>
                 <th>제목</th>
-                <th>신청자</th>
                 <th>대상 어르신</th>
             </tr>
         </thead>
@@ -133,7 +139,6 @@
                     <td>{{ report.status }}</td>
                     <td>{{ report.created_at }}</td>
                     <td>{{ report.care.title }}</td>
-                    <td>{{ report.user.username }}</td>
                     <td>{% for senior in report.care.seniors.all %}
                         {{ senior.name }}{% if not forloop.last %}, {% endif %}
                     {% endfor %}</td>

@@ -20,10 +20,13 @@ def report_list(request):
         seniors = Senior.objects.all()
 
     if senior_ids:
+        senior_ids = [senior_id for senior_id in senior_ids if senior_id]
+        
+    if senior_ids:
         reports = reports.filter(care__seniors__id__in=senior_ids).distinct()
 
     if status_filter == 'completed':
-        reports = reports.filter(status='등록완료')
+        reports = reports.filter(status='등록')
     elif status_filter == 'not_completed':
         reports = reports.filter(status='미등록')
 

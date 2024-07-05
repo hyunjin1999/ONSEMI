@@ -26,7 +26,7 @@ urlpatterns = [
     # 기존 보고서 관리
     path('report/manage/<int:report_id>/', report_post_views.manage_report, name='manage_report'),
     # 보고서 삭제
-    path('report/delete/<int:report_id>/', report_post_views.delete_report, name='delete_report'),
+    #path('report/delete/<int:report_id>/', report_post_views.delete_report, name='delete_report'),
     # 이미지 파일 삭제
     path('report/delete/image/<int:image_id>/', report_post_views.delete_image, name='delete_image'),
     # 모든 파일 삭제
