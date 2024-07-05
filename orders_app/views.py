@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import OrderItem, Order
-from .forms import OrderCreateForm
+from .forms import OrderCreateForm, OrderEditForm
 from cart_app.cart import Cart
 from django.contrib.auth.decorators import login_required
 import csv
 from django.http import HttpResponse
 from management_app.models import Care
+from django.contrib import messages
+
 
 
 @login_required
@@ -24,15 +26,6 @@ def order_create(request):
                                          quantity=item['quantity'])
             # 주문 생성 후 장바구니 비우기
             cart.clear()
-            
-            # Care 객체 생성
-            care_content = "\n".join([f"{item.quantity}x {item.product.name}" for item in order.items.all()])
-            Care.objects.create(
-                care_type="SHOP",
-                user_id=request.user,
-                content=care_content,
-                title=f'SHOP 서비스 요청 - {order.id}'
-            )
 
             return redirect('payment_app:payment_form', order_id=order.id)
         
@@ -58,3 +51,38 @@ def export_orders_to_csv(request):
             writer.writerow([order.id, item.product.name, item.price, item.quantity, item.get_cost(), order.created])
 
     return response
+
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request, 'orders/order/my_orders.html', {'orders': orders})
+
+@login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'orders/order/order_detail.html', {'order': order})
+
+@login_required
+def order_edit(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    if request.method == 'POST':
+        form = OrderEditForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect('orders_app:order_detail', order_id=order.id)
+    else:
+        form = OrderEditForm(instance=order)
+    return render(request, 'orders/order/order_edit.html', {'form': form, 'order': order})
+
+@login_required
+def order_cancel(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if request.user == order.user:
+        # 주문과 관련된 Care 객체 삭제
+        Care.objects.filter(title=f'SHOP 서비스 요청 - {order.id}').delete()
+        # 주문 삭제
+        order.delete()
+        messages.success(request, '주문이 성공적으로 취소되었습니다.')
+    else:
+        messages.error(request, '권한이 없습니다.')
+    return redirect('orders_app:my_orders')
