@@ -7,6 +7,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+           
         }
         th, td {
             padding: 8px 12px;
@@ -22,6 +23,36 @@
         }
         .clickable-row:hover {
             background-color: #f0f0f0;
+        }
+
+        .table-care {
+            background-color: #FFE4E1;
+        }
+
+        .table-report {
+            background-color: #E0FFFF; 
+        }
+        .button-cell {
+            text-align: center;
+            padding: 0; /* Padding 제거 */
+        }
+
+        .button-cell button {
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            background-color: #e0a797;
+            color: black;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0; /* Margin 제거 */
+            padding: 12px; /* Padding 추가 */
+        }
+
+        .button-cell button:hover {
+            background-color: #d5869d;
         }
     </style>
 </head>
@@ -55,33 +86,53 @@
         </select>
         <button type="submit">적용</button>
     </form>
-
     <div>
         <h2>작성해야 할 보고서: {{ pending_reports_count }}개</h2>
-        {% for care in cares %}
-            <button type="button" onclick="checkPendingReports({{ pending_reports_count }}, {{ care.id }})">보고서 작성하기 ({{ care.title }})</button>
-        {% endfor %}
     </div>
+    <table class="table-care">
+        <thead>
+            <tr>
+                <th>케어 타입</th>
+                <th>케어 신청 날짜</th>
+                <th>제목</th>
+                <th>내용</th>
+                <th>케어 상태</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for care in cares %}
+                <tr>
+                    <td>{{ care.care_type }}</td>
+                    <td>{{ care.datetime }}</td>
+                    <td>{{ care.title }}</td>
+                    <td>{{ care.content }}</td>
+                    <td>{{ care.care_state }}</td>
+                    <td class="button-cell">
+                        <button type="button" onclick="location.href='{% url 'management_app:create_report' care.id %}'">보고서 작성 버튼</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-    <table>
+    <h2>작성된 보고서 list</h2>
+    <table class="table-report">
         <thead>
             <tr>
                 <th>보고서 상태</th>
                 <th>등록 시간</th>
                 <th>제목</th>
-                <th>상태</th>
                 <th>신청자</th>
                 <th>대상 어르신</th>
             </tr>
         </thead>
         <tbody>
             {% for report in page_obj %}
-                <!-- 심각한 문제는 아닌데 vscode 문제-->
                 <tr class="clickable-row" onclick="location.href='{% url 'management_app:manage_report' report.id %}'">
                     <td>{{ report.status }}</td>
                     <td>{{ report.created_at }}</td>
                     <td>{{ report.care.title }}</td>
-                    <td>{{ report.care.care_state }}</td>
                     <td>{{ report.user.username }}</td>
                     <td>{% for senior in report.care.seniors.all %}
                         {{ senior.name }}{% if not forloop.last %}, {% endif %}
@@ -112,12 +163,12 @@
 </html>
 
 <script>
-    function refreshPendingReports() {
-        fetch('{% url "management_app:refresh_pending_reports" %}')
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                location.reload();
-            });
+    function checkPendingReports(pendingReportsCount, careId) {
+        if (pendingReportsCount === 0) {
+            alert('작성해야 할 보고서가 없습니다.');
+        } else {
+            location.href = '{% url "management_app:create_report" 0 %}'.replace('0', careId);
+        }
     }
+
 </script>
