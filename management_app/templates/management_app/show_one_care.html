@@ -120,7 +120,7 @@
         <li><strong>상태:</strong> {{ care.care_state }}</li>
         <li><strong>관리자 메시지:</strong> {{ care.admin_message|default:"관리자로부터 메시지가 없습니다." }}</li>
     </ul>
-    {% endblock %}
+
     {% if user.is_superuser %}
     <h2>Update Care State and Message</h2>
     <form method="post">

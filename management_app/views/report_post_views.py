@@ -96,11 +96,11 @@ def manage_report(request, report_id):
     })
 
 
-@login_required
-def delete_report(request, report_id):
-    report = get_object_or_404(Report, id=report_id)
-    report.delete()
-    return redirect('management_app:report_list')
+# @login_required
+# def delete_report(request, report_id):
+#     report = get_object_or_404(Report, id=report_id)
+#     report.delete()
+#     return redirect('management_app:report_list')
 
 @login_required
 def delete_image(request, image_id):
