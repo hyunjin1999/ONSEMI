@@ -31,10 +31,13 @@ def create_report(request, care_id):
         report.back = 'back' in request.POST
         report.other = 'other' in request.POST
         report.other_text = request.POST.get('other_text', '')
-
+        
+        care.care_state = 'COMPLETED'
+        care.save()
+        
         report.status = '등록'
         report.save()
-        return redirect('/management/report/list/')
+        return redirect('management_app:report_list')
 
     return render(request, 'management_app/add_report.html', {'care': care})
 

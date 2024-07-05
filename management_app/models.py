@@ -58,7 +58,8 @@ def upload_to(instance, filename):
     base_filename = os.path.splitext(filename)[0]
     extension = filename.split('.')[-1]
     new_filename = f"{base_filename}_{today}.{extension}"
-    return os.path.join(f'volunteer_report/{instance.user.id}/{instance.care.id}/image', new_filename)
+    return os.path.join(f'volunteer_report/{instance.report.user.id}/{instance.report.care.id}/image', new_filename)
+
 
 
 class Report(models.Model):
