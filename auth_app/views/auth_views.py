@@ -27,6 +27,9 @@ def login_user(request):
         if user:
             login(request, user)
             return redirect("main:user_page")
+        
+        else:
+            messages.error(request, '아이디와 비밀번호가 틀렸습니다.')  # 에러 메시지 추가
 
         return redirect("/user/login")
 
