@@ -12,7 +12,7 @@ from orders_app.models import Order, OrderItem
 from shop_app.models import Category
 from datetime import datetime, time
 import csv
-from management_app.models import Care 
+from management_app.models import Care, Senior
 
 # 맥 전용 한글 폰트
 from matplotlib import rc
@@ -26,6 +26,8 @@ def generate(request):
 
     graph_url = None
     pie_chart_url = None
+    no_order_data = False
+    no_care_data = False
 
     if request.method == 'POST' and form.is_valid():
         start_date = form.cleaned_data.get('start_date')
@@ -67,20 +69,24 @@ def generate(request):
                     'created': order.created.isoformat(),
                 })
         df = pd.DataFrame(data)
-        if 'created' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
-            df['created'] = pd.to_datetime(df['created'], format='ISO8601', errors='coerce')
 
-        if 'Created' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
-            df['Created'] = pd.to_datetime(df['Created'], format='ISO8601', errors='coerce')
+        if df.empty:
+            no_order_data = True
+        else:
+            if 'created' in df.columns:
+                df['created'] = pd.to_datetime(df['created'], format='ISO8601', errors='coerce')
 
-        if 'Date' in df.columns:
-            df['Date'] = pd.to_datetime(df['Date'], format='ISO8601', errors='coerce')
+            if 'Created' in df.columns:
+                df['Created'] = pd.to_datetime(df['Created'], format='ISO8601', errors='coerce')
 
-        if 'quantity' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
-            df['quantity'] = df['quantity'].astype(float)
+            if 'Date' in df.columns:
+                df['Date'] = pd.to_datetime(df['Date'], format='ISO8601', errors='coerce')
 
-        if 'Quantity' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
-            df['Quantity'] = df['Quantity'].astype(float)
+            if 'quantity' in df.columns:
+                df['quantity'] = df['quantity'].astype(float)
+
+            if 'Quantity' in df.columns:
+                df['Quantity'] = df['Quantity'].astype(float)
 
 
 ####################################################################################
@@ -110,8 +116,11 @@ def generate(request):
                 'care_state': care.care_state,
             })
         df_care = pd.DataFrame(data_care)
-        if not df_care.empty and 'datetime' in df_care.columns:
-            df_care['datetime'] = pd.to_datetime(df_care['datetime'], format='ISO8601', errors='coerce')
+        if df_care.empty:
+            no_care_data = True
+        else:
+            if 'datetime' in df_care.columns:
+                df_care['datetime'] = pd.to_datetime(df_care['datetime'], format='ISO8601', errors='coerce')
 
 ####################################################################################
         if not df_care.empty:
@@ -137,13 +146,42 @@ def generate(request):
             graph_url = base64.b64encode(image_png).decode('utf-8')
             graph_url = 'data:image/png;base64,' + graph_url
 
+        else:
+            # 꺾은선 그래프 생성 (주간 단위)
+            plt.figure(figsize=(10, 6))
+            plt.legend(title='요청 종류')
+            plt.xlabel('기간')
+            plt.ylabel('요청 수')
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+
+            # 그래프 이미지를 메모리에 저장
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            image_png = buffer.getvalue()
+            buffer.close()
+
+            graph_url = base64.b64encode(image_png).decode('utf-8')
+            graph_url = 'data:image/png;base64,' + graph_url
+
 ####################################################################################
         # 전체 데이터 기반 원형 그래프 생성
-        all_orders = Order.objects.filter(user_id=request.user)
-        if start_date:
-            all_orders = all_orders.filter(created__gte=start_date)
-        if end_date:
-            all_orders = all_orders.filter(created__lte=end_date)
+        selected_senior = request.session.get('selected_senior')
+
+        if selected_senior != 'all':
+            all_orders = Order.objects.filter(senior_id=selected_senior)
+            if start_date:
+                all_orders = all_orders.filter(created__gte=start_date)
+            if end_date:
+                all_orders = all_orders.filter(created__lte=end_date)
+
+        else :
+            all_orders = Order.objects.filter(user_id=request.user.id)
+            if start_date:
+                all_orders = all_orders.filter(created__gte=start_date)
+            if end_date:
+                all_orders = all_orders.filter(created__lte=end_date)
         
         all_data = []
         for order in all_orders:
@@ -153,9 +191,22 @@ def generate(request):
                     'Quantity': item.quantity,
                 })
         all_df = pd.DataFrame(all_data)
-        all_df['Quantity'] = all_df['Quantity'].astype(float)
+        if all_df.empty:
+            plt.figure(figsize=(10, 6))
+            plt.pie([1], labels=['No Data'], startangle=140, colors=['#d3d3d3'])
+            plt.axis('equal')
 
-        if not all_df.empty:
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            image_png = buffer.getvalue()
+            buffer.close()
+
+            pie_chart_url = base64.b64encode(image_png).decode('utf-8')
+            pie_chart_url = 'data:image/png;base64,' + pie_chart_url
+        else:
+            all_df['Quantity'] = all_df['Quantity'].astype(float)
+
             plt.figure(figsize=(10, 6))
             category_counts = all_df.groupby('Category')['Quantity'].sum()
             plt.pie(category_counts, labels=category_counts.index, autopct='%1.1f%%', startangle=140)
@@ -186,7 +237,9 @@ def generate(request):
         'form': form, 
         'categories': categories, 
         'graph_url': graph_url, 
-        'pie_chart_url': pie_chart_url
+        'pie_chart_url': pie_chart_url,
+        'no_order_data': no_order_data,
+        'no_care_data': no_care_data,
     })
 ####################################################################################
 @login_required
