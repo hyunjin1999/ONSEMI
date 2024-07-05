@@ -56,41 +56,6 @@ class Order(models.Model):
                     }
                 )
         super().save(*args, **kwargs)
-    
-# class Order(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-#     senior = models.ForeignKey(Senior, on_delete=models.CASCADE, default=1)
-#     name = models.CharField(max_length=50)
-#     email = models.EmailField()
-#     address = models.CharField(max_length=250)
-#     phone = models.CharField(max_length=15, default='000-0000-0000')
-#     created = models.DateTimeField(auto_now_add=True)
-#     updated = models.DateTimeField(auto_now=True)
-#     paid = models.BooleanField(default=False)
-# ######################################################################
-#     class Meta:
-#         ordering = ['-created']
-#         indexes = [
-#             models.Index(fields=['-created']),
-#         ]
-
-#     def __str__(self):
-#         return f'Order {self.id}'
-
-#     def get_total_cost(self):
-#         return sum(item.get_cost() for item in self.items.all())
-    
-#     def save(self, *args, **kwargs):
-#         super().save(*args, **kwargs)
-#         if self.paid:  # 주문이 완료되면 care 객체를 생성
-#             content = "\n".join([f"{item.quantity}x {item.product.name}" for item in self.items.all()])
-#             Care.objects.create(
-#                 care_type="SHOP",
-#                 user_id=self.user,
-#                 content=content,
-#                 title=f'SHOP 서비스 요청 - {self.id}'
-#             )
-
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order,
