@@ -1,10 +1,11 @@
-{% extends "layout.html" %}
+{% extends "monitoring_app/layout.html" %}
 {% load static %}
  
 {% block title %}ONSEMI{% endblock %}
 <!DOCTYPE html><html lang="ko">
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/styles.css' %}"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" /><script src="{% static 'js/scripts.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/styles.css' %}"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<script src="{% static 'js/scripts.js' %}"></script>
 {% endblock %}
 {% block content %}
 <head>
@@ -58,11 +59,10 @@
                     <div class="health-box">
                         <p>건강 상태</p>
                         <p>좋음</p>
-                        <button class="plus-button" onclick="location.href='management:list_senior';">+</button>
+                        <button class="plus-button" onclick="location.href='{% if care.id %}{% url 'monitoring_app:diagnosis' care.id %}{% endif %}';">+</button>
                     </div>
                     <div class="order-box">
                         <p>주문 및 돌봄 내역</p>
-                        <p>최근 주문 내역</p>
                         <button class="plus-button" onclick="location.href='{% url 'monitoring_app:generate' %}';">+</button>
                         <a href='/management/add/care/'>Add New Care</a>
                         <table>
