@@ -38,11 +38,11 @@
         <button type="submit" name="update_notes">Update Notes</button>
 
         <h3>Upload Images</h3>
-        <input type="file" name="file" multiple>
+        <input type="file" name="images" multiple>
         <button type="submit" name="add_image">Upload Images</button>
         <ul>
             {% for image in images %}
-                <li>{{ image.file.name }} <button type="submit" name="delete_image" value="{{ image.id }}">Delete</button></li>
+                <li>{{ image.image.url }} <button type="submit" name="delete_image" value="{{ image.id }}">Delete</button></li>
             {% endfor %}
         </ul>
         <button type="submit" name="delete_all_images">Delete All Images</button>
@@ -79,7 +79,7 @@
     <h2>Uploaded Images</h2>
     <ul>
         {% for image in images %}
-            <li><img src="{{ image.file.url }}" alt="Image">{{ image.file.name }}</li>
+            <li><img src="{{ image.image.url }}" alt="Image">{{ image.image.name }}</li>
         {% endfor %}
     </ul>
 </body>
