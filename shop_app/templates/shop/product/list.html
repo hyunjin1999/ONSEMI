@@ -16,7 +16,7 @@
       </li>
       {% for c in categories %}
         <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-          <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+          <a href="{% url 'shop_app:product_list_by_category' category_slug=c.slug %}">{{ c.name }}</a>
         </li>
       {% endfor %}
     </ul>
@@ -33,7 +33,7 @@
         </a>
         <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
         <br>
-        ${{ product.price }}
+        {{ product.price }}원
       </div>
     {% endfor %}
   </div>
