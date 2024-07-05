@@ -59,12 +59,12 @@
         </p>
         <button type="submit">Update</button>
     </form>
-    <form method="post" action="{% url 'management:delete_senior' senior.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+    <form method="post" action="{% url 'management_app:delete_senior' senior.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
         {% csrf_token %}
         <button type="submit" style="color: red;">Delete</button>
     </form>
     <br>
-    <a href="{% url 'management:list_senior' %}">Back to List</a>
+    <a href="{% url 'management_app:list_senior' %}">Back to List</a>
     {% endblock %}
 </body>
 </html>

@@ -26,7 +26,7 @@ def login_user(request):
 
         if user:
             login(request, user)
-            return redirect("/")
+            return redirect("main:user_page")
 
         return redirect("/user/login")
 
@@ -76,6 +76,9 @@ def register_user(request):
                     email=email,
                     user_type=user_type,
                 )
+                if user.user_type == 'ADMIN':
+                    user.is_superuser = 1
+                    user.save()
         except Exception:
             return redirect("/")
 
