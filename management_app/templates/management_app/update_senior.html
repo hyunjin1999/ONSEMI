@@ -127,11 +127,11 @@
             </p>
             <button type="submit" class="upload-button">업로드</button>
         </form>
-        <form method="post" action="{% url 'delete_senior' senior.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+        <form method="post" action="{% url 'management_app:delete_senior' senior.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
             {% csrf_token %}
             <button type="submit" class="delete-button">삭제</button>
         </form>
-        <a href="{% url 'list_senior' %}" class="back-link">뒤로가기</a>
+        <a href="{% url 'management_app:list_senior' %}" class="back-link">뒤로가기</a>
     </div>
     {% endblock %}
 </body></html>
