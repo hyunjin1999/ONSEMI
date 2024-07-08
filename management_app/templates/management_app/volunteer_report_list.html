@@ -82,7 +82,7 @@
             {% endfor %}
         </select> {% endcomment %}
         <label for="senior">대상 어르신:</label>
-        <select name="senior_ids" id="senior" multiple>
+        <select name="senior_ids" id="senior">
             <option value="">전체</option>
             {% for senior in seniors %}
                 <option value="{{ senior.id }}" {% if senior.id|stringformat:"s" in senior_ids %}selected{% endif %}>{{ senior.name }}</option>
@@ -91,6 +91,8 @@
 
         <button type="submit">적용</button>
     </form>
+
+
     <div>
         <h2>작성해야 할 보고서: {{ pending_reports_count }}개</h2>
     </div>
