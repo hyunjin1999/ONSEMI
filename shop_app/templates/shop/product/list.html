@@ -38,4 +38,20 @@
     {% endfor %}
   </div>
 </div>
+
+<div class="recent-products">
+  <h2>최근 본 상품</h2>
+  {% for product in recent_products %}
+    <div class="product-item">
+      <a href="{% url 'shop_app:product_detail' product.id product.slug %}">
+        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="{{ product.name }}">
+        <h3>{{ product.name }}</h3>
+      </a>
+      <form action="{% url 'shop_app:remove_from_recent_products' product.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">X</button>
+      </form>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}
