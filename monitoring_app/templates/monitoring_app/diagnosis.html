@@ -9,52 +9,153 @@
 {% endblock %}
 {% block content %}
 <head>
+    <style>
+        .senior-photo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .senior-photo img {
+            max-width: 150px;
+            height: auto;
+            border-radius: 10px;
+        }
+        
+        .sidebar h3 {
+            margin-top: 0;
+        }
+        
+        .left-content {
+            width: 40%;
+            background-color: #f3f2f2;
+            height: 100%;
+            border-radius: 25px;
+            border-color: #b7b5b5;
+            border-width: 2px;
+            border-style: solid;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            float:left;
+        }
+        
+        .doctors-box {
+            border-radius: 25px;
+            border-color: #b7b5b5;
+            border-width: 2px;
+            border-style: solid;
+            padding: 30px;
+            margin-top: 10px;
+            width: 80%;
+            text-align: center;
+            overflow-y: auto; 
+        }
+        
+        .right-content {
+            width: 55%;
+            background-color: #f3f2f2;
+            height: 100%;
+            border-radius: 25px;
+            border-color: #b7b5b5;
+            border-width: 2px;
+            border-style: solid;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            float: right;
+            margin-right : 20px;
+        }
+        
+        .to_parents {
+            border-radius: 25px;
+            border-color: #b7b5b5;
+            border-width: 2px;
+            border-style: solid;
+            padding: 30px;
+            margin-top: 10px;
+            width: 80%;
+            height: 35%;
+            text-align: center;
+            overflow-y: auto; 
+        }
+        
+        .pictures img {
+            width: 90%; 
+            height: auto; 
+            object-fit: cover; 
+            border-radius: 10px;
+        }
+        
+        .pictures {
+            border-radius: 25px;
+            border-color: #b7b5b5;
+            border-width: 2px;
+            border-style: solid;
+            padding: 30px;
+            margin-top: 50px;
+            width: 80%;
+            height: 35%;
+            text-align: center;
+            max-height: 300px; 
+            overflow-y: auto; 
+        }
+    </style>
 </head>
 <body>
         <div class="container">
             <div class="sidebar">
                 {% if selected_senior %}
-                <div class="senior-photo">
-                    {% if selected_senior.photo %}
-                        <img src="{{ selected_senior.photo.url }}" alt="{{ selected_senior.name }}">
-                    {% else %}
-                        <p>사진 없음</p>
-                    {% endif %}
-                </div>
-            {% endif %}
-            <h3>{{ selected_senior.name }}</h3>
-            <form method="get" id="seniorForm">
-                <select name="selected_senior_id" onchange="document.getElementById('seniorForm').submit();">
-                    <option value="">전체</option>
-                    {% for senior in seniors %}
-                        <option value="{{ senior.id }}" {% if selected_senior_id == senior.id|stringformat:"s" %}selected{% endif %}>{{ senior.name }}</option>
-                    {% endfor %}
-                </select>
-                <h2>기간 선택 & 필터링</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.start_date.label_tag }} {{ form.start_date }}
-                    {{ form.end_date.label_tag }} {{ form.end_date }}
-                    <button type="submit" class="btn">Generate Report</button>
+                    <div class="senior-photo">
+                        {% if selected_senior.photo %}
+                            <img src="{{ selected_senior.photo.url }}" alt="{{ selected_senior.name }}">
+                        {% else %}
+                            <p>사진 없음</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <h3>{{ selected_senior.name }}</h3>
+                <form method="get" id="seniorForm">
+                    <select name="selected_senior_id" onchange="document.getElementById('seniorForm').submit();">
+                        <option value="">전체</option>
+                        {% for senior in seniors %}
+                            <option value="{{ senior.id }}" {% if selected_senior_id == senior.id|stringformat:"s" %}selected{% endif %}>{{ senior.name }}</option>
+                        {% endfor %}
+                    </select>
                 </form>
             </div>
             <div class="main-content">
                 <div class="left-content">
                     <div class="doctors-box">
                         <h2>의사진단 내용</h2>
-                        {{diagnosis.diagnosis_content}}
+                        {% for report in reports %}
+                            <hr>
+                            <p class="small-light-text"> 날짜 : {{report.updated_at}} </p>
+                            {{ report.doctor_opinion }}
+                        {% empty %}
+                            <p>진단 내용이 없습니다.</p>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="right-content">
                     <div class="to_parents">
-                        <h2>부모님께 드리는 말씀</h2>
-                        {% comment %} {{diagnosis.to_parents}} {% endcomment %}
-                        {% comment %} {{senior.name}} {% endcomment %}
-                        {{care.care_type}}
+                        <h2>보호자께 드리는 말씀</h2>
+                        {% for report in reports %}
+                            <hr>
+                            <p class="small-light-text"> 날짜 : {{report.updated_at}} </p>
+                            {{ report.user_request }}
+                        {% empty %}
+                            <p>보호자께 드릴 말씀이 없습니다.</p>
+                        {% endfor %}
                     </div>
                     <div class="pictures">
-                        <h2>당일 사진</h2>
-                        <img src="{% static 'main/onsemi.png' %}">
+                        <h2>방문 사진</h2>                     
+                        {% for report_img in report_imgs %}
+                            <hr>
+                            <p class="small-light-text"> 날짜 : {{report_img.report.updated_at}} </p>
+                            <img src="{{ report_img.image.url }}">                                
+                        {% empty %}
+                            <p>보호자께 드릴 사진이 없습니다.</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
