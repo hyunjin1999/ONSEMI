@@ -3,7 +3,8 @@ from orders_app.models import Order, OrderItem
 from shop_app.models import Product
 from django.contrib import messages
 from management_app.models import Care
-from django.db import transaction, models
+from django.db import transaction
+from cart_app.cart import Cart
 
 def payment_form(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -42,12 +43,15 @@ def payment_success(request, order_id):
                 'care_state': 'NOT_APPROVED',
             }
         )
+    
+    # 결제가 성공하면 장바구니를 비웁니다.
+    cart = Cart(request)
+    cart.clear()
 
     return render(request, 'orders/order/created.html', {'order': order})
 
 def payment_fail(request, order_id):
     # 주문 실패 시 주문 삭제
     order = get_object_or_404(Order, id=order_id)
-    order.delete()
     messages.error(request, '결제가 실패했습니다. 다시 시도해주세요.')
     return render(request, 'payment_app/payment_fail.html', {'order_id': order_id})

@@ -5,9 +5,6 @@ from shop_app.models import Product
 
 class Cart:
     def __init__(self, request):
-        """
-        Initialize the cart.
-        """
         self.session = request.session
         cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
@@ -17,7 +14,6 @@ class Cart:
 
     def __iter__(self): # 물건을 또 담을 수 있게 함
         product_ids = self.cart.keys()
-        # get the product objects and add them to the cart
         products = Product.objects.filter(id__in=product_ids)
         cart = self.cart.copy()
         for product in products:
@@ -56,7 +52,7 @@ class Cart:
             self.save()
 
     def clear(self):
-        # remove cart from session
+        # 세션에서 카트를 제거
         del self.session[settings.CART_SESSION_ID]
         self.save()
 

@@ -9,7 +9,6 @@ from management_app.models import Care
 from django.contrib import messages
 
 
-
 @login_required
 def order_create(request):
     cart = Cart(request)
@@ -24,8 +23,6 @@ def order_create(request):
                                          product=item['product'],
                                          price=item['price'],
                                          quantity=item['quantity'])
-            # 주문 생성 후 장바구니 비우기
-            cart.clear()
 
             return redirect('payment_app:payment_form', order_id=order.id)
         
