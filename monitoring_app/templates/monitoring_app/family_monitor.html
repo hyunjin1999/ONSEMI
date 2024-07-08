@@ -95,7 +95,7 @@
                     </div>
                     <div class="health-box">
                         <p>건강 상태</p>
-                        <button class="plus-button" onclick="location.href='{% if care.id %}{% url 'monitoring_app:diagnosis' care.id %}{% endif %}';">+</button>
+                        <button class="plus-button" onclick="location.href='{% url 'monitoring_app:diagnosis' %}';">+</button>
                         {% for report in reports %}
                             <tr>
                                 {% comment %} <td>{{ report.id }}</td>
