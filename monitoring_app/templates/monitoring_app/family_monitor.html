@@ -115,7 +115,7 @@
                     </div>
                     <div class="health-box">
                         <p>건강 상태</p><br>
-                        <button class="plus-button" onclick="location.href='{% url 'monitoring_app:diagnosis' %}';">+</button>
+                        <button class="plus-button" onclick="location.href='/monitoring/diagnosis/?selected_senior_id={{ selected_senior_id }}';">+</button>
                         {% if not selected_senior_id or selected_senior_id == report.care.senior.id|stringformat:"s" %}
                             {% for report in reports %}
                             <tr>
