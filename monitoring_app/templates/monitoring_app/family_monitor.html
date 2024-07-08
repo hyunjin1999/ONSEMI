@@ -74,16 +74,16 @@
             <div class="main-content">
                 <div class="image-container">
                     <div class="photo-box">
-                        사진<br><br>
-                        {% for report in reports %}
+                        <p>사진</p><br>
+                        {% if not selected_senior_id or selected_senior_id == report.care.senior.id|stringformat:"s" %}
+                            {% for report in reports %}
                             <a href="{% url 'monitoring_app:family_monitor_image' report.id %}" class="image-box">
                             <tr>
                                 {% if report.images.all %}
-                                    {% comment %} <td>{{ report.id }}</td>
-                                    <td>{{ report.title }}</td>
-                                    <td>{{ report.description }}</td> {% endcomment %}
+                                    <td>{% for senior in report.care.seniors.all %}
+                                        {{ senior.name }}{% if not forloop.last %}, {% endif %}님
+                                    {% endfor %}</td>
                                     <td>{{ report.created_at }}</td><br>
-                                    {% comment %} <td>{{ report.care.id }}</td> {% endcomment %}
                                 <td>
                                 {% for image in report.images.all %}
                                     <img src="{{ image.image.url }}" alt="Report Image" style="max-width: 200px; max-height: 200px;">
@@ -91,22 +91,38 @@
                                     {% endif %}
                                 </td>
                             </tr></a><br>
-                        {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            {% for report in reports %}
+                                {% if forloop.first %}
+                                <a href="{% url 'monitoring_app:family_monitor_image' report.id %}" class="image-box">
+                                <tr>
+                                    {% if report.images.all %}
+                                        <td>{% for senior in report.care.seniors.all %}
+                                            {{ senior.name }}{% if not forloop.last %}, {% endif %}님
+                                        {% endfor %}</td>
+                                        <td>{{ report.created_at }}</td><br>
+                                    <td>
+                                    {% for image in report.images.all %}
+                                        <img src="{{ image.image.url }}" alt="Report Image" style="max-width: 200px; max-height: 200px;">
+                                    {% endfor %}
+                                        {% endif %}
+                                    </td>
+                                </tr></a><br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}    
                     </div>
                     <div class="health-box">
-                        <p>건강 상태</p>
+                        <p>건강 상태</p><br>
                         <button class="plus-button" onclick="location.href='{% url 'monitoring_app:diagnosis' %}';">+</button>
-                        {% for report in reports %}
+                        {% if not selected_senior_id or selected_senior_id == report.care.senior.id|stringformat:"s" %}
+                            {% for report in reports %}
                             <tr>
-                                {% comment %} <td>{{ report.id }}</td>
-                                <td>{{ report.id }}</td>
-                                <td>{{ report.title }}</td>
-                                <td>{{ report.description }}</td> {% endcomment %}
                                 <td>{% for senior in report.care.seniors.all %}
-                                    {{ senior.name }}{% if not forloop.last %}, {% endif %}
+                                    {{ senior.name }}{% if not forloop.last %}, {% endif %}님
                                 {% endfor %}</td>
                                 <td>{{ report.created_at }}</td><br>
-                                {% comment %} <td>{{ report.care.id }}</td> {% endcomment %}
                                 <td>
                                     {% if report.no_issue %}
                                         특이사항 없음
@@ -128,7 +144,39 @@
                                         {% endif %}
                                     {% endif %}
                             </tr><br><br>
-                        {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                                {% for report in reports %}
+                                    {% if forloop.first %}
+                                    <tr>
+                                        <td>{% for senior in report.care.seniors.all %}
+                                            {{ senior.name }}{% if not forloop.last %}, {% endif %}님
+                                        {% endfor %}</td>
+                                        <td>{{ report.created_at }}</td><br>
+                                        <td>
+                                            {% if report.no_issue %}
+                                                특이사항 없음
+                                            {% else %}
+                                                {% if report.eye %}
+                                                    눈 진찰 필요
+                                                {% endif %}
+                                                {% if report.teeth %}
+                                                    치아 진찰 필요
+                                                {% endif %}
+                                                {% if report.skin %}
+                                                    피부 진찰 필요
+                                                {% endif %}
+                                                {% if report.back %}
+                                                    허리 진찰 필요
+                                                {% endif %}
+                                                {% if report.other %}
+                                                    {{report.other_text}} 진찰 필요
+                                                {% endif %}
+                                            {% endif %}
+                                    </tr><br><br>
+                                    {% endif %}
+                                {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="order-box">
                         <p>주문 및 돌봄 내역</p>
