@@ -1,5 +1,5 @@
 from django.shortcuts import render,reverse
-from management_app.models import Care, Senior
+from management_app.models import Care, Senior, Report, ReportImage
 from auth_app.models import User
    
 def family_monitor(request):
@@ -35,6 +35,9 @@ def family_monitor(request):
     if selected_senior_id:
         selected_senior = Senior.objects.get(id=selected_senior_id)
    
+    reports = Report.objects.filter(care__in=cares)
+    sorted_reports = reports.order_by('-created_at')  # created_at 등 원하는 필드로 정렬
+   
     context = {
         "cares": cares,
         "users": users,
@@ -44,5 +47,13 @@ def family_monitor(request):
         'selected_order': selected_order,
         "seniors": seniors,
         "selected_senior": selected_senior,
+        "reports" : sorted_reports,
     }
+    
     return render(request, "monitoring_app/family_monitor.html", context)
+
+def family_monitor_image(request,report_id):
+    reports = Report.objects.filter(id=report_id)
+    context = {"reports":reports}
+    
+    return render(request, "monitoring_app/care_image.html", context)

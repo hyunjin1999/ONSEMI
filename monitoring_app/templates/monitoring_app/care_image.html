@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사진</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* 변경된 부분: 최소 높이 100vh로 설정 */
+            margin: 0;
+        }
+        .photo-box {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            max-width: 1200px;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px; /* 포토 박스와 위쪽 여백 추가 */
+        }
+        .photo-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .photo-item {
+            margin: 20px;
+            text-align: center;
+        }
+        .photo-item img {
+            max-width: 400px;
+            max-height: 400px;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="photo-box">
+        <div class="photo-grid">
+            {% for report in reports %}
+                {% for image in report.images.all %}
+                    <div class="photo-item">
+                        <img src="{{ image.image.url }}" alt="Report Image">
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+
