@@ -23,7 +23,7 @@ def payment_success(request, order_id):
             product.save()
         else:
             messages.error(request, f'{product.name}의 재고가 부족합니다.')
-            return redirect('payment_app:payment_fail', order_id=order.id)
+            return render(request, 'payment_app/payment_fail.html', {'order_id': order_id})
     
     with transaction.atomic():
         # 결제 완료로 주문 상태를 업데이트합니다.
@@ -50,4 +50,4 @@ def payment_fail(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order.delete()
     messages.error(request, '결제가 실패했습니다. 다시 시도해주세요.')
-    return redirect('shop_app:product_list')
+    return render(request, 'payment_app/payment_fail.html', {'order_id': order_id})
