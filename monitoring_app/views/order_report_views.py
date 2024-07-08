@@ -51,6 +51,8 @@ def order_to_dataframe(orders):
         
     return df, data
 
+##########################################################################################################
+
 # 케어 데이터 DataFrame으로 변환
 def care_to_dataframe(cares, start_date, end_date, category_service, selected_senior):
     data_care = []
@@ -83,15 +85,16 @@ def care_to_dataframe(cares, start_date, end_date, category_service, selected_se
         
     return df_care, data_care, completed_rate
 
+##########################################################################################################
 
 @login_required
 def generate(request):
     
     # 현재 로그인한 유저에 해당되는 데이터 DB에서 불러오기
-    form = FilterForm(request.POST or None)                 # 조회 시작 날짜, 종료 날짜, 식품 카테고리 폼
-    seniors = Senior.objects.filter(user_id=request.user)   # 시니어 불러오기
-    orders = Order.objects.filter(user=request.user)        # 주문내역 불러오기
-    cares = Care.objects.filter(user_id=request.user)       # 케어내역 불러오기
+    form = FilterForm(request.POST or None, user=request.user)
+    seniors = Senior.objects.filter(user_id=request.user)
+    orders = Order.objects.filter(user=request.user)
+    cares = Care.objects.filter(user_id=request.user)
     
     graph_url = None
     pie_chart_url = None
@@ -161,6 +164,25 @@ def generate(request):
             graph_url = base64.b64encode(image_png).decode('utf-8')
             graph_url = 'data:image/png;base64,' + graph_url
 
+        else:
+            # 꺾은선 그래프 생성 (주간 단위)
+            plt.figure(figsize=(10, 6))
+            plt.legend(title='요청 종류')
+            plt.xlabel('기간')
+            plt.ylabel('요청 수')
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+
+            # 그래프 이미지를 메모리에 저장
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            image_png = buffer.getvalue()
+            buffer.close()
+
+            graph_url = base64.b64encode(image_png).decode('utf-8')
+            graph_url = 'data:image/png;base64,' + graph_url
+
 ####################################################################################
         # 전체 데이터 기반 원형 그래프 생성
         if start_date:
@@ -179,6 +201,23 @@ def generate(request):
         all_df['Quantity'] = all_df['Quantity'].astype(float)
 
         if not all_df.empty:
+            plt.figure(figsize=(10, 6))
+            category_counts = all_df.groupby('Category')['Quantity'].sum()
+            plt.pie(category_counts, labels=category_counts.index, autopct='%1.1f%%', startangle=140)
+            plt.axis('equal')
+
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            image_png = buffer.getvalue()
+            buffer.close()
+
+            pie_chart_url = base64.b64encode(image_png).decode('utf-8')
+            pie_chart_url = 'data:image/png;base64,' + pie_chart_url
+
+        else:
+            all_df['Quantity'] = all_df['Quantity'].astype(float)
+
             plt.figure(figsize=(10, 6))
             category_counts = all_df.groupby('Category')['Quantity'].sum()
             plt.pie(category_counts, labels=category_counts.index, autopct='%1.1f%%', startangle=140)
@@ -212,99 +251,3 @@ def generate(request):
         'pie_chart_url': pie_chart_url
     })
 ####################################################################################
-@login_required
-def csv_view(request):
-    data_type = request.GET.get('type')
-    
-    # 세션에서 필터 값을 가져와 폼의 초기값 설정
-    initial_data = {
-        'start_date': request.session.get('start_date'),
-        'end_date': request.session.get('end_date'),
-        'category_order': request.session.get('category_order'),
-        'category_service': request.session.get('category_service'),
-        'selected_senior': request.session.get('selected_senior'),
-    }
-
-    form = FilterForm(initial=initial_data)
-
-    start_date = initial_data.get('start_date')
-    end_date = initial_data.get('end_date')
-    selected_senior = initial_data.get('selected_senior')
-
-    if start_date:
-        start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
-    if end_date:
-        end_date = make_aware(datetime.strptime(end_date, '%Y-%m-%d'))
-
-    if data_type == 'care':
-        filtered_cares = request.session.get('filtered_cares', [])
-        category_service = request.session.get('category_service')
-        completed_rate = request.session.get('completed_rate', 0)
-        
-        if category_service and category_service != 'all':
-            filtered_cares = [care for care in filtered_cares if care['care_type'] == category_service]
-
-        # 날짜 필터링
-        if start_date:
-            filtered_cares = [care for care in filtered_cares if care['datetime'] >= start_date.isoformat()]
-        if end_date:
-            filtered_cares = [care for care in filtered_cares if care['datetime'] <= end_date.isoformat()]
-        # 노인 필터링
-        if selected_senior and selected_senior != 'all':
-            filtered_cares = [care for care in filtered_cares if care['senior'] == selected_senior]
-
-        return render(request, 'monitoring_app/csv_view.html', {
-            'filtered_cares': filtered_cares, 
-            'data_type': 'care',
-            'completed_rate': completed_rate,
-            'form': form,
-        })
-    else:
-        filtered_orders = request.session.get('filtered_orders', [])
-        category_order = request.session.get('category_order')
-
-        if category_order and category_order != 'all':
-            filtered_orders = [order for order in filtered_orders if order['Category'] == category_order]
-
-        return render(request, 'monitoring_app/csv_view.html', {
-            'filtered_orders': filtered_orders, 
-            'data_type': 'order',
-            'form': form,
-        })
-####################################################################################
-@login_required
-def download_order_csv(request):
-    filtered_orders = request.session.get('filtered_orders', [])
-    category_order = request.session.get('category_order')
-    if category_order and category_order != 'all':
-        filtered_orders = [order for order in filtered_orders if order['Category'] == category_order]
-
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="filtered_orders.csv"'
-
-    writer = csv.writer(response)
-    writer.writerow(['Order ID', 'Product', 'Category', 'Price', 'Quantity', 'Total Cost', 'Created'])
-
-    for order in filtered_orders:
-        writer.writerow([order['Order_ID'], order['Product'], order['Category'], order['Price'], order['Quantity'], order['Total_Cost'], order['Created']])
-
-    return response
-
-####################################################################################
-@login_required
-def download_care_csv(request):
-    filtered_cares = request.session.get('filtered_cares', [])
-    category_service = request.session.get('category_service')
-    if category_service and category_service != 'all':
-        filtered_cares = [care for care in filtered_cares if care['care_type'] == category_service]
-
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="filtered_cares.csv"'
-
-    writer = csv.writer(response)
-    writer.writerow(['Care Type', 'Datetime', 'Care State'])
-
-    for care in filtered_cares:
-        writer.writerow([care['care_type'], care['datetime'], care['care_state']])
-
-    return response

@@ -27,6 +27,26 @@
         .sidebar h3 {
             margin-top: 0;
         }
+
+        .photo-box {
+            overflow-y: auto;
+        }
+
+        .photo-box::-webkit-scrollbar {
+            display: none; /* 스크롤 바 숨기기 */
+        }
+
+        .health-box {
+            overflow-y: auto;
+        }
+
+        .health-box::-webkit-scrollbar {
+            display: none; /* 스크롤 바 숨기기 */
+        }
+        .image-box {
+            text-decoration: none;
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -54,17 +74,114 @@
             <div class="main-content">
                 <div class="image-container">
                     <div class="photo-box">
-                        사진
+                        <p>사진</p><br>
+                        {% if not selected_senior_id or selected_senior_id == report.care.senior.id|stringformat:"s" %}
+                            {% for report in reports %}
+                            <a href="{% url 'monitoring_app:family_monitor_image' report.id %}" class="image-box">
+                            <tr>
+                                {% if report.images.all %}
+                                    <td>{% for senior in report.care.seniors.all %}
+                                        {{ senior.name }}{% if not forloop.last %}, {% endif %}님
+                                    {% endfor %}</td>
+                                    <td>{{ report.created_at }}</td><br>
+                                <td>
+                                {% for image in report.images.all %}
+                                    <img src="{{ image.image.url }}" alt="Report Image" style="max-width: 200px; max-height: 200px;">
+                                {% endfor %}
+                                    {% endif %}
+                                </td>
+                            </tr></a><br>
+                            {% endfor %}
+                        {% else %}
+                            {% for report in reports %}
+                                {% if forloop.first %}
+                                <a href="{% url 'monitoring_app:family_monitor_image' report.id %}" class="image-box">
+                                <tr>
+                                    {% if report.images.all %}
+                                        <td>{% for senior in report.care.seniors.all %}
+                                            {{ senior.name }}{% if not forloop.last %}, {% endif %}님
+                                        {% endfor %}</td>
+                                        <td>{{ report.created_at }}</td><br>
+                                    <td>
+                                    {% for image in report.images.all %}
+                                        <img src="{{ image.image.url }}" alt="Report Image" style="max-width: 200px; max-height: 200px;">
+                                    {% endfor %}
+                                        {% endif %}
+                                    </td>
+                                </tr></a><br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}    
                     </div>
                     <div class="health-box">
-                        <p>건강 상태</p>
-                        <p>좋음</p>
-                        <button class="plus-button" onclick="location.href='{% if care.id %}{% url 'monitoring_app:diagnosis' care.id %}{% endif %}';">+</button>
+                        <p>건강 상태</p><br>
+                        <button class="plus-button" onclick="location.href='/monitoring/diagnosis/?selected_senior_id={{ selected_senior_id }}';">+</button>
+                        {% if not selected_senior_id or selected_senior_id == report.care.senior.id|stringformat:"s" %}
+                            {% for report in reports %}
+                            <tr>
+                                <td>{% for senior in report.care.seniors.all %}
+                                    {{ senior.name }}{% if not forloop.last %}, {% endif %}님
+                                {% endfor %}</td>
+                                <td>{{ report.created_at }}</td><br>
+                                <td>
+                                    {% if report.no_issue %}
+                                        특이사항 없음
+                                    {% else %}
+                                        {% if report.eye %}
+                                            눈 진찰 필요
+                                        {% endif %}
+                                        {% if report.teeth %}
+                                            치아 진찰 필요
+                                        {% endif %}
+                                        {% if report.skin %}
+                                            피부 진찰 필요
+                                        {% endif %}
+                                        {% if report.back %}
+                                            허리 진찰 필요
+                                        {% endif %}
+                                        {% if report.other %}
+                                            {{report.other_text}} 진찰 필요
+                                        {% endif %}
+                                    {% endif %}
+                            </tr><br><br>
+                            {% endfor %}
+                        {% else %}
+                                {% for report in reports %}
+                                    {% if forloop.first %}
+                                    <tr>
+                                        <td>{% for senior in report.care.seniors.all %}
+                                            {{ senior.name }}{% if not forloop.last %}, {% endif %}님
+                                        {% endfor %}</td>
+                                        <td>{{ report.created_at }}</td><br>
+                                        <td>
+                                            {% if report.no_issue %}
+                                                특이사항 없음
+                                            {% else %}
+                                                {% if report.eye %}
+                                                    눈 진찰 필요
+                                                {% endif %}
+                                                {% if report.teeth %}
+                                                    치아 진찰 필요
+                                                {% endif %}
+                                                {% if report.skin %}
+                                                    피부 진찰 필요
+                                                {% endif %}
+                                                {% if report.back %}
+                                                    허리 진찰 필요
+                                                {% endif %}
+                                                {% if report.other %}
+                                                    {{report.other_text}} 진찰 필요
+                                                {% endif %}
+                                            {% endif %}
+                                    </tr><br><br>
+                                    {% endif %}
+                                {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="order-box">
                         <p>주문 및 돌봄 내역</p>
                         <button class="plus-button" onclick="location.href='{% url 'monitoring_app:generate' %}';">+</button>
-                        <a href='/management/add/care/'>Add New Care</a>
+                        <a href='/management/add/care/' class="add">Add New Care</a>
                         <table>
                             <thead>
                                 <tr>
