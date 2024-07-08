@@ -18,17 +18,26 @@ urlpatterns = [
     path("senior/list/", family_list_views.list_senior, name='list_senior'),
     path("care/list/", volunteer_list_views.care_list),
     path("care/list/status/update/<int:care_id>/", volunteer_list_views.status_update),
-    # 전체 보고서 목록 조회 및 필터링
+    
+  # 전체 보고서 목록 조회 및 필터링
     path('report/list/', report_list_views.report_list, name='report_list'),
     # 새로운 보고서 생성
     path('report/create/<int:care_id>/', report_post_views.create_report, name='create_report'),
     # 기존 보고서 관리
     path('report/manage/<int:report_id>/', report_post_views.manage_report, name='manage_report'),
-    # 파일 삭제
-    # path('report/delete/<str:file_type>/<int:pk>/', report_post_views.delete_file, name='delete_file'),
+    # 보고서 삭제
+    #path('report/delete/<int:report_id>/', report_post_views.delete_report, name='delete_report'),
+    # 이미지 파일 삭제
+    path('report/delete/image/<int:image_id>/', report_post_views.delete_image, name='delete_image'),
     # 모든 파일 삭제
-    # path('report/delete_all/<int:report_id>/<str:file_type>/', report_post_views.delete_all_files, name='delete_all_files'),
+    path('report/delete/all_files/<int:report_id>/', report_post_views.delete_all_files, name='delete_all_files'),
 
+    # 업데이트 기능에 필요한 URL 패턴 추가
+    path('report/update/<int:report_id>/', report_post_views.update_report, name='update_report'),
+
+    # 미등록 보고서 목록 갱신
+    # 이거 수정해야 할 거 같아요...
+    path('report/refresh_pending_reports/', report_post_views.refresh_pending_reports, name='refresh_pending_reports'),
 ]
 
 if settings.DEBUG:
