@@ -120,7 +120,7 @@
         <li><strong>상태:</strong> {{ care.care_state }}</li>
         <li><strong>관리자 메시지:</strong> {{ care.admin_message|default:"관리자로부터 메시지가 없습니다." }}</li>
     </ul>
-    {% endblock %}
+
     {% if user.is_superuser %}
     <h2>Update Care State and Message</h2>
     <form method="post">
@@ -141,7 +141,7 @@
     {% endif %}
     
     <button type="button" onclick="window.location.href = '/management/care/update/{{care.id}}/'"class="submit">수정</button>
-    <form method="post" action="{% url 'delete_care' care.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+    <form method="post" action="{% url 'management_app:delete_care' care.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
 
         {% csrf_token %}
         <button type="submit" class="delete">Delete</button>
