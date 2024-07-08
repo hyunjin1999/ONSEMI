@@ -53,5 +53,5 @@ def payment_success(request, order_id):
 def payment_fail(request, order_id):
     # 주문 실패 시 주문 삭제
     order = get_object_or_404(Order, id=order_id)
-    messages.error(request, '결제가 실패했습니다. 다시 시도해주세요.')
+    # messages.error(request, '결제가 실패했습니다. 다시 시도해주세요.')
     return render(request, 'payment_app/payment_fail.html', {'order_id': order_id})
