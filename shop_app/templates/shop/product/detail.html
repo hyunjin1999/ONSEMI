@@ -29,4 +29,14 @@
       {% endif %}
     </div>
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch("{% url 'shop_app:add_to_recent_products' product.id %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+            }
+        });
+    });
+</script>
 {% endblock %}
