@@ -30,31 +30,49 @@
                         <option value="{{ senior.id }}" {% if selected_senior_id == senior.id|stringformat:"s" %}selected{% endif %}>{{ senior.name }}</option>
                     {% endfor %}
                 </select>
-                <h2>기간 선택 & 필터링</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.start_date.label_tag }} {{ form.start_date }}
-                    {{ form.end_date.label_tag }} {{ form.end_date }}
-                    <button type="submit" class="btn">Generate Report</button>
-                </form>
             </div>
             <div class="main-content">
                 <div class="left-content">
-                    <div class="doctors-box">
-                        <h2>의사진단 내용</h2>
-                        {{diagnosis.diagnosis_content}}
-                    </div>
+                    <h2 style="margin-top:20px;">의사진단 내용</h2>
+                    {% for report in reports %}
+                        <div class="doctors-box">                        
+                            <p class="small-light-text"> {{report.updated_at}} </p>
+                            <ul>
+                                <li class = "li-style"><p> 증상 요약 : 
+                                    {% if report.no_issue == 1 %} 증상없음 {% endif %}
+                                    {% if report.eye == 1 %} 눈 {% endif %}
+                                    {% if report.teeth == 1 %} 치아 {% endif %}
+                                    {% if report.skin == 1 %} 피부 {% endif %}
+                                    {% if report.back == 1 %} 등 {% endif %}
+                                    {% if report.other == 1 %} 기타 증상 {% endif %}
+                                </p> </li>
+                                <li class = "li-style"> 의사 소견 <p> {{ report.doctor_opinion }} </p> </li>
+                            </ul>
+                         </div>
+                    {% empty %}
+                        <p>진단 내용이 없습니다.</p>
+                    {% endfor %}
                 </div>
                 <div class="right-content">
                     <div class="to_parents">
-                        <h2>부모님께 드리는 말씀</h2>
-                        {% comment %} {{diagnosis.to_parents}} {% endcomment %}
-                        {% comment %} {{senior.name}} {% endcomment %}
-                        {{care.care_type}}
+                        <h2>보호자님께 드리는 말씀</h2>
+                        {% for report in reports %}
+                            <hr>
+                            <p class="small-light-text"> 날짜 : {{report.updated_at}} </p>
+                            <p class="li-style">{{ report.user_request }}</p>
+                        {% empty %}
+                            <p class="li-style">보호자님께 드릴 말씀이 없습니다.</p>
+                        {% endfor %}
                     </div>
                     <div class="pictures">
-                        <h2>당일 사진</h2>
-                        <img src="{% static 'main/onsemi.png' %}">
+                        <h2>방문 사진</h2>                     
+                        {% for report_img in report_imgs %}
+                            <hr>
+                            <p class="small-light-text"> 날짜 : {{report_img.report.updated_at}} </p>
+                            <img src="{{ report_img.image.url }}">                                
+                        {% empty %}
+                            <p>보호자님께 드릴 사진이 없습니다.</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
