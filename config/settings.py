@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'voice_app',
     "management_app",
     'monitoring_app',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +151,10 @@ IAMPORT_API_KEY = 'imp10781812'
 IAMPORT_API_SECRET = 'tVZHIXzhBmmOvdJjhmEVd3osXkAE2Td1BLlrKtz5vrGIgFLTzv4RqeqKkaGP5boVbH6HFlUQHLr6qtlj'
 
 IAMPORT_CODE = 'imp10781812'
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Seoul'
