@@ -190,11 +190,12 @@ def delete_senior(request, id):
     # 노인 객체 가져오기
     senior = get_object_or_404(Senior, id=id)
 
-    #if senior.user_id != request.user.id:
-    #    pass
+    if request.method == 'POST':
+        #    pass
 
-    # 노인 삭제
-    senior.delete()
+        # 노인 삭제
+        senior.delete()
 
-    # 삭제 후 리디렉션할 URL 설정 (선택 사항)
-    return redirect('list_senior')  # 사용자의 노인 리스트 화면으로 리디렉션
+        # 삭제 후 리디렉션할 URL 설정 (선택 사항)
+        return redirect('/management/senior/list/')  # 사용자의 노인 리스트 화면으로 리디렉션
+    # return render(request, 'management_app/senior_confirm_delete.html', {'senior': senior})
