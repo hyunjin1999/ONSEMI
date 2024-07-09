@@ -100,7 +100,7 @@ def generate(request):
     pie_chart_url = None
 
     # 폼 시니어 필드 지정
-    form.fields['selected_senior'].choices = [('all', 'All')] + [(senior.id, senior.name) for senior in seniors]
+    # 한글화 하면서 해당 코드 삭제
     
     if request.method == 'POST' and form.is_valid():
         
@@ -147,9 +147,9 @@ def generate(request):
             plt.figure(figsize=(10, 6))
             for column in weekly_data.columns:
                 plt.plot(weekly_data.index, weekly_data[column], marker='o', label=column)
-            plt.legend(title='Type of Care')
-            plt.xlabel('Period')
-            plt.ylabel('Number of Requests')
+            plt.legend(title='서비스 종류')
+            plt.xlabel('기간')
+            plt.ylabel('요청횟수')
             plt.ylim(0, 10)
             plt.xticks(rotation=45)
             plt.tight_layout()
