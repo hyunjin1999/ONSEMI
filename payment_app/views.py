@@ -43,7 +43,10 @@ def payment_success(request, order_id):
                 'care_state': '요청 승인 대기',
             }
         )
-    
+    # 주문의 senior 정보를 care 객체에 추가
+    care.seniors.add(order.senior)
+    care.save()
+
     # 결제가 성공하면 장바구니를 비웁니다.
     cart = Cart(request)
     cart.clear()
