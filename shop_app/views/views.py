@@ -3,9 +3,10 @@ from cart_app.forms import CartAddProductForm
 from ..models import Category, Product
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from ..forms import CommentForm, StarForm, ReplyForm
+from ..forms import CommentForm, ReplyForm
 from django.views.decorators.http import require_POST
 from orders_app.models import OrderItem
+from django.db.models import Avg
 
 @login_required
 def product_list(request, category_slug=None):
@@ -36,11 +37,13 @@ def product_detail(request, id, slug):
     stock_alert = product.stock <= 10
 
     comment_form = CommentForm()
-    star_form = StarForm()
     reply_form = ReplyForm()
 
     # 부모 댓글 필터링
     comments = product.comments.filter(parent__isnull=True)
+
+    # 평균 별점 계산
+    average_rating = comments.aggregate(Avg('rating'))['rating__avg'] or 0
 
     # 최근 본 상품에 추가
     recent_products = request.session.get('recent_products', [])
@@ -57,10 +60,10 @@ def product_detail(request, id, slug):
                    'cart_product_form': cart_product_form,
                    'stock_alert': stock_alert,
                    'comment_form': comment_form,
-                   'star_form': star_form,
                    'reply_form': reply_form,
                    'comments': comments,
-                   'has_purchased': has_purchased,})
+                   'has_purchased': has_purchased,
+                   'average_rating': average_rating,})
 
 @login_required
 def add_to_recent_products(request, id):

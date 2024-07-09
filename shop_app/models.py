@@ -72,6 +72,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
     likes = models.ManyToManyField(User, related_name='comment_likes', blank=True)
+    rating = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ['-created_at']
@@ -81,18 +82,3 @@ class Comment(models.Model):
 
     def total_likes(self):
         return self.likes.count()
-
-
-# 별점
-class Star(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='stars')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_stars')
-    rating = models.PositiveSmallIntegerField()  # 1부터 5까지의 별점
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('product', 'user')
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return f'{self.product.name} - {self.rating} stars by {self.user.username}'

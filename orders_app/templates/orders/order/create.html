@@ -121,11 +121,27 @@ h1{
   <script>
     document.addEventListener("DOMContentLoaded", function() {
         const phoneInput = document.getElementById("id_phone");
+        
+        // 초기 플레이스홀더 설정
+        phoneInput.placeholder = "000-0000-0000";
+        
+        phoneInput.addEventListener("focus", function() {
+            if (phoneInput.value === "000-0000-0000" || phoneInput.value === "") {
+                phoneInput.value = "";
+            }
+        });
+
+        phoneInput.addEventListener("blur", function() {
+            if (phoneInput.value === "") {
+                phoneInput.placeholder = "000-0000-0000";
+            }
+        });
+
         phoneInput.addEventListener("input", function() {
             if (phoneInput.value === "000-0000-0000") {
                 phoneInput.value = "";
             }
         });
     });
-  </script>
+</script>
 {% endblock %}

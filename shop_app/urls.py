@@ -29,8 +29,6 @@ urlpatterns = [
     path('<int:product_id>/<slug:slug>/add_comment/', comment_star_views.add_comment, name='add_comment'),
     path('reply_comment/<int:comment_id>/', comment_star_views.reply_comment, name='reply_comment'),
     path('delete_comment/<int:comment_id>/', comment_star_views.delete_comment, name='delete_comment'),
-    path('<int:product_id>/<slug:slug>/add_star/', comment_star_views.add_star, name='add_star'),
-    path('remove_star/<int:star_id>/', comment_star_views.remove_star, name='remove_star'),
     path('like_product/<int:product_id>/', views.like_product, name='like_product'),
     path('like_comment/<int:comment_id>/', comment_star_views.like_comment, name='like_comment'),
 ]
