@@ -51,6 +51,8 @@ def care_list(request):
         "cares": cares,
         "users": users,
         "selected_user": user_id,
+        "current_sort_by": sort_by,
+        "current_order": order,
     }
 
     return render(request, "management_app/volunteer_care_list.html", context)
