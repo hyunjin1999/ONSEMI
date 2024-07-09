@@ -28,6 +28,8 @@ from management_app.models import Care
 from auth_app.models import User
 from django.contrib.auth.decorators import login_required
 from auth_app.utils import volunteer_required
+from django.dispatch import Signal
+from monitoring_app.signals import my_signal
 
 @login_required
 @volunteer_required
@@ -64,6 +66,7 @@ def status_update(request, care_id):
     if request.method == 'POST':
         care.care_state = request.POST.get('state')
         care.save()
+        my_signal.send(sender=care)
         return redirect('/management/care/list/')
     
     context = {

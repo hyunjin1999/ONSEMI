@@ -29,8 +29,8 @@
             <a href="{% url 'management_app:add_senior' %}">어르신 등록</a>
             <img src="{% static 'images/person.png' %}" alt="MyPage" id="seniorImage">
             <div id="infoBox" class="info-box">
-                <p>알림1</p>
-                <p>알림2</p>
+                <p id="signal-message1"></p>
+                <p id="signal-message2"></p>
                 <a href="{% url 'monitoring_app:family_monitor' %}">
                 <button id="navigateButton">모니터링</button>
             </a>
@@ -61,5 +61,34 @@
     </footer>
 </body>
 </html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function handleSignal() {
+            // 시그널을 받았을 때 메시지를 표시할 HTML 요소 업데이트
+            $('#signal-message1').text('요청하신 어르신 케어 서비스가 승인되었습니다.');
+        }
+
+        function pollSignal() {
+            $.ajax({
+                url: 'poll_signal/',
+                type: 'GET',
+                success: function(data) {
+                    if (data.signal_received) {
+                        handleSignal();
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Error polling for signal:', textStatus, errorThrown);
+                },
+                complete: function() {
+                    setTimeout(pollSignal, 1000);  // 1초마다 시그널 체크
+                }
+            });
+        }
+
+        pollSignal();
+    });
+</script>
 {% block script %}
 {% endblock %}

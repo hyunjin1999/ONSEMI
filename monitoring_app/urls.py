@@ -11,4 +11,5 @@ urlpatterns = [
     path('family_monitor/', monitor_views.family_monitor, name='family_monitor'),
     path('family_monitor/image/<int:report_id>/', monitor_views.family_monitor_image, name='family_monitor_image'),
     path('diagnosis/', diagnosis_views.diagnosis_view, name='diagnosis'),
+    path('family_monitor/poll_signal/', monitor_views.poll_signal, name='poll_signal'),
 ]
