@@ -13,8 +13,7 @@ import csv
 from ..forms import FilterForm
 from orders_app.models import Order
 from datetime import datetime, time
-import csv
-from management_app.models import Care, Senior
+from management_app.models import Care , Senior
 
 # 맥 전용 한글 폰트
 from matplotlib import rc
@@ -184,25 +183,6 @@ def generate(request):
             graph_url = base64.b64encode(image_png).decode('utf-8')
             graph_url = 'data:image/png;base64,' + graph_url
 
-        else:
-            # 꺾은선 그래프 생성 (주간 단위)
-            plt.figure(figsize=(10, 6))
-            plt.legend(title='요청 종류')
-            plt.xlabel('기간')
-            plt.ylabel('요청 수')
-            plt.xticks(rotation=45)
-            plt.tight_layout()
-
-            # 그래프 이미지를 메모리에 저장
-            buffer = BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            image_png = buffer.getvalue()
-            buffer.close()
-
-            graph_url = base64.b64encode(image_png).decode('utf-8')
-            graph_url = 'data:image/png;base64,' + graph_url
-
 ####################################################################################
         # 전체 데이터 기반 원형 그래프 생성
         if start_date:
@@ -218,39 +198,9 @@ def generate(request):
                     'Quantity': item.quantity,
                 })
         all_df = pd.DataFrame(all_data)
-        if all_df.empty:
-            plt.figure(figsize=(10, 6))
-            plt.pie([1], labels=['No Data'], startangle=140, colors=['#d3d3d3'])
-            plt.axis('equal')
+        all_df['Quantity'] = all_df['Quantity'].astype(float)
 
-            buffer = BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            image_png = buffer.getvalue()
-            buffer.close()
-
-            pie_chart_url = base64.b64encode(image_png).decode('utf-8')
-            pie_chart_url = 'data:image/png;base64,' + pie_chart_url
-        else:
-            all_df['Quantity'] = all_df['Quantity'].astype(float)
-
-            plt.figure(figsize=(10, 6))
-            category_counts = all_df.groupby('Category')['Quantity'].sum()
-            plt.pie(category_counts, labels=category_counts.index, autopct='%1.1f%%', startangle=140)
-            plt.axis('equal')
-
-            buffer = BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            image_png = buffer.getvalue()
-            buffer.close()
-
-            pie_chart_url = base64.b64encode(image_png).decode('utf-8')
-            pie_chart_url = 'data:image/png;base64,' + pie_chart_url
-
-        else:
-            all_df['Quantity'] = all_df['Quantity'].astype(float)
-
+        if not all_df.empty:
             plt.figure(figsize=(10, 6))
             category_counts = all_df.groupby('Category')['Quantity'].sum()
             plt.pie(category_counts, labels=category_counts.index, autopct='%1.1f%%', startangle=140)
@@ -298,11 +248,6 @@ def generate(request):
     return render(request, 'monitoring_app/generate.html', {
         'form': form, 
         'graph_url': graph_url, 
-        'pie_chart_url': pie_chart_url,
-        'no_order_data': no_order_data,
-        'no_care_data': no_care_data,
-        'pie_chart_url': pie_chart_url,
-        'no_order_data': no_order_data,
-        'no_care_data': no_care_data,
+        'pie_chart_url': pie_chart_url
     })
 ####################################################################################
