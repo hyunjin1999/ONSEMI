@@ -7,7 +7,7 @@ from auth_app.models import User
 @login_required
 def report_list(request):
     sort_by = request.GET.get('sort_by', '-created_at')
-    user_id = request.GET.get('user_id', None)
+    user_id = request.GET.get('user', None)
     senior_ids = request.GET.getlist('senior_ids', None)
     status_filter = request.GET.get('status_filter', 'all')
 
@@ -20,10 +20,13 @@ def report_list(request):
         seniors = Senior.objects.all()
 
     if senior_ids:
+        senior_ids = [senior_id for senior_id in senior_ids if senior_id]
+        
+    if senior_ids:
         reports = reports.filter(care__seniors__id__in=senior_ids).distinct()
 
     if status_filter == 'completed':
-        reports = reports.filter(status='등록완료')
+        reports = reports.filter(status='등록')
     elif status_filter == 'not_completed':
         reports = reports.filter(status='미등록')
 
@@ -43,4 +46,5 @@ def report_list(request):
         'status_filter': status_filter,
         'users': User.objects.all(),
         'pending_reports_count': pending_reports_count,  # 작성해야 할 보고서 개수 전달
+        'cares': Care.objects.filter(care_state='APPROVED').exclude(id__in=Report.objects.values('care_id'))  # 작성해야 할 보고서에 대한 care 객체 전달
     })

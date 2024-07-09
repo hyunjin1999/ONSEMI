@@ -85,19 +85,18 @@ def show_one_care(request, care_id):
 @login_required
 @family_required
 def update_care(request, care_id):
+    care = get_object_or_404(Care, pk=care_id)
+
     if request.method == "GET":
-        care = Care.objects.get(pk=int(care_id))
-        seniors = care.seniors.all()
+        seniors = Senior.objects.filter(user_id=care.user_id)
         context = {"care": care, "seniors": seniors}
         return render(request, "management_app/update_one_care.html", context)
 
-    if request.method == "POST":
-
+    elif request.method == "POST":
         care_type = request.POST.get("care_type")
         title = request.POST.get("title")
         content = request.POST.get("content")
-
-        care = Care.objects.get(pk=int(care_id))
+        senior_id = request.POST.get("senior")
 
         if care_type:
             care.care_type = care_type
@@ -105,9 +104,13 @@ def update_care(request, care_id):
             care.title = title
         if content:
             care.content = content
+        if senior_id:
+            selected_senior = Senior.objects.get(pk=int(senior_id))
+            care.seniors.clear()  # Clear existing seniors
+            care.seniors.add(selected_senior)  # Add the selected senior
+
         care.save()
         return redirect(f"/management/care/detail/{care_id}/")
-
 
 @login_required
 @family_required
@@ -145,17 +148,11 @@ def add_senior(request):
             age=age,
             gender=gender,
             phone_number=phone_number,
+            has_alzheimers =has_alzheimers,
+            has_parkinsons = has_parkinsons,
             user_id=user,
             photo = photo,
         )
-        if has_parkinsons:
-            senior.has_parkinsons = True
-        else:
-            senior.has_parkinsons = False
-        if has_alzheimers:
-            senior.has_alzheimers = True
-        else:
-            senior.has_alzheimers = False
 
         senior.save()
 
@@ -193,11 +190,12 @@ def delete_senior(request, id):
     # 노인 객체 가져오기
     senior = get_object_or_404(Senior, id=id)
 
-    #if senior.user_id != request.user.id:
-    #    pass
+    if request.method == 'POST':
+        #    pass
 
-    # 노인 삭제
-    senior.delete()
+        # 노인 삭제
+        senior.delete()
 
-    # 삭제 후 리디렉션할 URL 설정 (선택 사항)
-    return redirect('management:list_senior')  # 사용자의 노인 리스트 화면으로 리디렉션
+        # 삭제 후 리디렉션할 URL 설정 (선택 사항)
+        return redirect('/management/senior/list/')  # 사용자의 노인 리스트 화면으로 리디렉션
+    # return render(request, 'management_app/senior_confirm_delete.html', {'senior': senior})
