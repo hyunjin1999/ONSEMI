@@ -38,7 +38,7 @@ def create_report(request, care_id):
         report.status = '등록'
         report.save()
         return redirect('management_app:report_list')
-
+    
     return render(request, 'management_app/add_report.html', {'care': care})
 
 @login_required
