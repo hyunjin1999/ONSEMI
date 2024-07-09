@@ -9,17 +9,20 @@
 {{ block.super }}
 <div id="content">
   <div id="sidebar">
-    <h3>Categories</h3>
+    <h2>카테고리</h2>
     <ul>
       <li {% if not category %}class="selected"{% endif %}>
         <a href="{% url "shop_app:product_list" %}">All</a>
       </li>
       {% for c in categories %}
         <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-          <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+          <a href="{% url 'shop_app:product_list_by_category' category_slug=c.slug %}">{{ c.name }}</a>
         </li>
       {% endfor %}
+  
     </ul>
+    <h2><a href="{% url 'orders_app:my_orders' %}" class="btn btn-primary">주문 내역</a><h2>
+   
   </div>
   <div id="main" class="product-list">
     <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
@@ -30,9 +33,25 @@
         </a>
         <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
         <br>
-        ${{ product.price }}
+        {{ product.price }}원
       </div>
     {% endfor %}
   </div>
+</div>
+
+<div class="recent-products">
+  <h2>최근 본 상품</h2>
+  {% for product in recent_products %}
+    <div class="product-item">
+      <a href="{% url 'shop_app:product_detail' product.id product.slug %}">
+        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="{{ product.name }}">
+        <h3>{{ product.name }}</h3>
+      </a>
+      <form action="{% url 'shop_app:remove_from_recent_products' product.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">X</button>
+      </form>
+    </div>
+  {% endfor %}
 </div>
 {% endblock %}
