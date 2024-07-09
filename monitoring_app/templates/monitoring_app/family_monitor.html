@@ -122,7 +122,7 @@
                                 <td>{% for senior in report.care.seniors.all %}
                                     {{ senior.name }}{% if not forloop.last %}, {% endif %}님
                                 {% endfor %}</td>
-                                <td>{{ report.created_at }}</td><br>
+                                <td>{{ report.created_at|date:"Y년 n월 j일 A g:i" }}</td><br>
                                 <td>
                                     {% if report.no_issue %}
                                         특이사항 없음
@@ -152,7 +152,7 @@
                                         <td>{% for senior in report.care.seniors.all %}
                                             {{ senior.name }}{% if not forloop.last %}, {% endif %}님
                                         {% endfor %}</td>
-                                        <td>{{ report.created_at }}</td><br>
+                                        <td>{{ report.created_at|date:"Y년 n월 j일 A g:i" }}</td><br>
                                         <td>
                                             {% if report.no_issue %}
                                                 특이사항 없음
@@ -198,8 +198,8 @@
                                 <tr class="clickable-row" onclick="location.href='/management/care/detail/{{ care.id }}/'">
                                     <td>{{ care.title }}</td>
                                     <td>{{ care.care_type }}</td>
-                                    <td>{{ care.datetime }}</td>
-                                    <td>{{ care.care_state }}</td>
+                                    <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
+                                    <td>{{ care.get_care_state_display }}</td>
                                     <td>{{ care.content }}</td>
                                     <td>
                                         {% for senior in care.seniors.all %}

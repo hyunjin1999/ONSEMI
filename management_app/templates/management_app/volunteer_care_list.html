@@ -74,7 +74,7 @@
             {% for care in cares %}
                 <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
                     <td>{{ care.care_type }}</td>
-                    <td>{{ care.datetime }}</td>
+                    <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
                     <td>{{ care.title }}</td>
                     <td class="{% if care.care_state == 'NOT_APPROVED' %}pending-approval{% endif %}">{{ care.get_care_state_display }}</td>
                     <td>{{ care.user_id.username }}</td>
