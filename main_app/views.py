@@ -22,42 +22,16 @@ def terms(request):
 
 @login_required
 def user_page(request):
+    if not request.user.is_authenticated:
+        messages.error(request, '로그인이 필요한 서비스입니다.')
+        return render(request, 'page/index.html')
     user_type = request.user.user_type
     
     if user_type == 'FAMILY':
-        user_id = request.user.id
-        seniors = Senior.objects.filter(user_id=user_id)
-        context = {
-            'seniors': seniors
-        }
-        return render(request, 'management_app/user_senior_list.html', context)
-     
+        return redirect('/monitoring/family_monitor')
     elif user_type == 'VOLUNTEER':
-        sort_by = request.GET.get("sort_by", "datetime")
-        order = request.GET.get("order", "asc")
-        user_id = request.GET.get("user", "")
-
-        if order == "desc":
-            sort_by = "-" + sort_by
-
-        cares = Care.objects.all()
-
-        if user_id:
-            cares = cares.filter(user_id=user_id)
-
-        cares = cares.order_by(sort_by)
-        users = User.objects.all()
-
-        context = {
-            "cares": cares,
-            "users": users,
-            "selected_user": user_id,
-        }
-
-        return render(request, "management_app/volunteer_care_list.html", context)        
-    
+        return redirect('/management/care/list')
     elif user_type == 'ADMIN':
-        return render(request, 'admin_dashboard')
-    
+        return redirect('/admin')
     return render(request, 'default_dashboard') 
 

@@ -6,7 +6,6 @@ from blog_app.models import Blog, Comment, Like
 from blog_app.forms import NoticeForm, CommentForm
 
 # 공지사항 상세보기 기능
-@login_required
 def notice_detail(request, pk):
     
     # 공지사항 게시글 불러오기
