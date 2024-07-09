@@ -72,7 +72,7 @@
             <option value="completed">등록완료</option>
             <option value="not_completed">미등록</option>
         </select>
-        {% comment %} <label for="user">신청자:</label>
+        <label for="user">신청자:</label>
         <select name="user" id="user">
             <option value="">전체</option>
             {% for user in users %}
@@ -80,7 +80,7 @@
                     <option value="{{ user.id }}" {% if user.id == user_id %}selected{% endif %}>{{ user.username }}</option>
                 {% endif %}
             {% endfor %}
-        </select> {% endcomment %}
+        </select>
         <label for="senior">대상 어르신:</label>
         <select name="senior_ids" id="senior">
             <option value="">전체</option>
@@ -118,7 +118,7 @@
                         {{ senior.name }}{% if not forloop.last %}, {% endif %}
                     {% endfor %}</td>
                     <td class="button-cell">
-                        <button type="button" onclick="location.href='{% url 'management_app:create_report' care.id %}'">보고서 작성 버튼</button>
+                        <button type="button" onclick="redirectToCreateReport('{{ care.id }}')">보고서 작성 버튼</button>
                     </td>
                 </tr>
             {% endfor %}
@@ -137,7 +137,7 @@
         </thead>
         <tbody>
             {% for report in page_obj %}
-                <tr class="clickable-row" onclick="location.href='{% url 'management_app:manage_report' report.id %}'">
+                <tr class="clickable-row" onclick="redirectToManageReport('{{ report.id }}')">
                     <td>{{ report.status }}</td>
                     <td>{{ report.created_at }}</td>
                     <td>{{ report.care.title }}</td>
@@ -166,16 +166,18 @@
             {% endif %}
         </span>
     </div>
+    <!-- vscode에서 problems이라고 나와서 코드 수정 -->
+    <script>
+        function redirectToCreateReport(careId) {
+            const url = "{% url 'management_app:create_report' 0 %}".replace('0', careId);
+            location.href = url;
+        }
+
+        function redirectToManageReport(reportId) {
+            const url = "{% url 'management_app:manage_report' 0 %}".replace('0', reportId);
+            location.href = url;
+        }
+    </script>
 </body>
 </html>
 
-<script>
-    function checkPendingReports(pendingReportsCount, careId) {
-        if (pendingReportsCount === 0) {
-            alert('작성해야 할 보고서가 없습니다.');
-        } else {
-            location.href = '{% url "management_app:create_report" 0 %}'.replace('0', careId);
-        }
-    }
-
-</script>
