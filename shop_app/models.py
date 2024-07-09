@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from autoslug import AutoSlugField
 from django.utils.text import slugify
+from auth_app.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -36,6 +37,7 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    likes = models.ManyToManyField(User, related_name='product_likes', blank=True)
 
     class Meta:
         ordering = ['name']
@@ -58,3 +60,39 @@ class Product(models.Model):
             self.save()
         else:
             raise ValueError("재고가 부족합니다.")
+        
+    def total_likes(self):
+        return self.likes.count()
+        
+# 후기
+class Comment(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_comments')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+    likes = models.ManyToManyField(User, related_name='comment_likes', blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.content[:20]  # 첫 20자를 반환
+
+    def total_likes(self):
+        return self.likes.count()
+
+
+# 별점
+class Star(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='stars')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_stars')
+    rating = models.PositiveSmallIntegerField()  # 1부터 5까지의 별점
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('product', 'user')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.product.name} - {self.rating} stars by {self.user.username}'
