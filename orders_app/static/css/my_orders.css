@@ -15,11 +15,14 @@
 
 .card-header {
     margin-bottom: 10px ;
+    text-align: center;
 }
 
 .order-status {
     margin-bottom: 10px ;
+    text-align: center;
 }
+
 
 .hr-top-1 {
     margin-bottom: 1.5px;
@@ -33,6 +36,7 @@
 
 .order-total {
     margin-bottom: 10px;
+    text-align: center;
 }
 
 .img-fluid {
@@ -55,4 +59,22 @@
     border-width: 2px;
     margin-top: 1.5px;
     margin-bottom: 50px;
+}
+
+.row{
+    width: 1000px;
+}
+
+.col-3{
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
+}
+
+.col-6{
+    text-align: center;
+}
+
+.col-7{
+    text-align: center;
 }
