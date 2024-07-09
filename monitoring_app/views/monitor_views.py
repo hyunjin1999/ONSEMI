@@ -70,10 +70,9 @@ signal_received = False
 
 # 시그널을 받았을 때 처리할 함수
 @receiver(my_signal)
-def handle_my_signal(request, sender, **kwargs):
+def handle_my_signal(sender, **kwargs):
     global signal_received
-    if request.user == sender.user_id:
-        signal_received = True
+    signal_received = True
 
 # 시그널 수신 여부를 체크하는 view
 @csrf_exempt
