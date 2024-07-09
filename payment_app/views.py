@@ -40,12 +40,17 @@ def payment_success(request, order_id):
             title=f'배송 서비스 요청 - {order.id}',  # order_number 대신 order.id 사용
             defaults={
                 'content': f'주문 번호 {order.id}에 대한 배송 서비스 요청입니다.\n\n{content}',
-                'care_state': '요청 승인 대기',
+                'care_state': 'NOT_APPROVED',
             }
         )
-    # 주문의 senior 정보를 care 객체에 추가
-    care.seniors.add(order.senior)
-    care.save()
+        # 주문의 senior 정보를 care 객체에 추가
+        if order.senior:
+            care.seniors.add(order.senior)
+        care.save()
+
+        # Order 모델의 care 필드 업데이트
+        order.care = care
+        order.save()
 
     # 결제가 성공하면 장바구니를 비웁니다.
     cart = Cart(request)
