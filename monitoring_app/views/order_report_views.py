@@ -14,7 +14,7 @@ from ..forms import FilterForm
 from orders_app.models import Order
 from datetime import datetime, time
 import csv
-from management_app.models import Care 
+from management_app.models import Care, Senior
 
 # 맥 전용 한글 폰트
 from matplotlib import rc
@@ -298,6 +298,9 @@ def generate(request):
     return render(request, 'monitoring_app/generate.html', {
         'form': form, 
         'graph_url': graph_url, 
+        'pie_chart_url': pie_chart_url,
+        'no_order_data': no_order_data,
+        'no_care_data': no_care_data,
         'pie_chart_url': pie_chart_url,
         'no_order_data': no_order_data,
         'no_care_data': no_care_data,

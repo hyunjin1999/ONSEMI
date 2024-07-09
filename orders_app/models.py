@@ -4,6 +4,8 @@ from auth_app.models import User
 from management_app.models import Care, Senior
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 # 실제 서비스에서 작동할 코드
 # class Order(models.Model):
@@ -28,6 +30,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     paid = models.BooleanField(default=False)
+
 
     class Meta:
         ordering = ['-created']

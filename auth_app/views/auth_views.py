@@ -97,6 +97,9 @@ def register_user(request):
                     email=email,
                     user_type=user_type,
                 )
+                if user.user_type == 'ADMIN':
+                    user.is_superuser = 1
+                    user.save()
         except Exception:
             return redirect("/")
 
