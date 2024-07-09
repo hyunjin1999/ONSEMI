@@ -1,13 +1,18 @@
-@import url(//fonts.googleapis.com/css?family=Ubuntu);
+@font-face {
+    font-family: 'KCC-Hanbit';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
 
 body {
     margin:0;
     padding:0;
-    font-family:helvetica, sans-serif;
+    font-family: 'KCC-Hanbit';
 }
 
-h1, h2, h3, h4, h5 , h6 {
-    font-family: 'Ubuntu', sans-serif; font-weight:normal;
+h2 a{
+    color:black;
 }
 
 a {
@@ -29,7 +34,69 @@ a.button, input[type="submit"] {
     display: inline-block;
     margin: 10px 0;
 }
+.product-detail {
+    display: flex;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: #f9f9f9;
+    justify-content: center;
+}
 
+.product-detail img.product-image {
+    width: 300px;
+    height: 300px;
+    margin-right: 20px;
+}
+.my-orders-button a{
+    color:black;
+}
+.product-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-left:200px;
+}
+
+.product-info h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.product-info h2 {
+    font-size: 20px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.product-info p.price {
+    color: #333;
+    font-size: 28px;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.product-info form {
+    margin-top: 20px;
+}
+
+.product-info form label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.product-info form select {
+    padding: 5px;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.stock-alert {
+    color: #dc1616;
+    font-weight: bold;
+    margin-top: 20px;
+}
 a.button.light {
     color:#666;
     background:#ededed;
@@ -164,10 +231,13 @@ ul.errorlist {
     margin:0;
     list-style:none;
     padding:10px 14px;
+   
 }
 
 #sidebar ul li a {
     display:block;
+    color:black;
+    font-size:20px;
 }
 
 #sidebar ul li.selected {
@@ -332,6 +402,6 @@ form div.field {
 }
 
 img{
-    wide : 300px;
+    width : 300px;
     height : 300px;
 }
