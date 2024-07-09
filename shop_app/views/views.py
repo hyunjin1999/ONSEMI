@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from ..forms import CommentForm, StarForm, ReplyForm
 from django.views.decorators.http import require_POST
+from orders_app.models import OrderItem
 
 @login_required
 def product_list(request, category_slug=None):
@@ -47,6 +48,9 @@ def product_detail(request, id, slug):
         recent_products.append(product.id)
         request.session['recent_products'] = recent_products
 
+    # 사용자 구매 여부 확인
+    has_purchased = OrderItem.objects.filter(order__user=request.user, product=product).exists()
+
     return render(request,
                   'shop/product/detail.html',
                   {'product': product,
@@ -55,7 +59,8 @@ def product_detail(request, id, slug):
                    'comment_form': comment_form,
                    'star_form': star_form,
                    'reply_form': reply_form,
-                   'comments': comments,})
+                   'comments': comments,
+                   'has_purchased': has_purchased,})
 
 @login_required
 def add_to_recent_products(request, id):
