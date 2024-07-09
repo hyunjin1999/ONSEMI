@@ -29,14 +29,118 @@
       {% endif %}
     </div>
   </div>
+
+  <!-- 상품 좋아요 -->
+  <h2>좋아요</h2>
+  <form action="{% url 'shop_app:like_product' product.id %}" method="post" id="like-product-form">
+      {% csrf_token %}
+      <button type="submit" id="like-product-button">좋아요 <span id="product-likes">{{ product.total_likes }}</span></button>
+  </form>
+
+  <div class="comments">
+    <h2>후기</h2>
+    <form action="{% url 'shop_app:add_comment' product.id product.slug %}" method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit">Add Comment</button>
+    </form>
+    
+    <ul>
+        {% for comment in comments %}
+            <li>
+                <strong>{{ comment.user.username }}</strong> | {{ comment.created_at }}
+                <p>{{ comment.content }}</p>
+                <form action="{% url 'shop_app:like_comment' comment.id %}" method="post" class="like-comment-form">
+                    {% csrf_token %}
+                    <button type="submit" class="like-comment-button" data-comment-id="{{ comment.id }}">
+                        좋아요 <span class="comment-likes">{{ comment.total_likes }}</span>
+                    </button>
+                </form>
+                <form action="{% url 'shop_app:delete_comment' comment.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">후기 삭제</button>
+                </form>
+                <button onclick="document.getElementById('reply-form-{{ comment.id }}').style.display='block'">답글</button>
+                <form id="reply-form-{{ comment.id }}" action="{% url 'shop_app:reply_comment' comment.id %}" method="post" style="display:none;">
+                    {% csrf_token %}
+                    {{ reply_form.as_p }}
+                    <button type="submit">답글 작성</button>
+                </form>
+                {% for reply in comment.replies.all %}
+                    <ul>
+                        <li>
+                            <strong>{{ reply.user.username }}</strong> | {{ reply.created_at }}
+                            <p>{{ reply.content }}</p>
+                            <form action="{% url 'shop_app:like_comment' reply.id %}" method="post" class="like-comment-form">
+                                {% csrf_token %}
+                                <button type="submit" class="like-comment-button" data-comment-id="{{ reply.id }}">
+                                    좋아요 <span class="comment-likes">{{ reply.total_likes }}</span>
+                                </button>
+                            </form>
+                            <form action="{% url 'shop_app:delete_comment' reply.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit">댓글 삭제</button>
+                            </form>
+                        </li>
+                    </ul>
+                {% endfor %}
+            </li>
+        {% endfor %}
+    </ul>
+  </div>
+
+  <div class="stars">
+    <h2>별점</h2>
+    <form action="{% url 'shop_app:add_star' product.id product.slug %}" method="post">
+        {% csrf_token %}
+        {{ star_form.rating }}
+        <button type="submit">별점 주기</button>
+    </form>
+    
+    <h3>현재 별점:</h3>
+    <ul>
+        {% for star in product.stars.all %}
+            <li>{{ star.user.username }}: {{ star.rating }}점</li>
+        {% endfor %}
+    </ul>
+  </div>
+
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        fetch("{% url 'shop_app:add_to_recent_products' product.id %}", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": "{{ csrf_token }}",
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        const likeProductForm = document.getElementById('like-product-form');
+        const likeProductButton = document.getElementById('like-product-button');
+        likeProductForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            fetch(likeProductForm.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': "{{ csrf_token }}",
+                },
+                body: new URLSearchParams(new FormData(likeProductForm))
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('product-likes').textContent = data.likes;
+            });
+        });
+
+        document.querySelectorAll('.like-comment-form').forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const commentId = form.querySelector('.like-comment-button').dataset.commentId;
+                fetch(`/shop/like_comment/${commentId}/`, {  // 여기에서 URL을 동적으로 구성
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': "{{ csrf_token }}",
+                    },
+                    body: new URLSearchParams(new FormData(form))
+                })
+                .then(response => response.json())
+                .then(data => {
+                    form.querySelector('.comment-likes').textContent = data.likes;
+                });
+            });
         });
     });
-</script>
+  </script>
 {% endblock %}
