@@ -12,7 +12,7 @@ app = Celery('config')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 # Django 앱에서 작업 자동 검색
-app.autodiscover_tasks()
+app.autodiscover_tasks(['orders_app', 'config'])
 
 @app.task(bind=True)
 def debug_task(self):
