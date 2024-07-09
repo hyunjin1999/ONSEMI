@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from management_app.models import Senior, Care
+from django.contrib.auth.decorators import login_required
+from auth_app.models import User
 
 #Create your views here.
 def index(request):
@@ -17,13 +20,18 @@ def volunteer(request):
 def terms(request):
     return render(request,'page/terms.html')
 
+@login_required
 def user_page(request):
+    if not request.user.is_authenticated:
+        messages.error(request, '로그인이 필요한 서비스입니다.')
+        return render(request, 'page/index.html')
     user_type = request.user.user_type
+    
     if user_type == 'FAMILY':
-        return render(request, 'management_app/user_senior_list.html')
+        return redirect('/monitoring/family_monitor')
     elif user_type == 'VOLUNTEER':
-        return render(request, 'management_app/volunteer_care_list.html')
+        return redirect('/management/care/list')
     elif user_type == 'ADMIN':
-        return render(request, 'admin_dashboard')
+        return redirect('/admin')
     return render(request, 'default_dashboard') 
 

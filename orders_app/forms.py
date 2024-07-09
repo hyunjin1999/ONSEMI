@@ -16,4 +16,8 @@ class OrderCreateForm(forms.ModelForm):
         super(OrderCreateForm, self).__init__(*args, **kwargs)
         if user:
             self.fields['senior'].queryset = Senior.objects.filter(user_id=user)
-     
+
+class OrderEditForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['address', 'phone', 'senior']  # 수정 가능한 필드

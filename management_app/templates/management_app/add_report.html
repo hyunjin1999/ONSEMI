@@ -3,6 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>새로운 보고서 작성</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const noIssueCheckbox = document.querySelector('input[name="no_issue"]');
+            const otherCheckboxes = document.querySelectorAll('input[name="eye"], input[name="teeth"], input[name="skin"], input[name="back"], input[name="other"]');
+
+            function toggleCheckboxes() {
+                if (noIssueCheckbox.checked) {
+                    otherCheckboxes.forEach(checkbox => checkbox.disabled = true);
+                } else {
+                    otherCheckboxes.forEach(checkbox => checkbox.disabled = false);
+                }
+
+                if (Array.from(otherCheckboxes).some(checkbox => checkbox.checked)) {
+                    noIssueCheckbox.disabled = true;
+                } else {
+                    noIssueCheckbox.disabled = false;
+                }
+            }
+
+            noIssueCheckbox.addEventListener('change', toggleCheckboxes);
+            otherCheckboxes.forEach(checkbox => checkbox.addEventListener('change', toggleCheckboxes));
+
+            // Initialize state on page load
+            toggleCheckboxes();
+
+            document.getElementById('other').addEventListener('change', function() {
+                var otherText = document.getElementById('other_text');
+                if (this.checked) {
+                    otherText.style.display = 'block';
+                } else {
+                    otherText.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <h1>새로운 보고서 작성</h1>
@@ -20,23 +55,20 @@
         <label>이미지 업로드:</label><br>
         <input type="file" name="images" multiple><br>
 
-        <label>음성 업로드:</label><br>
-        <input type="file" name="audios" multiple><br>
-
-        <label>의사 소견:</label><br>
+        <label>의사 소견</label><br>
         <textarea name="doctor_opinion"></textarea><br>
 
-        <label>보호자 요구:</label><br>
+        <label>전달 사항</label><br>
         <textarea name="user_request"></textarea><br>
 
         <button type="submit">보고서 작성하기</button>
     </form>
 
-    <script>
+    {% comment %} <script>
         // '기타' 체크박스 선택 시, 텍스트 입력 필드 표시
         document.getElementById('other-checkbox').addEventListener('change', function() {
             document.getElementById('other-text').style.display = this.checked ? 'block' : 'none';
         });
-    </script>
+    </script> {% endcomment %}
 </body>
 </html>

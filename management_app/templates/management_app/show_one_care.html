@@ -1,35 +1,95 @@
-{% extends "layout.html" %}
-{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block title %}Care Detail{% endblock %}
-    {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'base.css' %}">
-    {% endblock %}
+    <title>Care Form</title>
+    <style>
+        .text {
+            margin-bottom: 10px;
+        }
+        .back {
+            text-decoration: none;
+            color: black;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        /* input[type="submit"]와 button의 공통 스타일 */
+        input[type="submit"],
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+       
+        .delete {
+            background-color: #dc3545;
+            margin-top: 10px;
+        }
+        
+        .submit {
+            background-color: blue;
+        }
+
+        input[type="submit"]:hover,
+        button:hover {
+            opacity: 0.9;
+        }  
+    </style>
 </head>
 <body>
-    {% block content %}
+    <div class="container">
     <h1>케어 상세</h1>
-    <ul>
-        <li><strong>케어 종류:</strong> {{ care.care_type }}</li>
-        <li><strong>등록 시간:</strong> {{ care.datetime }}</li>
-        <li><strong>제목:</strong> {{ care.title }}</li>
-        <li><strong>내용:</strong> {{ care.content }}</li>
-        <li><strong>등록인:</strong> {{ care.user_id.username }}</li>
-        <li><strong>해당 노인:</strong>
-            <ul>
-                {% for senior in care.seniors.all %}
-                    <li>{{ senior.name }}</li>
-                {% endfor %}
-            </ul>
-        </li>
-        <li><strong>상태:</strong> {{ care.care_state }}</li>
-        <li><strong>관리자 메시지:</strong> {{ care.admin_message|default:"관리자로부터 메시지가 없습니다." }}</li>
-    </ul>
-    
+        <div class="text"><strong>케어 종류:</strong> {{ care.care_type }}</div>
+        <div class="text"><strong>등록 시간:</strong> {{ care.datetime }}</div>
+        <div class="text"><strong>제목:</strong> {{ care.title }}</div>
+        <div class="text"><strong>내용:</strong> {{ care.content }}</div>
+        <div class="text"><strong>등록인:</strong> {{ care.user_id.username }}</div>
+        <div class="text"><strong>해당 노인:</strong>
+            {% for senior in care.seniors.all %}
+                {{ senior.name }}
+            {% endfor %}</div>
+        
+        <div class="text"><strong>상태:</strong> {{ care.care_state }}</div>
+        <div class="text"><strong>관리자 메시지:</strong> {{ care.admin_message|default:"관리자로부터 메시지가 없습니다." }}</div>
+
     {% if user.is_superuser %}
     <h2>Update Care State and Message</h2>
     <form method="post">
@@ -49,14 +109,14 @@
     </form>
     {% endif %}
     
-    <button type="button" onclick="window.location.href = '/management/care/update/{{care.id}}/'">수정하기</button>
-    <form method="post" action="{% url 'delete_care' care.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+    <button type="button" onclick="window.location.href = '/management/care/update/{{care.id}}/'"class="submit">수정</button>
+    <form method="post" action="{% url 'management_app:delete_care' care.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
 
         {% csrf_token %}
-        <button type="submit" style="color: red;">Delete</button>
+        <button type="submit" class="delete">Delete</button>
     </form>
     <br>
-    <a href='/monitoring/family_monitor/'>Back to List</a>
+    <a href='/monitoring/family_monitor/' class="back">뒤로가기</a>
     {% comment %} <button type="button" onclick="window.location.href = '/management/my-cares/'">돌아가기</button> {% endcomment %}
 </body>
 </html>
