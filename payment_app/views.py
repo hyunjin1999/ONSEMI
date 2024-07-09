@@ -35,12 +35,12 @@ def payment_success(request, order_id):
         content = "\n".join([f"{item.quantity}x {item.product.name}" for item in order.items.all()])
         
         care, created = Care.objects.update_or_create(
-            care_type="SHOP",
+            care_type="배송",
             user_id=order.user,
-            title=f'SHOP 서비스 요청 - {order.id}',  # order_number 대신 order.id 사용
+            title=f'배송 서비스 요청 - {order.id}',  # order_number 대신 order.id 사용
             defaults={
-                'content': f'주문 번호 {order.id}에 대한 SHOP 서비스 요청입니다.\n\n{content}',
-                'care_state': 'NOT_APPROVED',
+                'content': f'주문 번호 {order.id}에 대한 배송 서비스 요청입니다.\n\n{content}',
+                'care_state': '요청 승인 대기',
             }
         )
     
