@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
-from ..models import Product, Comment, Star
-from ..forms import CommentForm, StarForm, ReplyForm
+from ..models import Product, Comment
+from ..forms import CommentForm, ReplyForm
 from django.views.decorators.http import require_POST
 
 @require_POST
@@ -15,6 +15,7 @@ def add_comment(request, product_id, slug):
         comment = form.save(commit=False)
         comment.product = product
         comment.user = request.user
+        comment.rating = form.cleaned_data['rating']  # 별점 저장하는 기능
         comment.save()
     return redirect('shop_app:product_detail', id=product_id, slug=slug)
 
@@ -37,29 +38,8 @@ def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     product_id = comment.product.id
     slug = comment.product.slug
-    if comment.user == request.user or comment.product.user == request.user:
+    if comment.user == request.user:
         comment.delete()
-    return redirect('shop_app:product_detail', id=product_id, slug=slug)
-
-@login_required
-@require_POST
-def add_star(request, product_id, slug):
-    product = get_object_or_404(Product, id=product_id, slug=slug)
-    form = StarForm(request.POST)
-    if form.is_valid():
-        star = form.save(commit=False)
-        star.product = product
-        star.user = request.user
-        star.save()
-    return redirect('shop_app:product_detail', id=product_id, slug=slug)
-
-@login_required
-@require_POST
-def remove_star(request, star_id):
-    star = get_object_or_404(Star, id=star_id)
-    product_id = star.product.id
-    slug = star.product.slug
-    star.delete()
     return redirect('shop_app:product_detail', id=product_id, slug=slug)
 
 @login_required

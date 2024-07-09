@@ -148,7 +148,13 @@
               <br>
               <p><strong>전화번호:</strong> {{ order.phone }}</p>
               <br>
-              <p><strong>지불:</strong> {{ order.paid }}</p>
+              <p><strong>지불:</strong>
+                {% if order.paid %}
+                  결제 완료
+                {% else %}
+                  결제 필요
+                {% endif %}
+              </p>
             </div>
             <div class="order-actions">
               <a href="{% url 'orders_app:order_edit' order.id %}">주문 수정</a>
