@@ -93,8 +93,10 @@
         </ul> 
         <button type="submit" name="delete_all_images">Delete All Images</button>{% endcomment %}
 
-        <h3>의사 소견</h3>
-        <textarea name="doctor_opinion">{{ report.doctor_opinion }}</textarea>
+        {%if report.care.care_type == '병원'%}
+            <h3>의사 소견</h3>
+            <textarea name="doctor_opinion">{{ report.doctor_opinion }}</textarea>
+        {% endif %}
 
         <h3>전달 사항</h3>
         <textarea name="user_request">{{ report.user_request }}</textarea>
