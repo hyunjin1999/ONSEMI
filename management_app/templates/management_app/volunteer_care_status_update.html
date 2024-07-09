@@ -1,35 +1,100 @@
-{% extends "layout.html" %}
-{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    {% block title %}Update state{% endblock %}
-    {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'base.css' %}">
-    {% endblock %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care Form</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            padding: 5px;
+        }
+        
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        /* input[type="submit"]와 button의 공통 스타일 */
+        input[type="submit"],
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+       
+        .cancle {
+            background-color: #dc3545;
+            margin-top: 10px;
+        }
+        
+        .submit {
+            background-color: blue;
+        }
+
+        input[type="submit"]:hover,
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .radio-buttons input[type="radio"],
+        .radio-buttons label {
+            display: inline-block;
+            margin-right: 10px; /* 각 라디오 버튼과 라벨 사이의 간격 조절 */
+        }
+    </style>
 </head>
 <body>
-    {% block content %}
-    <h1>Update care status</h1>
+    <div class="container">
+    <h1>상태 업데이트</h1>
 
     <form method="post">
         {% csrf_token %}
-        <p>
-            <label for="cotent">Content:{{ care.content }}</label>
-        </p>
-        <p>
-            <label for="state">state:</label>
+        <div>
+            <label for="title">제목: {{ care.title }}</label>
+            <label for="cotent">내용: {{ care.content }}</label>
+        
+            <label for="state">상태: </label>
+            <div class="radio-buttons">
             <input type="radio" id="NOT_APPROVED" name="state" value="NOT_APPROVED" {% if care.care_state == 'NOT_APPROVED' %}checked{% endif %}>
             <label for="NOT_APPROVED">NOT_APPROVED</label>
             <input type="radio" id="APPROVED" name="state" value="APPROVED" {% if scare.care_state == 'APPROVED' %}checked{% endif %}>
             <label for="APPROVED">APPROVED</label>
-        </p>
-        <button type="submit">Update</button>
+            </div>
+        </div>
+        <button type="submit" class="submit">업데이트</button>
+        <button type="button" onclick="window.location.href = '/management/care/list/'" class="cancle">취소</button>
     </form>
-
-    <br>
-    <a href='/management/care/list/'>Back to List</a>
-    {% endblock %}
+    </div>
 </body>
 </html>
