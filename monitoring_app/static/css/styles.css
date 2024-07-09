@@ -75,6 +75,7 @@ li{
 .sidebar h2 {
     margin-top: 0;
     font-size: 1.6em;
+    text-align: center;
 }
 
 .sidebar form {
@@ -133,7 +134,7 @@ li{
     margin: 0 auto;
 }
 
-.main-content a {
+.main-content .add {
     display: block;
     width: fit-content;
     margin: 20px auto;
@@ -170,7 +171,6 @@ img.senior-profile {
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    margin-left: 40px;
 }
 
 .heading-download-container {
@@ -336,6 +336,8 @@ th {
     flex-direction: column;
     align-items: center;
     float:left;
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    max-height: 1000px;
 }
 
 .doctors-box {
@@ -343,10 +345,13 @@ th {
     border-color: #b7b5b5;
     border-width: 2px;
     border-style: solid;
-    padding: 30px;
+    padding: 15px;
     margin-top: 10px;
     width: 80%;
     text-align: center;
+    word-wrap: break-word;  /* 올바른 단어에서 줄바꿈 */
+    overflow-wrap: break-word;  /* 긴 단어가 컨테이너를 벗어날 경우 줄바꿈 */
+    white-space: normal;  /* 텍스트가 자동 줄바꿈 */
 }
 
 .right-content {
@@ -362,6 +367,7 @@ th {
     align-items: center;
     float: right;
     margin-right : 20px;
+    max-height: 1000px;
 }
 
 .to_parents {
@@ -369,16 +375,22 @@ th {
     border-color: #b7b5b5;
     border-width: 2px;
     border-style: solid;
-    padding: 30px;
+    padding: 60px;
     margin-top: 10px;
     width: 80%;
     height: 35%;
     text-align: center;
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    word-wrap: break-word;  /* 올바른 단어에서 줄바꿈 */
+    overflow-wrap: break-word;  /* 긴 단어가 컨테이너를 벗어날 경우 줄바꿈 */
+    white-space: normal;  /* 텍스트가 자동 줄바꿈 */
 }
 
 .pictures img {
-    width : 80%;
-    height: 80%;
+    width: 90%; 
+    height: auto; 
+    object-fit: cover; 
+    border-radius: 10px;
 }
 
 .pictures {
@@ -391,4 +403,37 @@ th {
     width: 80%;
     height: 35%;
     text-align: center;
+    max-height: 300px; /* 컨테이너의 최대 높이 설정 */
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+}
+
+.senior-photo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.senior-photo img {
+    max-width: 150px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.sidebar h3 {
+    margin-top: 0;
+}
+
+.small-light-text {
+    font-size: 12px;
+    color: #999; 
+    font-weight: 300;
+    text-align: right;
+}
+
+.li-style {
+    list-style-type: circle;
+    text-align: left;
+}
+
+.li-style p {
+    width: 100%; 
 }
