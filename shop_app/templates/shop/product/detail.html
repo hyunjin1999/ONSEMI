@@ -21,7 +21,7 @@
       <form action="{% url "cart_app:cart_add" product.id %}" method="post" class="cart-form">
         {{ cart_product_form }}
         {% csrf_token %}
-        <input type="submit" value="Add to cart" class="button">
+        <input type="submit" value="장바구니에 담기" class="button">
       </form>
       <p>평점: 
         {% for i in "12345" %}
