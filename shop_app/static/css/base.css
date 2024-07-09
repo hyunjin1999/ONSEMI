@@ -265,6 +265,7 @@ ul.errorlist {
     padding:0 100px;
     overflow:hidden;
     background-color:white;
+    height: 100vh;
 }
 
 #sidebar {
