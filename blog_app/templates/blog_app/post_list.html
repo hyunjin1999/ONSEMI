@@ -9,9 +9,6 @@
     {% block extra_css %}
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <style>
-        div.header{
-            background-color: #fff;
-        }
         main {
             width: 80%;
             margin: 20px auto;
@@ -20,8 +17,10 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         nav {
-            margin-bottom: 20px;
             text-align: center;
+        }
+        .wrapper nav{
+            margin-bottom:20px;
         }
         nav a {
             margin: 0 15px;
@@ -30,7 +29,7 @@
             font-weight: bold;
         }
         nav a:hover {
-            color: #218838;
+            color: blue;
         }
         nav a#selected{
             color: red;
