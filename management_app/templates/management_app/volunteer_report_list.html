@@ -12,6 +12,7 @@
         th, td {
             padding: 8px 12px;
             border: 1px solid #ddd;
+            text-align: center;
         }
         th {
             background-color: #f4f4f4;
@@ -104,6 +105,7 @@
                 <th>제목</th>
                 <th>내용</th>
                 <th>대상 어르신</th>
+                <th>파킨슨병 진단 요청</th>
                 <th></th>
             </tr>
         </thead>
@@ -117,6 +119,10 @@
                     <td>{% for senior in care.seniors.all %}
                         {{ senior.name }}{% if not forloop.last %}, {% endif %}
                     {% endfor %}</td>
+                    <td>{% if care.parkinson_diagnosis %} O
+                        {%else%}X
+                        {%endif%}
+                    </td>
                     <td class="button-cell">
                         <button type="button" onclick="redirectToCreateReport('{{ care.id }}')">보고서 작성 버튼</button>
                     </td>
