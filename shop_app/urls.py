@@ -17,6 +17,8 @@
 
 from django.urls import path
 from .views import views, comment_star_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'shop_app'
 
@@ -32,3 +34,6 @@ urlpatterns = [
     path('like_product/<int:product_id>/', views.like_product, name='like_product'),
     path('like_comment/<int:comment_id>/', comment_star_views.like_comment, name='like_comment'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -50,7 +50,7 @@
   <div class="comments">
     <h2>후기</h2>
     {% if has_purchased %}
-    <form action="{% url 'shop_app:add_comment' product.id product.slug %}" method="post">
+    <form action="{% url 'shop_app:add_comment' product.id product.slug %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div>
             <label for="{{ comment_form.content.id_for_label }}">후기</label>
@@ -60,6 +60,10 @@
             <label for="{{ comment_form.rating.id_for_label }}">별점</label>
             {{ comment_form.rating }}
           </div>
+          <div>
+            <label for="{{ comment_form.image.id_for_label }}">사진</label>
+            {{ comment_form.image }}
+        </div>
         <button type="submit">후기 등록</button>
     </form>
     {% else %}
@@ -71,6 +75,9 @@
               <li>
                   <strong>{{ comment.user.username }}</strong> | {{ comment.created_at|date:"Y년 n월 j일 A g:i" }}
                   <p>{{ comment.content }}</p>
+                  {% if comment.image %}
+                  <img src="{{ comment.image.url }}" alt="Comment Image" style="max-width: 100px;">
+                  {% endif %}
                   <p>별점: 
                     {% for i in "12345" %}
                       {% if i <= comment.rating|stringformat:"i" %}

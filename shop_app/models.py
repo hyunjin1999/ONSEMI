@@ -73,6 +73,7 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
     likes = models.ManyToManyField(User, related_name='comment_likes', blank=True)
     rating = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to='comments_images/', blank=True)
 
     class Meta:
         ordering = ['-created_at']
