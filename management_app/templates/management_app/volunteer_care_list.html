@@ -65,6 +65,7 @@
                 <th>상태</th>
                 <th>신청자</th>
                 <th>대상 어르신</th>
+                <th>파킨슨병 진단 요청</th>
             </tr>
         </thead>
         <tbody>
@@ -78,6 +79,10 @@
                     <td>{% for senior in care.seniors.all %}
                         {{ senior.name }}{% if not forloop.last %}, {% endif %}
                     {% endfor %}</td>
+                    <td>{% if care.parkinson_diagnosis %} O
+                        {%else%}X
+                        {%endif%}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -55,13 +55,21 @@
         <label>이미지 업로드:</label><br>
         <input type="file" name="images" multiple><br>
 
-        <label>의사 소견</label><br>
-        <textarea name="doctor_opinion"></textarea><br>
+        {%if care.parkinson_diagnosis %}
+            <br><label>음성 Test:</label><br>
+            <input type="file" name="audio_file"><br>
+        {% endif %}
 
-        <label>전달 사항</label><br>
+        {%if care.care_type == '병원'%}
+            <br><label>의사 소견</label><br>
+            <textarea name="doctor_opinion"></textarea><br>
+        {% endif %}
+
+        <br><label>전달 사항</label><br>
         <textarea name="user_request"></textarea><br>
 
         <button type="submit">보고서 작성하기</button>
+        <button type="button" onclick="window.location.href = '/management/report/list/'" class="cancle">취소</button>
     </form>
 
     {% comment %} <script>

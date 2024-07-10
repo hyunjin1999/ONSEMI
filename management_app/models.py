@@ -28,6 +28,7 @@ class Senior(models.Model):
 #UNIQUE constraint failed: care.title, care.user_id
 class Care(models.Model):
     care_type = models.CharField(max_length=100)  # SHOP, VISIT
+    parkinson_diagnosis = models.BooleanField(default=False)
     datetime = models.DateTimeField(default=timezone.now)
     title = models.CharField(max_length=200, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
