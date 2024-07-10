@@ -93,6 +93,15 @@
         </ul> 
         <button type="submit" name="delete_all_images">Delete All Images</button>{% endcomment %}
 
+        <h3>음성 Test</h3>
+        <input type="file" name="audio_file">
+        {% if report.audio_test_result %}
+            <div>
+                <h3>Audio Test Result</h3>
+                <p>{{ report.audio_test_result }}</p>
+            </div>
+        {% endif %}
+
         {%if report.care.care_type == '병원'%}
             <h3>의사 소견</h3>
             <textarea name="doctor_opinion">{{ report.doctor_opinion }}</textarea>
