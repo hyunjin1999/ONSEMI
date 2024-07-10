@@ -1,7 +1,14 @@
-from django.shortcuts import render,reverse
+from django.shortcuts import render, reverse
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.dispatch import receiver
+
+from monitoring_app.signals import my_signal
 from management_app.models import Care, Senior, Report, ReportImage
 from auth_app.models import User
-import time
+
+# 시그널을 받았는지 여부를 저장할 변수
+signal_received = False
    
 def family_monitor(request):
     sort_by = request.GET.get("sort_by", "datetime")
@@ -59,34 +66,26 @@ def family_monitor_image(request,report_id):
     
     return render(request, "monitoring_app/care_image.html", context)
 
-
-
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.dispatch import receiver
-from monitoring_app.signals import my_signal
-# 시그널을 받았는지 여부를 저장할 변수
-signal_received = False
-
+care = None
 # 시그널을 받았을 때 처리할 함수
 @receiver(my_signal)
 def handle_my_signal(sender, **kwargs):
     global signal_received
     signal_received = True
-
+    global care
+    care = sender
+    
 # 시그널 수신 여부를 체크하는 view
 @csrf_exempt
 def poll_signal(request):
     global signal_received
-    
     if request.method == 'GET':
         response = {'signal_received': signal_received}
         if signal_received:
+            response = {'signal_received': signal_received,
+                        'username': care.user_id.username,
+                        'seniorname': care.seniors.all()[0].name,
+                        'state': care.care_state}
             # 시그널을 처리한 후 다시 초기화
-            time.sleep(1)
             signal_received = False
         return JsonResponse(response)
-    
-    # if request.method == 'GET':
-    #     # 현재 시그널 수신 여부를 클라이언트에게 전달
-    #     return JsonResponse({'signal_received': signal_received})
