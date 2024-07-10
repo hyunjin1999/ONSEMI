@@ -2,7 +2,6 @@
     text-align: center;
     margin-top: 40px;
     margin-bottom: 20px;
-    font-size: 1.5em;
     font-weight: bold;
 }
 
@@ -40,14 +39,30 @@
 }
 
 .img-fluid {
+    width: 350px;
     height: 300px;
-    width: 300px; 
-    object-fit: cover;
-    background-color: #f0f0f0;
+    display: inline-block;
+    padding: 10px;
 }
 
-.card-title {
-    display: inline;
+.card-title{
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.card-text-1 {
+    display: inline-block;
+    margin-left: 150px;
+    margin-right: 50px;
+}
+
+.card-text-2 {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.btn-primary {
+    font-size: 20px;
 }
 
 .hr-bottom-1 {
@@ -58,20 +73,16 @@
 .hr-bottom-2 {
     border-width: 2px;
     margin-top: 1.5px;
-    margin-bottom: 50px;
+    margin-bottom: 100px;
 }
 
 .row{
-    width: 1000px;
+    width: 800px;
 }
 
 .col-3{
     justify-content: center;
     justify-items: center;
-    text-align: center;
-}
-
-.col-6{
     text-align: center;
 }
 

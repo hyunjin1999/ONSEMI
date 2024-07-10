@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
   <link rel="stylesheet" href="{% static 'css/my_orders.css' %}">
-  <h2 class="my-orders">주문 내역</h2>
+  <h1 class="my-orders">주문 내역</h1>
   <div class="container">
     <div class="row">
       {% for order in orders %}
@@ -14,36 +14,33 @@
               <hr>
             </div>
             <div class="order-status">
-              <strong>승인 여부:</strong> 
-              {% for choice in order.care.CARE_STATE_CHOICES %}
+              <strong>승인 여부: {% for choice in order.care.CARE_STATE_CHOICES %}
                 {% if choice.0 == order.care.care_state %}
                   {{ choice.1 }}
                 {% endif %}
               {% endfor %}
+              </strong> 
             <hr>
             </div>
             <div class="card-body">
               {% for item in order.items.all %}
                 <div class="row mb-2">
                   <div class="col-3">
-                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid" style="vertical-align:middle;">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid" style="vertical-align:middle">
 
-                    <span class="card-text-2">수량: {{ item.quantity }}</span>
-
-                  </div>
-                  <div class="col-6">
-                    <h4 class="card-title">{{ item.product.name }}</h4>
+                    <span class="card-title">{{ item.product.name }}</span>
                     <span class="card-text-1">가격: {{ item.price }}원</span>
+                    <span class="card-text-2">수량: {{ item.quantity }}</span>
                   </div>
                   <hr>
                 </div>
               {% endfor %}
             </div>
             <div class="order-total">
-              <strong>총 결제금액:</strong> {{ order.get_total_cost }} 원
+              <span>총 결제금액:</span> <span>{{ order.get_total_cost }} 원</span>
             </div>
             <div class="col-7">
-              <a href="{% url 'orders_app:order_detail' order.id %}" class="btn btn-primary">주문상세보기</a>
+              <a href="{% url 'orders_app:order_detail' order.id %}" class="btn-primary">주문 상세보기</a>
             </div>
             <hr class="hr-bottom-1"><hr class="hr-bottom-2">
           </div>
