@@ -87,17 +87,21 @@
             <option value="병원" {% if care.care_type == '병원' %}selected{% endif %}>병원</option>
             <!-- 다른 care_type 옵션들 추가 가능 -->
         </select>
-        <br>
+        <br><br>
+        
+        <label>파킨슨병 진단 요청</label>
+        <input type="checkbox" name="parkinson_diagnosis" {% if care.parkinson_diagnosis %}checked{% endif %}>
+        <br><br>
 
         <label for="title">제목:</label>
         <input type="text" id="title" name="title" maxlength="200" value="{{ care.title }}">
-        <br>
+        <br><br>
 
         <label for="content">내용:</label>
         <textarea id="content" name="content" rows="4">{{ care.content }}</textarea>
-        <br>
+        <br><br>
 
-        <label for="seniors">시니어:</label><br>
+        <label for="seniors">시니어:</label>
         {% for senior in seniors %}
             <label>
                 <input type="radio" name="senior" value="{{ senior.id }}" 
