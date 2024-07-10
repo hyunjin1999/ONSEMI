@@ -1,0 +1,91 @@
+.my-orders {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.card-header {
+    margin-bottom: 10px ;
+    text-align: center;
+}
+
+.order-status {
+    margin-bottom: 10px ;
+    text-align: center;
+}
+
+
+.hr-top-1 {
+    margin-bottom: 1.5px;
+    border-width: 2px;
+}
+
+.hr-top-2 {
+    margin-top: 1.5px;
+    border-width: 2px;
+}
+
+.order-total {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.img-fluid {
+    width: 350px;
+    height: 300px;
+    display: inline-block;
+    padding: 10px;
+}
+
+.card-title{
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.card-text-1 {
+    display: inline-block;
+    margin-left: 150px;
+    margin-right: 50px;
+}
+
+.card-text-2 {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.btn-primary {
+    font-size: 20px;
+}
+
+.hr-bottom-1 {
+    margin-bottom: 1.5px;
+    border-width: 2px;
+}
+
+.hr-bottom-2 {
+    border-width: 2px;
+    margin-top: 1.5px;
+    margin-bottom: 100px;
+}
+
+.row{
+    width: 800px;
+}
+
+.col-3{
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
+}
+
+.col-7{
+    text-align: center;
+}
