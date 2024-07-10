@@ -70,7 +70,6 @@ def add_care(request):
         return redirect("/monitoring/family_monitor/")
 
 
-
 @login_required
 @family_required
 def show_one_care(request, care_id):
@@ -190,9 +189,9 @@ def update_senior(request, id):
         
         senior.save()
         return redirect('/management/senior/list/')
-
+    
     context = {
-        'senior': senior
+        'senior': senior,
     }
     return render(request, 'management_app/update_senior.html', context)
 

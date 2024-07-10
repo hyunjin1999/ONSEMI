@@ -82,10 +82,10 @@
                     {% endif %}
                     <strong>성함:</strong>{{ senior.name }}<br>
                     <strong>연세:</strong> {{ senior.age }}<br>
-                    <strong>성별:</strong> {{ senior.gender }}<br>
+                    <strong>성별:</strong> {{ senior.gender_display }}<br>
                     <strong>핸드폰 번호:</strong> {{ senior.phone_number }}<br>
-                    <strong>치매 유무:</strong> {{ senior.has_alzheimers }}<br>
-                    <strong>파킨슨 유무:</strong> {{ senior.has_parkinsons }}<br>
+                    <strong>치매 유무:</strong> {{ senior.has_alzheimers_display }}<br>
+                    <strong>파킨슨 유무:</strong> {{ senior.has_parkinsons_display }}<br>
                 </a>
             </li>
             {% endfor %}

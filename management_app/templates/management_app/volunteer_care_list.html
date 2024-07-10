@@ -28,6 +28,9 @@
         .clickable-row:hover {
             background-color: #f0f0f0;
         }
+        .pending-approval {
+            color: #F05650 !important;
+        }
     </style>
     {% endblock %}
 </head>
@@ -48,12 +51,12 @@
         </select>
         <label for="user">신청자:</label>
         <select name="user" id="user">
-            <option value="">All</option>
+            <option value="">전체</option>
             {% for user in users %}
                 <option value="{{ user.id }}" {% if user.id == selected_user %}selected{% endif %}>{{ user.username }}</option>
             {% endfor %}
         </select>
-        <button type="submit">Apply</button>
+        <button type="submit">적용하기</button>
     </form>
 
     <table>
@@ -72,9 +75,9 @@
             {% for care in cares %}
                 <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
                     <td>{{ care.care_type }}</td>
-                    <td>{{ care.datetime }}</td>
+                    <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
                     <td>{{ care.title }}</td>
-                    <td>{{ care.care_state }}</td>
+                    <td class="{% if care.care_state == 'NOT_APPROVED' %}pending-approval{% endif %}">{{ care.get_care_state_display }}</td>
                     <td>{{ care.user_id.username }}</td>
                     <td>{% for senior in care.seniors.all %}
                         {{ senior.name }}{% if not forloop.last %}, {% endif %}
