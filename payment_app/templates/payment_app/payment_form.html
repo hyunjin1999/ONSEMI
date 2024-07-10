@@ -5,15 +5,15 @@
 
 {% block content %}
 {{ block.super }}
-<h1>Order summary</h1>
+<h1>주문 내용</h1>
 <table class="cart">
     <thead>
         <tr>
-            <th>Image</th>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
+            <th>식품 사진</th>
+            <th>식품</th>
+            <th>가격</th>
+            <th>수량</th>
+            <th>결제 금액</th>
         </tr>
     </thead>
     <tbody>
@@ -29,12 +29,12 @@
         </tr>
         {% endfor %}
         <tr class="total">
-            <td colspan="4">Total</td>
+            <td colspan="4">결제금액</td>
             <td class="num">{{ order.get_total_cost|floatformat:0 }}원</td>
         </tr>
     </tbody>
 </table>
-<button id="payment_button">Pay now</button>
+<button id="payment_button">결제하기</button>
 {% endblock %}
 
 {% block script %}

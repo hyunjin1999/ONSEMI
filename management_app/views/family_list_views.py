@@ -70,12 +70,19 @@ from auth_app.utils import family_required
 #         context['selected_senior_id'] = self.request.GET.get('senior_id', '')
 #         context['selected_order'] = self.request.GET.get('order', 'desc')
 #         return context
-        
+
+@login_required
+@family_required
 def list_senior(request):
     # 현재 로그인한 사용자의 노인 리스트 가져오기
     user_id = request.user.id
     seniors = Senior.objects.filter(user_id=user_id)
-
+    # 한글화 작업
+    for senior in seniors:
+        senior.gender_display = '여성' if senior.gender == 'Female' else '남성'
+        senior.has_alzheimers_display = '유' if senior.has_alzheimers else '무'
+        senior.has_parkinsons_display = '유' if senior.has_parkinsons else '무'
+    
     context = {
         'seniors': seniors
     }

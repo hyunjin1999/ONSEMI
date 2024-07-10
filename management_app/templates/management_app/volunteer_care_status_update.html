@@ -87,9 +87,9 @@
             <label for="state">상태: </label>
             <div class="radio-buttons">
             <input type="radio" id="NOT_APPROVED" name="state" value="NOT_APPROVED" {% if care.care_state == 'NOT_APPROVED' %}checked{% endif %}>
-            <label for="NOT_APPROVED">NOT_APPROVED</label>
+            <label for="NOT_APPROVED">요청 승인 대기</label>
             <input type="radio" id="APPROVED" name="state" value="APPROVED" {% if scare.care_state == 'APPROVED' %}checked{% endif %}>
-            <label for="APPROVED">APPROVED</label>
+            <label for="APPROVED">요청 승인 완료</label>
             </div>
         </div>
         <button type="submit" class="submit">업데이트</button>

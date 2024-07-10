@@ -78,7 +78,7 @@
     <div class="container">
     <h1>케어 상세</h1>
         <div class="text"><strong>케어 종류:</strong> {{ care.care_type }}</div>
-        <div class="text"><strong>등록 시간:</strong> {{ care.datetime }}</div>
+        <div class="text"><strong>등록 시간:</strong> {{ care.datetime|date:"Y년 n월 j일 A g:i" }}</div>
         <div class="text"><strong>제목:</strong> {{ care.title }}</div>
         <div class="text"><strong>내용:</strong> {{ care.content }}</div>
         <div class="text"><strong>등록인:</strong> {{ care.user_id.username }}</div>
@@ -87,7 +87,7 @@
                 {{ senior.name }}
             {% endfor %}</div>
         
-        <div class="text"><strong>상태:</strong> {{ care.care_state }}</div>
+        <div class="text"><strong>상태:</strong> {{ care.get_care_state_display }}</div>
         <div class="text"><strong>관리자 메시지:</strong> {{ care.admin_message|default:"관리자로부터 메시지가 없습니다." }}</div>
 
     {% if user.is_superuser %}

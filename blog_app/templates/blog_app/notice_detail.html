@@ -25,8 +25,8 @@
         {% if notice.image %}
             <img src="{{ notice.image.url }}" alt="{{ notice.title }}">
         {% endif %}
-        <p>Published on: {{ notice.datetime }}</p>
-        <p>Views: {{ notice.views }}</p>
+        <p>업로드 날짜: {{ notice.datetime }}</p>
+        <p>조회수: {{ notice.views }}</p>
         
         <div class="action-buttons">
             {% if user == notice.user_id %}

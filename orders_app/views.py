@@ -76,7 +76,7 @@ def order_cancel(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     if request.user == order.user:
         # 주문과 관련된 Care 객체 삭제
-        Care.objects.filter(title=f'SHOP 서비스 요청 - {order.id}').delete()
+        Care.objects.filter(title=f'배송 서비스 요청 - {order.id}').delete()
         # 주문 삭제
         order.delete()
         messages.success(request, '주문이 성공적으로 취소되었습니다.')

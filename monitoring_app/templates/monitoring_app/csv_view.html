@@ -21,11 +21,11 @@
                     {{ form.category_order.label_tag }} {{ form.category_order }}
                     {{ form.category_service.label_tag }} {{ form.category_service }}
                     {{ form.selected_senior.label_tag }} {{ form.selected_senior }}
-                    <button type="submit" class="btn">Generate Report</button>
+                    <button type="submit" class="btn">서비스 이용 내역 조회</button>
                 </form>
             </div>
             <div class="main-content">
-                <h2>CSV View</h2>
+                <h2>표로 보기</h2>
                 {% if data_type == 'order' %}
                 <div class="heading-download-container">
                     <h2>주문 데이터</h2>
@@ -40,13 +40,13 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Product</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total Cost</th>
-                            <th>Created</th>
+                            <th>주문 번호</th>
+                            <th>식품명</th>
+                            <th>카테고리</th>
+                            <th>가격</th>
+                            <th>수량</th>
+                            <th>결제 금액</th>
+                            <th>주문 날짜</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -82,9 +82,9 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Care Type</th>
-                            <th>Datetime</th>
-                            <th>Care State</th>
+                            <th>케어 종류</th>
+                            <th>요청 날짜</th>
+                            <th>처리 상태</th>
                         </tr>
                     </thead>
                     <tbody>
