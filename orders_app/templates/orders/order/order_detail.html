@@ -155,6 +155,9 @@
                   결제 필요
                 {% endif %}
               </p>
+              {% if order.care.care_state == "REJECT" %}
+              <p><strong>관리자 메시지:</strong> {{ order.care.admin_message }}</p>
+            {% endif %}
             </div>
             <div class="order-actions">
               <a href="{% url 'orders_app:order_edit' order.id %}">주문 수정</a>

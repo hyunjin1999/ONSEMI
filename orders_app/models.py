@@ -30,7 +30,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     paid = models.BooleanField(default=False)
-
+    care = models.ForeignKey(Care, on_delete=models.CASCADE, null=True, blank=True, default=None)  # 여기를 수정
 
     class Meta:
         ordering = ['-created']

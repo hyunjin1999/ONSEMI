@@ -43,6 +43,7 @@ def payment_success(request, order_id):
                 'care_state': 'NOT_APPROVED',
             }
         )
+
         # 주문의 senior 정보를 care 객체에 추가
         if order.senior:
             care.seniors.add(order.senior)
