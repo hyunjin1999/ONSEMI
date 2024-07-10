@@ -19,10 +19,11 @@ class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        fields = ['content', 'rating']
+        fields = ['content', 'rating', 'image']
         labels = {
             'content': '후기',
             'rating': '별점',
+            'image' : '사진',
         }
 
 class ReplyForm(forms.ModelForm):

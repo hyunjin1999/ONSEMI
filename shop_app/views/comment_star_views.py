@@ -10,7 +10,7 @@ from django.views.decorators.http import require_POST
 @login_required
 def add_comment(request, product_id, slug):
     product = get_object_or_404(Product, id=product_id, slug=slug)
-    form = CommentForm(request.POST)
+    form = CommentForm(request.POST, request.FILES)
     if form.is_valid():
         comment = form.save(commit=False)
         comment.product = product
