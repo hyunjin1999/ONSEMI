@@ -14,7 +14,12 @@
               <hr>
             </div>
             <div class="order-status">
-              <strong>승인 여부:</strong> {{ order.approval_status }}
+              <strong>승인 여부:</strong> 
+              {% for choice in order.care.CARE_STATE_CHOICES %}
+                {% if choice.0 == order.care.care_state %}
+                  {{ choice.1 }}
+                {% endif %}
+              {% endfor %}
             <hr>
             </div>
             <div class="card-body">
