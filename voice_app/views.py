@@ -62,11 +62,21 @@ def upload_audio(request):
             # 예측 결과 저장
             voice_data.result = prediction[0][0]  # 이진 분류를 가정하고 필요에 따라 조정
             voice_data.save()
+
+            # Report 업데이트
+            update_report(voice_data)
             
             return redirect(reverse('voice_app:result', args=[voice_data.id]))
     else:
         form = VoiceDataForm()
     return render(request, 'voice_app/upload.html', {'form': form})
+
+# Report의 audio_test_result update
+def update_report(voice_data):
+    reports = Report.objects.filter(care__user=voice_data.user)
+    for report in reports:
+        report.audio_test_result = voice_data.result
+        report.save()
 
 def result(request, voice_id):
     audio = VoiceData.objects.get(id=voice_id)
@@ -154,11 +164,22 @@ def result(request, voice_id):
 #             # 예측 결과 저장
 #             voice_data.result = prediction[0][0]  # 이진 분류를 가정하고 필요에 따라 조정
 #             voice_data.save()
+
+#             # Report 업데이트
+#             update_report(voice_data)
             
 #             return redirect(reverse('voice_app:result', args=[voice_data.id]))
 #     else:
 #         form = VoiceDataForm()
 #     return render(request, 'voice_app/upload.html', {'form': form})
+
+# # Report의 audio_test_result update
+# def update_report(voice_data):
+#     reports = Report.objects.filter(care__user=voice_data.user)
+#     for report in reports:
+#         report.audio_test_result = voice_data.result
+#         report.save()
+
 
 # def result(request, voice_id):
 #     audio = VoiceData.objects.get(id=voice_id)

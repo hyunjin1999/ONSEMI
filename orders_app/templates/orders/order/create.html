@@ -6,54 +6,142 @@
 
 {% block content %}
 {{ block.super }}
-  <h1>Checkout</h1>
+<style>
+
+.order-info, form {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.order-info h3, .order-info p {
+    margin: 0;
+    padding: 10px 0;
+    border-bottom: 1px solid #dee2e6;
+    color: #333;
+}
+
+.order-info h3 {
+    font-size: 1.4em;
+    font-weight: bold;
+    text-align: left;
+}
+
+.order-info li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #dee2e6;
+    list-style: none;
+}
+
+.order-info li span {
+    font-weight: bold;
+    color: #000;
+}
+
+form p {
+    margin: 15px 0;
+    text-align: left;
+}
+
+form input[type="text"], form input[type="email"], form input[type="submit"], form select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+form input[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.error {
+    color: #dc3545;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+h1{
+  text-align:center;
+}
+</style>
+  <h1>결제</h1>
   <div class="order-info">
-    <h3>Your order</h3>
-    <ul>
+    <h3>주문상세</h3>
       {% for item in cart %}
         <li>
           {{ item.quantity }}x {{ item.product.name }}
-          <span>${{ item.total_price }}</span>
+          <span>{{ item.total_price }}원</span>
         </li>
       {% endfor %}
-    </ul>
-    <p>Total: ${{ cart.get_total_price }}</p>
+    <p>결제금액: {{ cart.get_total_price }}원</p>
   </div>
   <form method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
     <p>
-        {{ form.name.label_tag }}<br>
+        이름:<br>
         {{ form.name }}
     </p>
     <p>
-        {{ form.email.label_tag }}<br>
+        이메일:<br>
         {{ form.email }}
     </p>
     <p>
-        {{ form.address.label_tag }}<br>
+        주소:<br>
         {{ form.address }}
     </p>
     <p>
-        {{ form.phone.label_tag }}<br>
+        전화번호:<br>
         {{ form.phone }}
     </p>
     <p>
-        {{ form.senior.label_tag }}<br>
+        어르신:<br>
         {{ form.senior }}
     </p>
 
-    <p><input type="submit" value="Place order"></p>
+    <p><input type="submit" value="주문하기"></p>
   </form>
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
         const phoneInput = document.getElementById("id_phone");
+        
+        // 초기 플레이스홀더 설정
+        phoneInput.placeholder = "000-0000-0000";
+        
+        phoneInput.addEventListener("focus", function() {
+            if (phoneInput.value === "000-0000-0000" || phoneInput.value === "") {
+                phoneInput.value = "";
+            }
+        });
+
+        phoneInput.addEventListener("blur", function() {
+            if (phoneInput.value === "") {
+                phoneInput.placeholder = "000-0000-0000";
+            }
+        });
+
         phoneInput.addEventListener("input", function() {
             if (phoneInput.value === "000-0000-0000") {
                 phoneInput.value = "";
             }
         });
     });
-  </script>
+</script>
 {% endblock %}

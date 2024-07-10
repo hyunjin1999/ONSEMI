@@ -43,6 +43,7 @@ def payment_success(request, order_id):
                 'care_state': 'NOT_APPROVED',
             }
         )
+
         # 주문의 senior 정보를 care 객체에 추가
         if order.senior:
             care.seniors.add(order.senior)
@@ -51,6 +52,7 @@ def payment_success(request, order_id):
         # Order 모델의 care 필드 업데이트
         order.care = care
         order.save()
+
 
     # 결제가 성공하면 장바구니를 비웁니다.
     cart = Cart(request)

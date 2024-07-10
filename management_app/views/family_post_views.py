@@ -45,7 +45,13 @@ def add_care(request):
         title = request.POST.get("title")
         content = request.POST.get("content")
         senior = request.POST.get("senior")
-
+        parkinson_diagnosis = request.POST.get("parkinson_diagnosis")
+        
+        if parkinson_diagnosis == "on":
+            parkinson_diagnosis = True
+        else:
+            parkinson_diagnosis = False
+                
         user = request.user
         user = get_object_or_404(User, pk=user.id)
 
@@ -54,6 +60,7 @@ def add_care(request):
             title=title,
             content=content,
             user_id=user,
+            parkinson_diagnosis = parkinson_diagnosis,
         )
         care.save()
 
@@ -96,6 +103,7 @@ def update_care(request, care_id):
         title = request.POST.get("title")
         content = request.POST.get("content")
         senior_id = request.POST.get("senior")
+        parkinson_diagnosis = request.POST.get("parkinson_diagnosis")
 
         if care_type:
             care.care_type = care_type
@@ -107,6 +115,11 @@ def update_care(request, care_id):
             selected_senior = Senior.objects.get(pk=int(senior_id))
             care.seniors.clear()  # Clear existing seniors
             care.seniors.add(selected_senior)  # Add the selected senior
+            
+        if parkinson_diagnosis == "on":
+            care.parkinson_diagnosis = True
+        else:
+            care.parkinson_diagnosis = False
 
         care.save()
         return redirect(f"/management/care/detail/{care_id}/")
