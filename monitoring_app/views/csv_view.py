@@ -14,6 +14,7 @@ from ..forms import FilterForm
 from orders_app.models import Order
 from datetime import datetime, time
 from management_app.models import Care , Senior
+from django.utils import timezone
 
 # 맥 전용 한글 폰트
 from matplotlib import rc
@@ -109,15 +110,19 @@ def csv_view(request):
         data = []
         for order in orders:
             for item in order.items.all():
+                local_created = timezone.localtime(order.created)
+                formatted_created = local_created.strftime('%Y년 %m월 %d일 %p %I:%M')
+                formatted_created = formatted_created.replace('AM', '오전').replace('PM', '오후')
                 data.append({
-                    'Order ID': order.id,
-                    'Product': item.product.name,
-                    'Category': item.product.category.name,
-                    'Price': float(item.price),
-                    'Quantity': item.quantity,
-                    'Total Cost': float(item.price * item.quantity),
-                    'created': order.created.isoformat(),
+                    'order_id': order.id,
+                    'product': item.product.name,
+                    'category': item.product.category.name,
+                    'price': float(item.price),
+                    'quantity': item.quantity,
+                    'total_cost': float(item.price * item.quantity),
+                    'created': formatted_created,
                 })
+
 
         if category_order and category_order != 'all':
             data = [order for order in data if order['Category'] == category_order]
