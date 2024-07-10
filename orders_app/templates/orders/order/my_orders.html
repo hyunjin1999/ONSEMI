@@ -1,11 +1,51 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-  <h2>My Orders</h2>
-  <ul>
-    {% for order in orders %}
-      <li>
-        <a href="{% url 'orders_app:order_detail' order.id %}">Order {{ order.id }}</a> - {{ order.created }}
-      </li>
-    {% endfor %}
-  </ul>
+  <link rel="stylesheet" href="{% static 'css/my_orders.css' %}">
+  <h1 class="my-orders">주문 내역</h1>
+  <div class="container">
+    <div class="row">
+      {% for order in orders %}
+        <div class="col-12 mb-4">
+          <div class="card">
+            <div class="card-header">
+              <hr class="hr-top-1"><hr class="hr-top-2">
+              주문일시: {{ order.created }}
+              <hr>
+            </div>
+            <div class="order-status">
+              <strong>승인 여부: {% for choice in order.care.CARE_STATE_CHOICES %}
+                {% if choice.0 == order.care.care_state %}
+                  {{ choice.1 }}
+                {% endif %}
+              {% endfor %}
+              </strong> 
+            <hr>
+            </div>
+            <div class="card-body">
+              {% for item in order.items.all %}
+                <div class="row mb-2">
+                  <div class="col-3">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid" style="vertical-align:middle">
+
+                    <span class="card-title">{{ item.product.name }}</span>
+                    <span class="card-text-1">가격: {{ item.price }}원</span>
+                    <span class="card-text-2">수량: {{ item.quantity }}</span>
+                  </div>
+                  <hr>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="order-total">
+              <span>총 결제금액:</span> <span>{{ order.get_total_cost }} 원</span>
+            </div>
+            <div class="col-7">
+              <a href="{% url 'orders_app:order_detail' order.id %}" class="btn-primary">주문 상세보기</a>
+            </div>
+            <hr class="hr-bottom-1"><hr class="hr-bottom-2">
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
 {% endblock %}
