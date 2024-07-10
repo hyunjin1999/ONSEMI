@@ -78,7 +78,7 @@
                 url: 'poll_signal/',
                 type: 'GET',
                 success: function(data) {
-                    if (data.signal_received) {
+                    if (data.signal_received && typeof data.username !== 'undefined') {
                         handleSignal(data.username, data.seniorname, data.state);
                     }
                 },
