@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from blog_app.models import Blog, Comment, Like
-from blog_app.forms import PostForm, CommentForm
+from blog_app.models import Blog, Comment, Like, BlogImage
+from blog_app.forms import PostForm, CommentForm, ImageFormSet
 
 # 게시글 상세 보기 기능
 @login_required
@@ -19,6 +19,11 @@ def post_detail(request, pk):
     # 해당 게시글의 댓글 불러오기
     comments = post.comments.filter(parent__isnull=True)
     new_comment = None
+    comment_count = comments.count() # 기본 댓글 수
+    
+    # 각 댓글에 대한 대댓글 수를 계산
+    for comment in comments:
+        comment_count += comment.replies.count()
     
     # POST 방식: 댓글 저장
     if request.method == 'POST':
@@ -31,7 +36,8 @@ def post_detail(request, pk):
             if parent_id:
                 new_comment.parent = Comment.objects.get(id=parent_id)
             new_comment.save()
-            return redirect('blog_app:post_detail', pk=post.pk)
+            page_number = request.POST.get('page', 1)
+            return HttpResponseRedirect(f'{post.get_absolute_url()}?page={page_number}')
     
     # GET 방식: 댓글 작성 폼 로드
     else:
@@ -43,6 +49,8 @@ def post_detail(request, pk):
         'comments': comments,
         'new_comment': new_comment,
         'comment_form': comment_form,
+        'comment_count': comment_count,
+        'page_number': request.GET.get('page', 1),
     })
 
 
@@ -81,30 +89,42 @@ def post_list(request):
     return render(request, 'blog_app/post_list.html', {'posts': posts})
 
 
-# 게시글 수정 기능
+# 포스트 수정 기능
 @login_required
 def post_edit(request, pk):
-    
-    # 수정할 게시글 불러오기
     post = get_object_or_404(Blog, pk=pk)
     
-    # 게시글 작성자가 아니면 수정 불가
-    if post.user_id != request.user:
-        return redirect('blog_app:post_detail', pk=pk)
-
-    # POST방식: 수정된 게시글 저장 후 수정된 게시글로 이동
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.user_id = request.user
-            post.save()
-            return redirect('blog_app:post_detail', pk=post.pk)
+        formset = ImageFormSet(request.POST, request.FILES, queryset=BlogImage.objects.none())
         
-    # GET방식: 게시글 수정 폼으로 이동
+        if form.is_valid() and formset.is_valid():
+            post = form.save(commit=False)
+            post.save()
+            
+            # 처리할 삭제된 이미지 ID
+            deleted_images = request.POST.getlist('deleted_images')
+            for image_id in deleted_images:
+                try:
+                    image = BlogImage.objects.get(id=image_id)
+                    image.delete()
+                except BlogImage.DoesNotExist:
+                    continue
+
+            # 새로운 이미지 저장
+            for form in formset.cleaned_data:
+                if form:
+                    image = form['image']
+                    photo = BlogImage(blog=post, image=image)
+                    photo.save()
+                    
+            return redirect('blog_app:post_detail', pk=post.pk)
     else:
         form = PostForm(instance=post)
-    return render(request, 'blog_app/post_edit.html', {'form': form})
+        formset = ImageFormSet(queryset=BlogImage.objects.none())
+        
+    return render(request, 'blog_app/post_edit.html', {'form': form, 'formset': formset, 'images': post.images.all()})
+
 
 
 # 댓글 삭제 기능

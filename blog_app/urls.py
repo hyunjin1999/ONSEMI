@@ -1,7 +1,6 @@
 from django.urls import path
 from .views import post_views, upload_views, detail_views
-from .views import notice_detail_view, notice_list_views, notice_upload_views
-from django.views.generic.base import RedirectView
+from .views import notice_detail_view, notice_views
 
 app_name = 'blog_app'
 
@@ -20,11 +19,15 @@ urlpatterns = [
     path('<int:post_pk>/comment/<int:comment_pk>/delete/', detail_views.comment_delete, name='comment_delete'),
     
     # 공지사항 메인페이지
-    path('notice_list/', notice_list_views.notice_all, name='notice_list'),
-    path('search/upload/', RedirectView.as_view(url='/blog/upload/', permanent=False), name='redirect_to_upload'),
-    path('notice_list/upload/', notice_upload_views.notice_upload, name='notice_upload'),
+    path('notice_list/', notice_views.notice_all, name='notice_list'),
+    path('notice_list/upload/', upload_views.notice_upload, name='notice_upload'),
+    path("notice_list/search/", notice_views.notice_search, name='notice_search'),
     
     # 공지사항 상세 페이지
-    path('notice_list/notice_detail/<int:pk>/', notice_detail_view.notice_detail, name='notice_detail'),
-    path('notice_list/<int:pk>/edit/', notice_detail_view.post_edit, name='notice_edit'),
+    path('notice_list/<int:pk>/', notice_detail_view.notice_detail, name='notice_detail'),
+    path('notice_list/<int:pk>/like/', notice_detail_view.notice_like, name='notice_like'),
+    path('notice_list/<int:pk>/delete/', notice_detail_view.notice_delete, name='notice_delete'),
+    path('notice_list/<int:pk>/edit/', notice_detail_view.notice_edit, name='notice_edit'),
+    path('notice_list/<int:post_pk>/comment/<int:comment_pk>/delete/', notice_detail_view.notice_comment_delete, name='notice_comment_delete'),        
+    
 ]
