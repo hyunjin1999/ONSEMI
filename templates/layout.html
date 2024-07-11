@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
 <html lang="ko">
 {% load static %}
 <head>
@@ -24,7 +24,6 @@
             {% if request.user.is_authenticated %}
             <a href="/user/profile/">나의 정보</a>
             <a href="/blog/notice_list/">공지사항</a>
-            {% comment %} <a href="/user_page/">사용자 페이지</a> {% endcomment %}
             {% else %}
             <a href="/user/register/">회원가입</a>
             {% endif %}
@@ -61,4 +60,4 @@
 
 </script>
 {% block script %}
-{% endblock %}
+{% endblock %} {% endcomment %}

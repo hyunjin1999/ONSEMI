@@ -13,11 +13,11 @@ body {
     background-color: #f4f4f4;
 }
 
-.wrapper {
+/* .wrapper {
     display: flex;
     flex-direction: column;
     height: 100vh;
-}
+} */
 
 .header {
     background-color: white;
@@ -30,7 +30,8 @@ body {
 .header img {
     height: 50px;
     width: 50px;
-}
+} 
+
 
 .header nav a {
     margin: 0 15px;
