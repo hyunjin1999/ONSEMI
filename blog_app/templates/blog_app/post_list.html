@@ -8,73 +8,15 @@
 
     {% block extra_css %}
     <link rel="stylesheet" href="{% static 'base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/post_list.css' %}">
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/image.css' rel='stylesheet'>
     <style>
-        main {
-            width: 80%;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        nav {
-            text-align: center;
-        }
-        .wrapper nav{
-            margin-bottom:20px;
-        }
-        nav a {
-            margin: 0 15px;
-            text-decoration: none;
-            color: #28a745;
-            font-weight: bold;
-        }
-        nav a:hover {
-            color: blue;
-        }
-        nav a#selected{
-            color: red;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:hover {
-            background-color: #f9f9f9;
-            cursor: pointer;
-        }
-        .new a {
+        .gg-image {
             display: inline-block;
-            padding: 10px 20px;
-            margin: 10px 0;
-            background-color: #28a745;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .new a:hover {
-            background-color: #218838;
-        }
-        form {
-            margin-top: 20px;
-        }
-        label {
-            font-weight: bold;
-        }
-        input[type="text"] {
-            width: calc(100% - 120px);
-            padding: 10px;
-            margin-right: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            width: 15px;
+            height: 15px;
+            vertical-align: middle;
+            margin-left: 10px;
         }
     </style>
     {% endblock %}
@@ -83,30 +25,36 @@
     {% block content %}
     <main>
         <nav>
-            <a id='selected' href="">자유게시판</a>
+            <a id='selected' href="{% url 'blog_app:post_list' %}">자유게시판</a>
             <a href="{% url 'blog_app:notice_list' %}">공지사항</a>
         </nav>
-        {% if post_list %}
+        {% if page_obj %}
         <table id="container">
             <thead>
                 <tr>
-                    <th>등록 일자</th>
                     <th>제목</th>
                     <th>작성자</th>
-                    <th>이미지</th>
+                    <th>등록 일자</th>
+                    <th>좋아요</th>
+                    <th>조회수</th>
                 </tr>
             </thead>
             <tbody>
-                {% for post in post_list %}
-                <tr onclick="location.href='{% url 'blog_app:post_detail' post.pk %}';">
-                    <td>{{ post.datetime }} </td>
-                    <td>{{ post.title }}</td>
-                    <td>{{ post.name }}</td>
+                {% for item in page_obj %}
+                <tr onclick="location.href='{% url 'blog_app:post_detail' item.post.pk %}?page={{ page_obj.number }}';">
                     <td>
-                    {% if post.image %}
-                        <img src="{{ post.image.url }}" alt="{{ post.title }}" width=80 height=120>
-                    {% endif %}
+                        <span class="short-title">{{ item.post.title }}</span>
+                        {% if item.comment_count > 0 %}
+                            <span class="comment-indicator">[{{ item.comment_count }}]</span>
+                        {% endif %}
+                        {% if item.has_image %}
+                            <i class="gg-image"></i>
+                        {% endif %}
                     </td>
+                    <td>{{ item.post.name }}</td>
+                    <td>{{ item.post.datetime }}</td>
+                    <td>{{ item.post.post_likes.count }}</td>
+                    <td>{{ item.post.views }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -122,10 +70,32 @@
         <div>
             <form action="{% url 'blog_app:search' %}" method="get">
                 <label for="search">검색 : </label>
-                <input type="text" id="search" name="search" placeholder="검색어를 입력하세요">
+                <input type="text" id="search" name="search" placeholder="검색어를 입력하세요" value="{{ search_query }}">
             </form>
         </div>
+
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1&search={{ search_query }}">&laquo; 처음</a>
+                <a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}">이전</a>
+            {% endif %}
+
+            {% for page_num in page_obj.paginator.page_range %}
+                {% if page_num >= page_obj.number|add:'-2' and page_num <= page_obj.number|add:'2' %}
+                    {% if page_num == page_obj.number %}
+                        <span class="active">{{ page_num }}</span>
+                    {% else %}
+                        <a href="?page={{ page_num }}&search={{ search_query }}">{{ page_num }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}">다음</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}">끝 &raquo;</a>
+            {% endif %}
+        </div>
     </main>
-{% endblock %}
+    {% endblock %}
 </body>
 </html>

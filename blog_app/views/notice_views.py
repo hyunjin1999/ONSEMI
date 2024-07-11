@@ -4,9 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
 @login_required
-def post_all(request):
-    # Blog에서 게시글만 불러오기
-    posts = Blog.objects.filter(blog_type='BLOG').order_by('-datetime')
+def notice_all(request):
+    # notice 게시글만 불러오기
+    posts = Blog.objects.filter(blog_type='NOTICE').order_by('-datetime')
 
     # 각 게시물의 댓글 수 계산 및 이미지 존재 여부 확인
     post_list = []
@@ -29,12 +29,12 @@ def post_all(request):
     context = {
         'page_obj': page_obj
     }
-    return render(request, 'blog_app/post_list.html', context)
+    return render(request, 'blog_app/notice_list.html', context)
 
 @login_required
-def search(request):
+def notice_search(request):
     search_query = request.GET.get('search', '')
-    query = Blog.objects.filter(blog_type='BLOG', title__icontains=search_query).order_by('-datetime')
+    query = Blog.objects.filter(blog_type='NOTICE', title__icontains=search_query).order_by('-datetime')
 
     # 각 게시물의 댓글 수 계산 및 이미지 존재 여부 확인
     post_list = []
@@ -59,4 +59,4 @@ def search(request):
         'search_query': search_query,
         'post_list': page_obj.object_list
     }
-    return render(request, 'blog_app/post_list.html', context)
+    return render(request, 'blog_app/notice_list.html', context)
