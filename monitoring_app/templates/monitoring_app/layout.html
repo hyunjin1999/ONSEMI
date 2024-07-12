@@ -30,12 +30,14 @@
             {% endif %}
             <img src="{% static 'images/person.png' %}" alt="MyPage" id="seniorImage">
             <div id="infoBox" class="info-box">
-                <p id="signal-message1"></p>
+                <p id="signal-message1">알림이 없습니다.</p>
                 <p id="signal-message2"></p>
-                <a href="{% url 'monitoring_app:family_monitor' %}">
-                    <button id="navigateButton">모니터링</button>
-                </a>
-                <button id="closeMessageButton">알림 지우기</button> <!-- Added close button -->
+                <div class="button-container">
+                    <a href="{% url 'monitoring_app:family_monitor' %}">
+                        <button id="navigateButton">모니터링</button>
+                    </a>
+                    <button id="navigateButton" class="close-button">알림 지우기</button> <!-- Added close button -->
+                </div>
             </div>
         </nav>
     </div>
@@ -69,9 +71,17 @@
         function handleSignal(username, seniorname, state) {
             // 시그널을 받았을 때 메시지를 표시할 HTML 요소 업데이트
             const message = '요청하신 ' + seniorname + ' 어르신 케어 서비스가 ' + state + '로 변경 되었습니다.';
-            $('#signal-message1').text(message);
+            var temp = document.getElementById("signal-message1").textContent;
+            console.log(temp)
+            if(temp === '알림이 없습니다.'){
+                console.log('여기1:', temp); // Debug message
+                $('#signal-message1').text(message);
+            } else{
+                console.log('여기2:', temp); // Debug message
+                $('#signal-message2').text(message);
+            }
             localStorage.setItem('signalMessage', message);
-            console.log('Signal handled and stored:', message); // Debug message
+            console.log('Signal handled and stored:', temp); // Debug message
         }
 
         function pollSignal() {
@@ -102,8 +112,9 @@
         }
 
         // Clear the message on "X" button click
-        $('#closeMessageButton').click(function() {
-            $('#signal-message1').text('');
+        $('.close-button').click(function() {
+            $('#signal-message1').text('알림이 없습니다.');
+            $('#signal-message2').text('');
             localStorage.removeItem('signalMessage');
             console.log('Message cleared'); // Debug message
         });
