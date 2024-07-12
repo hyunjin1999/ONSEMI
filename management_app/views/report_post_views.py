@@ -11,15 +11,14 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from io import BytesIO
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Dense, Flatten
-from tensorflow.keras.applications import ResNet101
+from tensorflow.keras.models import load_model
 from django.core.files.storage import default_storage
 from pydub import AudioSegment
 from io import BytesIO
 import os
 from monitoring_app.signals import my_signal
 
-##### 윈도우 #####
+# ##### 윈도우 #####
 # https://www.gyan.dev/ffmpeg/builds/에서 ffmpeg-git-full.7z 다운로드 받고, 경로 수정
 # ffmpeg 경로 설정
 AudioSegment.converter = r"C:\Users\prime\Downloads\설치파일\Install\ffmpeg-2024-07-07-git-0619138639-full_build\ffmpeg-2024-07-07-git-0619138639-full_build\bin\ffmpeg.exe"
@@ -28,54 +27,7 @@ AudioSegment.ffprobe = r"C:\Users\prime\Downloads\설치파일\Install\ffmpeg-20
 # 환경 변수 설정
 os.environ["PATH"] += os.pathsep + r"C:\Users\prime\Downloads\설치파일\Install\ffmpeg-2024-07-07-git-0619138639-full_build\ffmpeg-2024-07-07-git-0619138639-full_build\bin"
 
-##### #####
-
-def preprocess_audio(audio_path):
-    # pydub을 사용하여 오디오 파일을 wav로 변환
-    audio = AudioSegment.from_file(audio_path)
-    wav_path = os.path.splitext(audio_path)[0] + '.wav'
-    audio.export(wav_path, format='wav')
-
-    # 오디오 파일을 처리하고 MFCC를 추출
-    audio_data, sample_rate = librosa.load(wav_path, sr=16000)
-    mfccs = librosa.feature.mfcc(y=audio_data, sr=sample_rate, n_mfcc=13)
-
-    # MFCC를 이미지로 변환하고 저장
-    plt.figure(figsize=(3.2, 3.2))  # 저장 시 224x224에 맞추기 위한 크기 설정
-    librosa.display.specshow(mfccs, sr=sample_rate, x_axis='time')
-    image_path = os.path.splitext(audio_path)[0] + '.png'
-    plt.savefig(image_path, bbox_inches='tight', pad_inches=0)
-    plt.close()
-
-    # 이미지를 로드하고 전처리
-    image = Image.open(image_path).convert('RGB')
-    image = image.resize((224, 224))
-    image_array = np.array(image) / 255.0  # 정규화
-    image_array = np.expand_dims(image_array, axis=0)  # 배치 차원 추가
-
-    return image_array
-
-def resnet_model():
-    input_shape = (224, 224, 3)
-    base_model = ResNet101(weights='imagenet', include_top=False, input_shape=input_shape)
-    x = base_model.output
-    x = Flatten()(x)
-    predictions = Dense(1, activation='sigmoid')(x)
-    model = Model(inputs=base_model.input, outputs=predictions)
-    return model
-
-def predict_audio_result(audio_data, sample_rate):
-    # 오디오 데이터를 전처리하여 이미지로 변환
-    image_array = preprocess_audio(audio_data, sample_rate)
-    
-    # 모델을 로드하고 예측 수행
-    model = resnet_model()
-    # 커스텀 학습 모델 파일이 있는 경우 아래 줄의 주석을 해제
-    # model_path = os.path.join('path_to_model_directory', 'model.h5')
-    # model.load_weights(model_path)
-    prediction = model.predict(image_array)
-    
-    return prediction[0][0]
+# ##### #####
 
 @login_required
 def create_report(request, care_id):
@@ -98,18 +50,13 @@ def create_report(request, care_id):
             audio_path = default_storage.save('tmp/' + audio_file.name, audio_file)
             audio_path = default_storage.path(audio_path)
 
-            # 오디오 파일을 처리하고 이미지 배열 생성
-            image_array = preprocess_audio(audio_path)
-
-            # 모델을 로드하고 예측 수행
-            model = resnet_model()
-            # 커스텀 학습 모델 파일이 있는 경우 아래 줄의 주석을 해제
-            # model_path = os.path.join('voice_app', 'models', 'savemodel_101_all_Dense_32.h5')
-            # model.load_weights(model_path)
-            prediction = model.predict(image_array)
+            # 오디오 파일을 처리하고 예측 수행
+            model_path = "D:\Aivle\parkinson_voice_test.keras"
+            predictions = predict_audio_segments(audio_path, model_path)
+            result = analyze_results(predictions)
 
             # 예측 결과 저장
-            report.audio_test_result = prediction[0][0]  # 이진 분류를 가정하고 필요에 따라 조정
+            report.audio_test_result = result  # 이진 분류를 가정하고 필요에 따라 조정
             report.save()
 
             # 임시 파일 삭제
@@ -151,23 +98,19 @@ def manage_report(request, report_id):
                 ReportImage.objects.create(report=report, image=f)
             return redirect(previous_url)
 
+        # 음성 파일 업로드 및 처리 부분
         if 'audio_file' in request.FILES:
             audio_file = request.FILES['audio_file']
             audio_path = default_storage.save('tmp/' + audio_file.name, audio_file)
             audio_path = default_storage.path(audio_path)
 
-            # 오디오 파일을 처리하고 이미지 배열 생성
-            image_array = preprocess_audio(audio_path)
-
-            # 모델을 로드하고 예측 수행
-            model = resnet_model()
-            # 커스텀 학습 모델 파일이 있는 경우 아래 줄의 주석을 해제
-            # model_path = os.path.join('voice_app', 'models', 'savemodel_101_all_Dense_32.h5')
-            # model.load_weights(model_path)
-            prediction = model.predict(image_array)
+            # 오디오 파일을 처리하고 예측 수행
+            model_path = "D:\Aivle\parkinson_voice_test.keras"
+            predictions = predict_audio_segments(audio_path, model_path)
+            result = analyze_results(predictions)
 
             # 예측 결과 저장
-            report.audio_test_result = prediction[0][0]  # 이진 분류를 가정하고 필요에 따라 조정
+            report.audio_test_result = result  # 이진 분류를 가정하고 필요에 따라 조정
             report.save()
 
             # 임시 파일 삭제
@@ -235,3 +178,68 @@ def refresh_pending_reports(request):
         Report.objects.create(care=care, user=request.user, status='미등록')
 
     return JsonResponse({'message': '미등록 보고서가 생성되었습니다.'})
+
+# 음성 파일 전처리 함수
+def preprocess_audio(audio_path):
+    # 오디오 파일을 wav로 변환
+    audio = AudioSegment.from_file(audio_path)
+    wav_path = os.path.splitext(audio_path)[0] + '.wav'
+    audio.export(wav_path, format='wav')
+    return wav_path
+
+# 오디오 세그먼트를 전처리하여 이미지로 변환하는 함수
+def preprocess_segment(audio_segment, sample_rate):
+    # Mel-spectrogram 생성 및 이미지 변환
+    S = librosa.feature.melspectrogram(y=audio_segment, sr=sample_rate, n_mels=256)
+    S_DB = librosa.power_to_db(S, ref=np.max)
+
+    fig, ax = plt.subplots()
+    ax.axes.get_xaxis().set_visible(False)
+    ax.axes.get_yaxis().set_visible(False)
+    librosa.display.specshow(S_DB, sr=sample_rate, x_axis='time', y_axis='mel', ax=ax)
+    plt.axis('off')
+    plt.margins(0)
+    file_name = 'temp_image.png'
+    plt.savefig(file_name, bbox_inches='tight', pad_inches=0)
+    plt.clf()
+    plt.close()
+
+    # 이미지를 로드하고 전처리
+    image = Image.open(file_name).convert('RGB')
+    image = image.resize((224, 224))
+    image_array = np.array(image).astype(np.float32) / 255.0  # 정규화
+    image_array = np.expand_dims(image_array, axis=0)  # 배치 차원 추가
+
+    return image_array
+
+# 오디오 세그먼트를 예측하는 함수
+def predict_audio_segments(audio_path, model_path):
+    # 오디오 파일을 로드 및 변환
+    wav_path = preprocess_audio(audio_path)
+    audio_data, sample_rate = librosa.load(wav_path, sr=48000)
+    
+    # 모델 로드
+    model = load_model(model_path)
+    
+    segment_duration = sample_rate  # 1초에 해당하는 샘플 수
+    results = []
+
+    for i in range(5):
+        start_sample = i * segment_duration
+        end_sample = start_sample + segment_duration
+        audio_segment = audio_data[start_sample:end_sample]
+        
+        # 오디오 세그먼트 전처리 및 예측
+        image_array = preprocess_segment(audio_segment, sample_rate)
+        prediction = model.predict(image_array)
+        results.append(prediction[0][0])
+
+    return results
+
+# 예측 결과를 분석하는 함수
+def analyze_results(predictions):
+    high_risk_count = sum(pred >= 0.5 for pred in predictions)
+    if high_risk_count >= 3:
+        return "병원에 방문하셔서 진단을 받는 것을 추천드립니다"
+    else:
+        return "정상입니다"

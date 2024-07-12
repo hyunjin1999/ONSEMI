@@ -33,6 +33,8 @@
         
         input[type="text"],
         input[type="file"],
+        input[type="date"],
+        input[type="time"],
         select {
             width: 100%;
             padding: 8px;
@@ -40,7 +42,7 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        
+
         /* input[type="submit"]와 button의 공통 스타일 */
         input[type="submit"],
         button {
@@ -72,29 +74,91 @@
             display: inline-block;
             margin-right: 10px; /* 각 라디오 버튼과 라벨 사이의 간격 조절 */
         }
+
+        .hidden {
+            display: none;
+        }
+
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
     <h1>상태 업데이트</h1>
 
-    <form method="post">
+    <form method="post" id="care-form">
         {% csrf_token %}
         <div>
             <label for="title">제목: {{ care.title }}</label>
-            <label for="cotent">내용: {{ care.content }}</label>
+            <label for="content">내용: {{ care.content }}</label>
         
             <label for="state">상태: </label>
             <div class="radio-buttons">
-            <input type="radio" id="NOT_APPROVED" name="state" value="NOT_APPROVED" {% if care.care_state == 'NOT_APPROVED' %}checked{% endif %}>
-            <label for="NOT_APPROVED">요청 승인 대기</label>
-            <input type="radio" id="APPROVED" name="state" value="APPROVED" {% if scare.care_state == 'APPROVED' %}checked{% endif %}>
-            <label for="APPROVED">요청 승인 완료</label>
+                <input type="radio" id="NOT_APPROVED" name="state" value="NOT_APPROVED" {% if care.care_state == 'NOT_APPROVED' %}checked{% endif %}>
+                <label for="NOT_APPROVED">요청 승인 대기</label>
+                <input type="radio" id="APPROVED" name="state" value="APPROVED" {% if care.care_state == 'APPROVED' %}checked{% endif %}>
+                <label for="APPROVED">요청 승인 완료</label>
+            </div>
+            
+            <div id="visit-details" class="hidden">
+                <label for="visit_date">방문 날짜:</label>
+                <input type="date" id="visit_date" name="visit_date" value="{{ care.visit_date|date:'Y-m-d' }}">
+                <br><br>
+
+                <label for="visit_time">방문 시간:</label>
+                <div class="time-input-container">
+                    <input type="time" id="visit_time" name="visit_time" value="{{ care.visit_time|date:'H:i' }}">
+                </div>
+                <br><br>
             </div>
         </div>
-        <button type="submit" class="submit">업데이트</button>
+        <button type="submit" class="submit disabled" id="update-button" disabled>업데이트</button>
         <button type="button" onclick="window.location.href = '/management/care/list/'" class="cancle">취소</button>
     </form>
     </div>
+    <script>
+        document.getElementById('APPROVED').addEventListener('change', function() {
+            document.getElementById('visit-details').classList.remove('hidden');
+            checkFormValidity();
+        });
+
+        document.getElementById('NOT_APPROVED').addEventListener('change', function() {
+            document.getElementById('visit-details').classList.add('hidden');
+            document.getElementById('update-button').classList.add('disabled');
+            document.getElementById('update-button').disabled = true;
+        });
+
+        document.getElementById('visit_date').addEventListener('change', function() {
+            const visitDate = new Date(this.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // 오늘 날짜의 시간을 0으로 설정
+
+            if (visitDate < today) {
+                alert('오늘 이후 날짜를 선택해주세요.');
+                this.value = '';
+            }
+            checkFormValidity();
+        });
+
+        document.getElementById('visit_time').addEventListener('change', checkFormValidity);
+
+        function checkFormValidity() {
+            const visitDate = document.getElementById('visit_date').value;
+            const visitTime = document.getElementById('visit_time').value;
+            const updateButton = document.getElementById('update-button');
+            
+            if (document.getElementById('APPROVED').checked && visitDate && visitTime) {
+                updateButton.classList.remove('disabled');
+                updateButton.disabled = false;
+            } else {
+                updateButton.classList.add('disabled');
+                updateButton.disabled = true;
+            }
+        }
+    </script>
 </body>
 </html>
