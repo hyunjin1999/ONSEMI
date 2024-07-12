@@ -91,7 +91,7 @@ li{
 }
 
 .sidebar form .btn {
-    background-color: black;;
+    background-color: #16a085;;
     border: none;
     padding: 12px;
     color: #fff;
@@ -103,7 +103,7 @@ li{
 }
 
 .sidebar form .btn:hover {
-    background-color: #16a085;
+    background-color: #0d836c;
 }
 
 .sidebar input{
@@ -147,12 +147,18 @@ li{
     margin-top: -20px;
 }
 
+.charts-wrapper {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
 .chart-container {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
+    flex: 1;
+    padding: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    margin-top: 20px;
     text-align: center;
 }
 
@@ -169,7 +175,7 @@ li{
     margin: 0 auto;
 }
 
-.main-content .add {
+.main-content .add, .detail {
     display: block;
     width: fit-content;
     margin: 15px auto;
@@ -181,7 +187,7 @@ li{
     text-align: center;
 }
 
-.main-content a:hover {
+.main-content .add:hover, .detail:hover{
     background-color: #104e31;
     border-color: #d0eaff;
     text-decoration: underline;
