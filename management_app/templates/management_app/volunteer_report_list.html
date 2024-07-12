@@ -1,8 +1,13 @@
+{% extends "layout.html" %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Report List</title>
+    {% block title %}Care List{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
     <style>
         table {
             width: 100%;
@@ -55,11 +60,38 @@
         .button-cell button:hover {
             background-color: #d5869d;
         }
+        nav {
+            margin-top : 15px;
+            text-align: left;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .wrapper nav{
+            margin-bottom:20px;
+        }
+        nav a:hover {
+            color: blue;
+        }
+        nav a#selected{
+            
+        }
+        nav a#not_selected{
+            opacity : 0.4;
+        }
     </style>
-    
+    {% endblock %}
 </head>
 <body>
-    <h1>보고서 목록</h1>
+    {% block content %}
+    <nav>
+        <a id='selected' href="{% url 'management_app:report_list' %}">보고서 목록</a>
+        <a id='not_selected' href="{% url 'management_app:care_list' %}">케어 목록</a>
+    </nav>
 
     <form method="get">
         <label for="sort_by">정렬:</label>
@@ -184,6 +216,7 @@
             location.href = url;
         }
     </script>
+    {% endblock %}
 </body>
 </html>
 

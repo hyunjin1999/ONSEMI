@@ -36,31 +36,39 @@ from django.core.paginator import Paginator
 @volunteer_required
 def care_list(request):
     sort_by = request.GET.get("sort_by", "datetime")
-    order = request.GET.get("order", "desc") # 내람차순으로 수정
+    order = request.GET.get("order", "desc") # 내림차순으로 수정
     user_id = request.GET.get("user", "")
 
     if order == "desc":
         sort_by = "-" + sort_by
 
-    cares = Care.objects.all()
+    # 상태가 NOT_APPROVED인 케어 요청 가져오기
+    not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED')
+
+    # 상태가 APPROVED이고 현재 로그인한 사용자가 승인한 케어 요청만 가져오기
+    approved_cares = Care.objects.filter(care_state='APPROVED', approved_by=request.user)
 
     if user_id:
-        cares = cares.filter(user_id=user_id)
-    
-    # 케어 타입 or 케어 상태를 기준으로 정렬할 때 기본적으로 최신 care 요청부터 보임
-    order_by_fields = [sort_by, '-datetime'] if 'datetime' not in sort_by else [sort_by]
+        not_approved_cares = not_approved_cares.filter(user_id=user_id)
+        approved_cares = approved_cares.filter(user_id=user_id)
 
-    cares = cares.order_by(sort_by)
+    # 케어 타입 or 케어 상태를 기준으로 정렬할 때 기본적으로 최신 care 요청부터 보임
+    not_approved_cares = not_approved_cares.order_by(sort_by)
+    approved_cares = approved_cares.order_by(sort_by)
+    
     users = User.objects.all()
 
     # 페이지네이션 설정
-    paginator = Paginator(cares, 10)  # 페이지당 10개의 객체를 보여줌
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    paginator1 = Paginator(not_approved_cares, 10)  # 페이지당 10개의 객체를 보여줌
+    paginator2 = Paginator(approved_cares, 10)  # 페이지당 10개의 객체를 보여줌
+    page_number1 = request.GET.get('page1')
+    page_number2 = request.GET.get('page2')
+    page_obj1 = paginator1.get_page(page_number1)
+    page_obj2 = paginator2.get_page(page_number2)
 
     context = {
-        "page_obj": page_obj,
-        "cares": cares,
+        "page_obj1": page_obj1,
+        "page_obj2": page_obj2,
         "users": users,
         "selected_user": user_id,
         "current_sort_by": request.GET.get("sort_by", "datetime"),  # 요청된 sort_by 그대로 전달
@@ -77,6 +85,9 @@ def status_update(request, care_id):
     
     if request.method == 'POST':
         care.care_state = request.POST.get('state')
+        care.visit_date = request.POST.get('visit_date')
+        care.visit_time = request.POST.get('visit_time')
+        care.approved_by = request.user
         care.save()
         my_signal.send(sender=care, username=care.user_id.username, senior_name=care.seniors.all()[0].name)
         return redirect('/management/care/list/')
