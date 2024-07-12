@@ -32,10 +32,14 @@
                 </select>
                 <label for="sort_by">정렬:</label>
                 <select name="sort_by" id="sort_by">
-                    <option value="-created_at" {% if sort_by == '-created_at' %}selected{% endif %}>최신순</option>
-                    <option value="created_at" {% if sort_by == 'created_at' %}selected{% endif %}>오래된 순</option>
+                    <option value="-created_at">최신순</option>
+                    <option value="created_at">오래된 순</option>
                 </select>
-                <label for="type_filter">케어 타입:</label>
+                {{ form.start_date.label_tag }}
+                {{ form.start_date }}<br>
+                {{ form.end_date.label_tag }}
+                {{ form.end_date }}
+                <br>
                 <select name="type_filter" id="type_filter">
                     <option value="all" {% if type_filter == 'all' %}selected{% endif %}>전체</option>
                     <option value="shop" {% if type_filter == 'shop' %}selected{% endif %}>쇼핑</option>
