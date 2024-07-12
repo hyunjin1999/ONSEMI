@@ -2,77 +2,165 @@
 {% load static %}
 
 {% block title %}ONSEMI{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'introduce.css' %}">
-<link rel="stylesheet" href="{% static 'base.css' %}">
+<style>
+    .header {
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        
+    }
+    h1{
+        text-align:center;
+        color:black;
+    }
+    h2{
+        color:black;
+    }
+    h3{
+        color:black;
+    }
+    .main {
+        padding: 20px;
+        background-color: #fff;
+        
+    }
+
+    .vision-section {
+        position: relative;
+        text-align: center;
+        color: black;
+    }
+
+    .vision-section img {
+       width:1080px;
+        height: 370px;
+        opacity:0.75;
+    }
+
+    .vision-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .vision-text h1 {
+        font-size: 36px;
+        margin: 0;
+    }
+
+    .vision-text p {
+        font-size: 18px;
+    }
+
+    .values-section {
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .values-section h2 {
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .values-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+
+    .value-box {
+        background-color: #f0f4f8;
+        padding: 20px;
+        margin: 10px;
+        border-radius: 8px;
+        width: 45%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .value-box img {
+        width: 50px;
+        height: 50px;
+        margin-right: 20px;
+    }
+
+    .value-box .text {
+        text-align: left;
+    }
+
+    .value-box .text h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .footer {
+        background-color: #f8f9fa;
+        padding: 10px;
+        text-align: center;
+        font-size: 14px;
+    }
+    nav ul li {
+        margin: 0 15px;
+    }
+</style>
 {% endblock %}
+
 {% block content %}
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body class="bg-gray-100">
-    <div class="min-h-screen flex flex-col">
-        <div class="flex justify-center items-center flex-grow">
-            <div id="introduce" class="flex flex-wrap justify-center">
-                <div class="box">
-                    <div class="rectangle">
-                        <img src="{% static 'main/onsemi.png' %}" alt="Rectangle Image">
-                    </div>
-                    <p class="text-center">허혁<br>블라블라</p>
-                </div>
-                <div class="box">
-                    <div class="rectangle">
-                        <img src="{% static 'main/onsemi.png' %}" alt="Rectangle Image">
-                    </div>
-                    <p class="text-center">남지성<br>블라블라</p>
-                </div>
-                <div class="box">
-                    <div class="rectangle">
-                        <img src="{% static 'main/onsemi.png' %}" alt="Rectangle Image">
-                    </div>
-                    <p class="text-center">김건<br>블라블라</p>
-                </div>
-                <div class="box">
-                    <div class="rectangle">
-                        <img src="{% static 'main/onsemi.png' %}" alt="Rectangle Image">
-                    </div>
-                    <p class="text-center">강현진<br>블라블라</p>
-                </div>
-            </div>
+
+<div class="main">
+    <div class="vision-section">
+        <h1>온새미(ONSEMI)</h1>
+        <img src="{% static 'main/introduce5.png' %}" alt="Vision Image">
+        <div class="vision-text">
+            <h3>식료품을 구하는 것도 녹록지 않은 동네</h2>
+            <h3>그 안에서 지긋한 연세가 되어버린 우리 부모님</h2>
+            <h3>서로에게 보내지 못한 마음과 소식들</h2>
+            <h2>그 모든 갈증,
+                이 땅에서 솟아나는 샘물 되어
+                온새미가 채우겠습니다</h2>
         </div>
     </div>
-    <div id="introduce" class="flex flex-wrap justify-center">
-        <div class="box2">
-            <div class="rectangle2">
-                <img src="{% static 'main/onsemi.png' %}" alt="Rectangle Image">
+    <div class="values-section">
+        <h2>KT 핵심가치</h2>
+        <div class="values-container">
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'images/customer.png' %}" alt="Customer Icon"></div>
+                <div class="text">
+                    <h3>고객</h3>
+                    <p>고객의 니즈 충족과 문제 해결을 위해 치열하게 고민하고 새로운 고객 경험을 제시합니다</p>
+                </div>
             </div>
-            <p class="text-center">이윤혁<br>블라블라</p>
-        </div>
-        <div class="box2">
-            <div class="rectangle2">
-                <img src="{% static 'main/onsemi.png' %}" alt="Rectangle Image">
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'images/competence.png' %}" alt="Competence Icon"></div>
+                <div class="text">
+                    <h3>역량</h3>
+                    <p>고객의 문제를 해결하고 고객이 원하는 혁신을 가장 잘할 수 있도록 전문성을 높입니다</p>
+                </div>
             </div>
-            <p class="text-center">김예진<br>블라블라</p>
-        </div>
-        <div class="box2">
-            <div class="rectangle2">
-                <img src="{% static 'main/onsemi.png' %}" alt="Rectangle Image">
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'images/reality.png' %}" alt="Reality Icon"></div>
+                <div class="text">
+                    <h3>실질</h3>
+                    <p>우리 본업인 통신과 ICT를 단단히 하고 화려한 겉모습보다 실질적인 성과를 추구합니다</p>
+                </div>
             </div>
-            <p class="text-center">이성표<br>블라블라</p>
-        </div>
-        <div class="box2">
-            <div class="rectangle2">
-                <img src="{% static 'main/onsemi.png' %}" alt="Rectangle Image">
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'images/harmony.png' %}" alt="Harmony Icon"></div>
+                <div class="text">
+                    <h3>화합</h3>
+                    <p>다름을 인정하되 서로 존중하고 합심해 함께 목표를 이뤄 갑니다</p>
+                </div>
             </div>
-            <p class="text-center">서다빈<br>블라블라</p>
         </div>
     </div>
 </div>
-</body>
-</html>
+
 {% endblock %}
