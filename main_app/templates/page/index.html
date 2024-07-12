@@ -50,6 +50,20 @@
         width: 100%;
         text-align: center;
         color: white;
+        animation: enlargeText 2s ease-out forwards; /* 애니메이션 추가 */
+    }
+
+    @keyframes enlargeText {
+        0% {
+            font-size: 1.17em; /* 기본 h3 크기 */
+            font-weight: normal;
+            letter-spacing: normal;
+        }
+        100% {
+            font-size: 2em; /* h1 크기 */
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
     }
 
     .scroll-button {
@@ -69,28 +83,36 @@
         display: none; /* 버튼 클릭 전까지 숨김 */
         width: 100%;
         box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
+        margin: 0;
+        padding: 0;
     }
 
     h1, h2, h3 {
         text-align: center;
         color: black;
+        margin: 0;
     }
 
     .main {
         padding: 0; /* 여백 없애기 */
         background-color: #fff;
+        margin: 0;
     }
 
     .vision-section {
         position: relative;
         text-align: center;
-        height: auto;
+        height: 800px;
+        margin: 0; /* 여백 없애기 */
+        padding: 0; /* 패딩 없애기 */
     }
 
     .vision-section img {
         width: 100%;
-        height: auto;
+        height: 100%;
         opacity: 0.75;
+        margin: 0; /* 여백 없애기 */
+        padding: 0; /* 패딩 없애기 */
     }
 
     .vision-text {
@@ -98,6 +120,8 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        margin: 0;
+        padding: 0;
     }
 
     .vision-text h1 {
@@ -107,11 +131,13 @@
 
     .vision-text p {
         font-size: 18px;
+        margin: 0;
     }
 
     .values-section {
         text-align: center;
         padding: 40px 20px;
+        margin: 0; /* 여백 없애기 */
     }
 
     .values-section h2 {
@@ -151,8 +177,6 @@
         font-size: 18px;
         font-weight: bold;
     }
-
-    
 </style>
 {% endblock %}
 
@@ -181,10 +205,25 @@
         </div>
     </header>
     <div class="main-content">
-        <h1>메인 콘텐츠 제목</h1>
+        <h3 class="animated-text">메인 콘텐츠 제목</h3>
         <p>메인 콘텐츠 내용</p>
     </div>
-   
+    <button class="scroll-button" onclick="showContent()">더보기</button>
+</div>
+<div class="content-wrapper" id="extra-content">
+    <div class="main">
+        <div class="vision-section">
+            <img src="{% static 'main/subimage.png' %}" alt="Vision Image">
+            <div class="vision-text">
+                <h3>A neighborhood where it is not easy to find groceries</h3>
+                <h3>My parents have become very old in that world</h3>
+                <h3>Hearts and news that could not be sent to each other</h3>
+                <h2>Onsaemi will fill all your thirst by becoming the spring water gushing from this land</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block script %}
@@ -194,9 +233,20 @@
         document.body.style.overflowX = 'hidden'; /* 가로 스크롤 비활성화 */
         document.querySelector('.scroll-button').style.display = 'none'; /* 버튼 숨기기 */
         document.getElementById('extra-content').style.display = 'block'; /* 추가 콘텐츠 표시 */
-        setTimeout(function() {
-            document.querySelector('footer').style.display = 'block'; /* footer 표시 */
-        }, 100); /* 추가 콘텐츠가 표시된 후에 footer를 나타내기 위해 약간의 지연을 추가합니다 */
+        document.getElementById('extra-content').scrollIntoView({ behavior: 'smooth' }); /* 부드럽게 스크롤 */
     }
+
+    // Wheel event to handle visibility
+    let scrolled = false;
+    window.addEventListener('wheel', function(event) {
+        if (event.deltaY > 0 && !scrolled) {
+            scrolled = true;
+            document.body.style.overflowY = 'auto'; /* 세로 스크롤만 활성화 */
+            document.body.style.overflowX = 'hidden'; /* 가로 스크롤 비활성화 */
+            document.querySelector('.scroll-button').style.display = 'none'; /* 버튼 숨기기 */
+            document.getElementById('extra-content').style.display = 'block'; /* 추가 콘텐츠 표시 */
+            document.getElementById('extra-content').scrollIntoView({ behavior: 'smooth' }); /* 부드럽게 스크롤 */
+        }
+    });
 </script>
 {% endblock %}
