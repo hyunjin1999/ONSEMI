@@ -86,7 +86,7 @@
 
         function pollSignal() {
             $.ajax({
-                url: 'poll_signal/',
+                url: '/monitoring/family_monitor/poll_signal/',
                 type: 'GET',
                 success: function(data) {
                     if (data.signal_received && typeof data.username !== 'undefined') {
