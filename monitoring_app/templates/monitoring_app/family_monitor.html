@@ -97,7 +97,7 @@
                         {% endif %}    
                     </div>
                     <div class="health-box">
-                        <p>건강 상태</p><br>
+                        <h3><strong>건강 상태</strong></h3>
                         <button class="plus-button" onclick="location.href='/monitoring/diagnosis/?selected_senior_id={{ selected_senior_id }}';">+</button>
                         {% if selected_senior_id %}
                             {% for report in reports %}
@@ -126,7 +126,20 @@
                                             {% if report.other %}
                                                 {{report.other_text}} 진찰 필요
                                             {% endif %}
+                                        {% endif %}</td>
+                                    <br><br>
+                                    {% if report.doctor_opinion %}
+                                    <h3><strong>의사 소견</strong></h3>
+                                    <td>
+                                            {{report.doctor_opinion}}
+                                    </td>
+                                    <br><br>{% endif %}
+                                    <h3><strong>전달 사항</strong></h3>
+                                    <td>
+                                        {% if report.user_request %}
+                                            {{report.user_request}}
                                         {% endif %}
+                                    </td>
                                 </tr><br><br>
                                 {% endif %}
                             {% endfor %}
