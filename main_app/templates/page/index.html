@@ -1,114 +1,122 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     {% load static %}
     {% block extra_css %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     {% endblock %}
-</head>
-<body>
-    {% block content %}
     <style>
-        body, html {
+        @font-face {
+            font-family: 'GmarketSansMedium';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'GmarketSansMedium';
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Prevents scrolling */
+            {% comment %} overflow: hidden; {% endcomment %}
         }
-        .main-content {
+
+        .main-image {
             position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden; /* Ensures the content doesn't cause scrolling */
-        }
-        .main-content img {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            transform: translate(-50%, -50%);
-            opacity: 0.75;
-        }
-        .main-content p {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #333;
-            font-size: 24px;
-            font-weight: bold;
-            z-index: 1; /* Ensures text stays on top of the image */
-        }
-        .header {
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            {% comment %} justify-content: space-between; {% endcomment %}
-            position: absolute;
-            top: 0;
             width: 100%;
-            z-index: 10; /* Ensure the header is on top of the image */
+            height: 100vh;
+            overflow: hidden;
         }
-        .header img {
-            height: 50%;
-            width: 50%;
-        } 
-        .header nav {
-            margin: 0 15px;
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-            text-align: center;
-            justify-items: center;
-            justify-content: center;
+
+        .main-image .logo-container img {
+            width: 80%;
+            height: 80%;
         }
-        a:first-child {
-            width: 500px;
+
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
+
+        .main-image p {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000;
+            font-size: 24px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            box-sizing: border-box;
+        }
+
+        .logo-container {
+            flex: 1;
+        }
+
+        .logo {
+            height: 50px;
+        }
+
+        nav {
+            flex: 4;
+            display: flex;
+            justify-content: flex-end;
+        }
+
         nav a {
-            width: 400px;
-        }
-        .header nav a {
-            margin: 0 15px;
             text-decoration: none;
-            color: #333;
-            font-weight: bold;
-            text-align: center;
-            justify-items: center;
-            justify-content: center;
+            color: #FFF;
+            margin: 0 10px;
+            white-space: nowrap;
+            align-self: center; /* Ensure all nav items are centered */
         }
     </style>
-    <div class="main-content">
-        <img src="{% static 'main/onsemi3.png' %}" alt="Main Image" class="png">
-        <p>테스트할게요</p>
-        <div class="header">
-            <a href="/"><img src="{% static 'main/onsemi_logo.png' %}" alt="Logo"></a>
+</head>
+
+<body>
+    <div class="main-image">
+        <header>
+            <div class="logo-container">
+                <img src="{% static 'main/onsemi_logo3.png' %}" alt="ONSEMI" class="logo">
+            </div>
             <nav>
                 <a href="/">홈</a>
                 <a href="/introduce/">소개</a>
                 {% if request.user.is_authenticated %}
                 <a href="/user/logout/" class="logout">로그아웃</a>
+                <a href="/user/profile">프로필</a>
+                <a href="/blog/notice_list">공지사항</a>
                 {% else %}
                 <a href="/user/login/">로그인</a>
-                {% endif %}
-                {% if request.user.is_authenticated %}
-                <a href="/user/profile/">나의 정보</a>
-                <a href="/blog/notice_list/">공지사항</a>
-                {% else %}
                 <a href="/user/register/">회원가입</a>
                 {% endif %}
             </nav>
-        </div>
+        </header>
+        <img src="{% static 'main/onsemi_main.png' %}" alt="ONSEMI Image">
+        <p>테스트할게요</p>
     </div>
+    {% block content %}
     {% endblock %}
     <script>
         // 로그인 안 하고 채팅을 클릭했을 때
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const chatLink = document.getElementById('chat-link'); // 채팅 링크의 ID가 'chat-icon'이라고 가정
-            chatLink.addEventListener('click', function(e) {
+            chatLink.addEventListener('click', function (e) {
                 e.preventDefault(); // 기본 링크 동작 방지
                 fetch('qa/chatting/') // 채팅 URL에 대한 요청
                     .then(response => {
@@ -128,4 +136,5 @@
         });
     </script>
 </body>
+
 </html>
