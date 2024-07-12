@@ -98,7 +98,8 @@
                     </div>
                     <div class="health-box">
                         <h3><strong>건강 상태</strong></h3>
-                        <button class="plus-button" onclick="location.href='/monitoring/diagnosis/?selected_senior_id={{ selected_senior_id }}';">+</button>
+                        {% comment %} <button class="plus-button" onclick="location.href='/monitoring/diagnosis/?selected_senior_id={{ selected_senior_id }}';">+</button> {% endcomment %}
+                        <button class="plus-button" onclick="location.href='/monitoring/family_monitor/report/list/?selected_senior_id={{ selected_senior_id }}';">+</button>
                         {% if selected_senior_id %}
                             {% for report in reports %}
                                 {% if forloop.first %}

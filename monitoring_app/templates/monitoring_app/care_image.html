@@ -84,6 +84,11 @@
             padding: 8px 16px; /* 패딩을 조정하여 버튼 크기 조절 */
             font-size: 14px; /* 폰트 크기를 조정하여 버튼 텍스트 크기 조절 */
         }
+
+        .button-container {
+            margin-top: auto; /* 위쪽 여백을 자동으로 최대로 설정 */
+            align-self: flex-end; /* 오른쪽 아래 정렬 */
+        }
     </style>
 </head>
 <body>
@@ -95,9 +100,11 @@
                         <img src="{{ image.image.url }}" alt="Report Image">
                     </div>
                 {% endfor %}
+                <div class="button-container">
+                    <button type="button" onclick="window.location.href = '/monitoring/family_monitor/?selected_senior_id={{ report.care.seniors.first.id }}';" class=back>뒤로가기</button>    
+                </div>
             {% endfor %}
         </div>
-    <button type="button" onclick="window.location.href = '/monitoring/family_monitor/'" class="cancle">뒤로가기</button>
     </div>
 </body>
 </html>

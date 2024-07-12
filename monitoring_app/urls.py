@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import order_report_views, monitor_views, diagnosis_views, download_csv_views, csv_view
+from .views import order_report_views, monitor_views, diagnosis_views, download_csv_views, csv_view, monitor_report_list_views
 
 app_name = 'monitoring_app'
 
@@ -11,5 +11,7 @@ urlpatterns = [
     path('family_monitor/', monitor_views.family_monitor, name='family_monitor'),
     path('family_monitor/image/<int:report_id>/', monitor_views.family_monitor_image, name='family_monitor_image'),
     path('diagnosis/', diagnosis_views.diagnosis_view, name='diagnosis'),
+    path('family_monitor/report/list/', monitor_report_list_views.report_list, name='report_list'),
+    path('family_monitor/report/list/<int:report_id>/', monitor_report_list_views.show_one_report, name='show_one_report'),
     path('family_monitor/poll_signal/', monitor_views.poll_signal, name='poll_signal'),
 ]
