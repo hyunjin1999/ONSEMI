@@ -2,6 +2,7 @@ from django.shortcuts import render, reverse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.dispatch import receiver
+from django.db.models import Max
 
 from monitoring_app.signals import my_signal
 from management_app.models import Care, Senior, Report, ReportImage
@@ -45,9 +46,14 @@ def family_monitor(request):
    
     reports = Report.objects.filter(care__in=cares)
     sorted_reports = reports.order_by('-created_at')  # created_at 등 원하는 필드로 정렬
-   
+    sorted_cares = cares.order_by('-datetime')
+    
+    latest_date = sorted_cares.aggregate(latest_date=Max('datetime__date'))['latest_date']
+    sorted_cares_latest = sorted_cares.filter(datetime__date=latest_date)
+    
     context = {
-        "cares": cares,
+        "cares" : cares,
+        "sorted_cares_latest": sorted_cares_latest,
         "users": users,
         "selected_user": user_id,
         'selected_senior_id': selected_senior_id,
