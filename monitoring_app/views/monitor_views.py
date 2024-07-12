@@ -93,10 +93,13 @@ def poll_signal(request):
             if request.user == care.user_id:
                 print('request', request.user)
                 print('care', care.user_id)
+                print(care.seniors.all())
                 response = {'signal_received': signal_received,
                             'username': care.user_id.username,
                             'seniorname': care.seniors.all()[0].name,
-                            'state': care.care_state}
+                            'state': care.care_state,
+                            'visit_date': care.visit_date,
+                            'visit_time': care.visit_time}
             # 시그널을 처리한 후 다시 초기화
             signal_received = False
         return JsonResponse(response)

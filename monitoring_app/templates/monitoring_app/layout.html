@@ -68,9 +68,18 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        function handleSignal(username, seniorname, state) {
+        function handleSignal(username, seniorname, state, visit_date, visit_time) {
+            if(state === 'APPROVED'){
+                state = '요청 승인 완료'
+            } else if(state === 'NOT_APPROVED'){
+                state = '요청 승인 대기'
+            } else if(state === 'COMPLETED'){
+                state = '요청 처리 완료'
+            } else{
+            }
+
             // 시그널을 받았을 때 메시지를 표시할 HTML 요소 업데이트
-            const message = '요청하신 ' + seniorname + ' 어르신 케어 서비스가 ' + state + '로 변경 되었습니다.';
+            const message = seniorname + ' 어르신 케어 서비스가 ' + state + ' 되었습니다. 방문 예정 날짜는 ' + visit_date + ' ' + visit_time + ' 입니다.';
             var temp = document.getElementById("signal-message1").textContent;
             console.log(temp)
             if(temp === '알림이 없습니다.'){
@@ -90,7 +99,7 @@
                 type: 'GET',
                 success: function(data) {
                     if (data.signal_received && typeof data.username !== 'undefined') {
-                        handleSignal(data.username, data.seniorname, data.state);
+                        handleSignal(data.username, data.seniorname, data.state, data.visit_date, data.visit_time);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
