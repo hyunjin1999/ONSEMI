@@ -30,12 +30,13 @@ from django.contrib.auth.decorators import login_required
 from auth_app.utils import volunteer_required
 from django.dispatch import Signal
 from monitoring_app.signals import my_signal
+from django.core.paginator import Paginator
 
 @login_required
 @volunteer_required
 def care_list(request):
     sort_by = request.GET.get("sort_by", "datetime")
-    order = request.GET.get("order", "asc")
+    order = request.GET.get("order", "desc") # 내람차순으로 수정
     user_id = request.GET.get("user", "")
 
     if order == "desc":
@@ -45,16 +46,25 @@ def care_list(request):
 
     if user_id:
         cares = cares.filter(user_id=user_id)
+    
+    # 케어 타입 or 케어 상태를 기준으로 정렬할 때 기본적으로 최신 care 요청부터 보임
+    order_by_fields = [sort_by, '-datetime'] if 'datetime' not in sort_by else [sort_by]
 
     cares = cares.order_by(sort_by)
     users = User.objects.all()
 
+    # 페이지네이션 설정
+    paginator = Paginator(cares, 10)  # 페이지당 10개의 객체를 보여줌
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
+        "page_obj": page_obj,
         "cares": cares,
         "users": users,
         "selected_user": user_id,
-        "current_sort_by": sort_by,
-        "current_order": order,
+        "current_sort_by": request.GET.get("sort_by", "datetime"),  # 요청된 sort_by 그대로 전달
+        "current_order": request.GET.get("order", "desc"),  # 요청된 order 그대로 전달
     }
 
     return render(request, "management_app/volunteer_care_list.html", context)
