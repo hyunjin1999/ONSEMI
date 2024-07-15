@@ -43,7 +43,11 @@ def report_list(request):
         reports = reports.order_by('-created_at')
     else:
         reports = reports.order_by('created_at')
-        
+    
+    paginator = Paginator(reports, 10)  
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     reports_imgs = ReportImage.objects.filter(report__in=reports)
     
     context = {
@@ -52,10 +56,14 @@ def report_list(request):
         'selected_senior_id': selected_senior_id,
         "seniors": seniors,
         "selected_senior": selected_senior,
+        "sort_by": sort_by,
+        "start_date": start_date,
+        "end_date": end_date,
         "type_filter": type_filter,
         'form': form,
         "reports" : reports,
         "report_imgs" : reports_imgs,
+        'page_obj': page_obj
     }
     return render(request, "monitoring_app/monitor_report_list.html", context)
 
@@ -64,6 +72,8 @@ def show_one_report(request,report_id):
     report = get_object_or_404(Report, id=report_id)
     reports_imgs = ReportImage.objects.filter(report=report)
     
-    context = {"report":report, "report_imgs" : reports_imgs,}
+    filter_params = request.GET.urlencode()  # 기존 GET 파라미터를 가져옵니다.
+    
+    context = {"report":report, "report_imgs" : reports_imgs,"filter_params": filter_params,}
     
     return render(request, "monitoring_app/show_one_report.html", context)

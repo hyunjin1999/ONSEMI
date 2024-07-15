@@ -86,6 +86,6 @@
         {% endif %}   
         <div class="text"><strong>전달사항:</strong> {{ report.user_request }}</div>
         
-        <button type="button" onclick="window.location.href = '/monitoring/family_monitor/report/list/?selected_senior_id={{ report.care.seniors.first.id }}';" class=back>뒤로가기</button>
-</body>
+        <button type="button" onclick="window.location.href = '/monitoring/family_monitor/report/list/?{{ filter_params }}';" class="back">뒤로가기</button>
+    </body>
 </html>
