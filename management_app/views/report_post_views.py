@@ -28,11 +28,11 @@ os.environ["PATH"] += os.pathsep + r"C:\Users\prime\Downloads\설치파일\Insta
 
 # ##### #####
 
+# report 생성 기능
 @login_required
 def create_report(request, care_id):
     care = get_object_or_404(Care, id=care_id)
-    if care.care_state not in ['APPROVED']:
-        return redirect('management_app:report_list')
+    senior = care.seniors.first()
 
     if request.method == 'POST':
         report = Report.objects.create(care=care, user=request.user)
@@ -50,7 +50,7 @@ def create_report(request, care_id):
             audio_path = default_storage.path(audio_path)
 
             # 오디오 파일을 처리하고 예측 수행
-            model_path = "D:\Aivle\parkinson_voice_test.keras"
+            model_path = "D:/Aivle/parkinson_voice_test.keras"
             predictions = predict_audio_segments(audio_path, model_path)
             result = analyze_results(predictions)
 
@@ -73,28 +73,45 @@ def create_report(request, care_id):
         report.back = 'back' in request.POST
         report.other = 'other' in request.POST
         report.other_text = request.POST.get('other_text', '')
-        
+
         care.care_state = 'COMPLETED'
         care.save()
-        
+
         report.status = '등록'
         report.save()
         return redirect('management_app:report_list')
-    
-    return render(request, 'management_app/add_report.html', {'care': care})
 
+    return render(request, 'management_app/add_report.html', {'care': care, 'senior': senior})
+
+# report 수정 기능
 @login_required
-def manage_report(request, report_id):
+def update_report(request, report_id):
     report = get_object_or_404(Report, id=report_id)
-
+    care = get_object_or_404(Care, id=report.care_id)
+    senior = care.seniors.first()
+    
     if request.method == 'POST':
-        previous_url = request.META.get('HTTP_REFERER')
+        # 체크박스 및 텍스트 필드 업데이트
+        report.no_issue = 'no_issue' in request.POST
+        report.eye = 'eye' in request.POST
+        report.teeth = 'teeth' in request.POST
+        report.skin = 'skin' in request.POST
+        report.back = 'back' in request.POST
+        report.other = 'other' in request.POST
+        report.other_text = request.POST.get('other_text', '')
+        report.doctor_opinion = request.POST.get('doctor_opinion', '')
+        report.user_request = request.POST.get('user_request', '')
 
-        # 이미지 추가 처리
-        if 'add_image' in request.POST:
-            for f in request.FILES.getlist('images'):
-                ReportImage.objects.create(report=report, image=f)
-            return redirect(previous_url)
+        # 이미지 삭제 처리
+        delete_image_ids = request.POST.getlist('delete_images')
+        for image_id in delete_image_ids:
+            image = get_object_or_404(ReportImage, id=image_id, report=report)
+            image.delete()
+
+        # 새 이미지 추가
+        if 'images' in request.FILES:
+            for image in request.FILES.getlist('images'):
+                ReportImage.objects.create(report=report, image=image)
 
         # 음성 파일 업로드 및 처리 부분
         if 'audio_file' in request.FILES:
@@ -103,72 +120,23 @@ def manage_report(request, report_id):
             audio_path = default_storage.path(audio_path)
 
             # 오디오 파일을 처리하고 예측 수행
-            model_path = "D:\Aivle\parkinson_voice_test.keras"
+            model_path = "D:/Aivle/parkinson_voice_test.keras"
             predictions = predict_audio_segments(audio_path, model_path)
             result = analyze_results(predictions)
 
             # 예측 결과 저장
-            report.audio_test_result = result  # 이진 분류를 가정하고 필요에 따라 조정
-            report.save()
+            report.audio_test_result = result
 
             # 임시 파일 삭제
             os.remove(audio_path)
 
-        # 텍스트 업데이트 처리
-        report.doctor_opinion = request.POST.get('doctor_opinion', '')
-        report.user_request = request.POST.get('user_request', '')
-
-        # 체크박스 업데이트 처리
-        report.no_issue = 'no_issue' in request.POST
-        report.eye = 'eye' in request.POST
-        report.teeth = 'teeth' in request.POST
-        report.skin = 'skin' in request.POST
-        report.back = 'back' in request.POST
-        report.other = 'other' in request.POST
-        report.other_text = request.POST.get('other_text', '')
-
-        # 이미지 삭제 처리
-        if 'delete_image' in request.POST:
-            image_id = request.POST.get('delete_image')
-            image = get_object_or_404(ReportImage, id=image_id)
-            image.delete()
-            return redirect(previous_url)
-
-        # 보고서 삭제 처리
-        if 'delete_report' in request.POST:
-            report.delete()
-            return redirect('management_app:report_list')
-
-        report.status = '등록'
         report.save()
         return redirect('management_app:report_list')
 
-    return render(request, 'management_app/update_report.html', {
-        'report': report,
-        'images': report.images
-    })
+    return render(request, 'management_app/update_report.html', {'report': report, 'senior':senior})
 
-@login_required
-def delete_image(request, image_id):
-    image = get_object_or_404(ReportImage, id=image_id)
-    report_id = image.report.id
-    image.delete()
-    return redirect('management_app:manage_report', report_id=report_id)
 
-@login_required
-def delete_all_files(request, report_id):
-    report = get_object_or_404(Report, id=report_id)
-    report.images.all().delete()
-    return redirect('management_app:manage_report', report_id=report.id)
-
-@login_required
-def update_report(request, report_id):
-    report = get_object_or_404(Report, id=report_id)
-    if request.method == 'POST':
-        # 업데이트 로직 추가
-        pass
-    return render(request, 'management_app/update_report.html', {'report': report})
-
+# 무슨 기능?
 @login_required
 def refresh_pending_reports(request):
     pending_cares = Care.objects.filter(care_state='APPROVED').exclude(id__in=Report.objects.values('care_id'))
