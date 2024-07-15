@@ -12,6 +12,7 @@ nav {
 
 .wrapper nav {
     margin-bottom: 20px;
+    font-size: large;
 }
 
 nav a {
@@ -19,7 +20,6 @@ nav a {
     text-decoration: none;
     color: #156741;
     font-weight: bold;
-    font-size: large;
 }
 
 nav a:hover {
