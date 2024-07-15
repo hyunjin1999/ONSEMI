@@ -30,161 +30,215 @@
         .pending-approval {
             color: #F05650 !important;
         }
-        nav {
-            margin-top: 15px;
+        .select_list { 
             text-align: left;
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            background-color : white;
         }
-        nav a {
-            margin: 0 15px;
+        
+        .select_list a {
+            padding: 10px 20px;
+            margin-right: 10px;
             text-decoration: none;
-            color: #28a745;
+            color: #666;
             font-weight: bold;
             font-size: 20px;
+            border: 2px solid transparent;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
         }
-        .wrapper nav {
-            margin-bottom: 20px;
+        
+        .select_list a#selected {
+            background-color: #f5f5f5;            
+            color: black;
+            border-color: #ddd;
+            border-bottom: 2px solid white;
         }
-        nav a:hover {
-            color: blue;
+        
+        .select_list a#not_selected {
+            background-color: #fff;                        
+            color: #aaa;
+            border-color: #ddd;
         }
-        nav a#selected {
+        
+        .select_list a:hover {
+            color: black;
+            background-color: #e9e9e9;
         }
-        nav a#not_selected {
-            opacity: 0.4;
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination span {
+            display: flex;
+        }
+        .pagination a, .pagination span.current {
+            margin: 0 5px;
+            padding: 8px 12px;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .pagination a:hover {
+            background-color: #f0f0f0;
+        }
+        .pagination span.current {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+        .container {
+            padding: 20px;
+        }
+        .pending-approval-text {
+            color: red;
         }
     </style>
     {% endblock %}
 </head>
 <body>
     {% block content %}
-    <nav>
+    <div class = "select_list">
         <a id='not_selected' href="{% url 'management_app:report_list' %}">보고서 목록</a>
         <a id='selected' href="{% url 'management_app:care_list' %}">케어 목록</a>
-    </nav>
-
-    <form method="get">
-        <label for="sort_by">정렬:</label>
-        <select name="sort_by" id="sort_by">
-            <option value="care_type" {% if current_sort_by == 'care_type' %}selected{% endif %}>케어 타입</option>
-            <option value="datetime" {% if current_sort_by == 'datetime' %}selected{% endif %}>시간</option>
-            <option value="care_state" {% if current_sort_by == 'care_state' %}selected{% endif %}>케어 상태</option>
-        </select>
-        <select name="order" id="order">
-            <option value="asc" {% if current_order == 'asc' %}selected{% endif %}>오름차순</option>
-            <option value="desc" {% if current_order == 'desc' %}selected{% endif %}>내림차순</option>
-        </select>
-        <label for="user">신청자:</label>
-        <select name="user" id="user">
-            <option value="">전체</option>
-            {% for user in users %}
-                <option value="{{ user.id }}" {% if user.id == selected_user %}selected{% endif %}>{{ user.username }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">적용하기</button>
-    </form>
-
-    <h2>NOT APPROVED 상태의 케어</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>케어타입</th>
-                <th>시간</th>
-                <th>제목</th>
-                <th>상태</th>
-                <th>신청자</th>
-                <th>대상 어르신</th>
-                <th>파킨슨병 진단 요청</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for care in page_obj1.object_list %}
-                <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
-                    <td>{{ care.care_type }}</td>
-                    <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
-                    <td>{{ care.title }}</td>
-                    <td class="{% if care.care_state == 'NOT_APPROVED' %}pending-approval{% endif %}">{{ care.get_care_state_display }}</td>
-                    <td>{{ care.user_id.username }}</td>
-                    <td>{% for senior in care.seniors.all %}
-                        {{ senior.name }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}</td>
-                    <td>{% if care.parkinson_diagnosis %} O
-                        {%else%}X
-                        {%endif%}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <!-- 페이지네이션 링크 추가 -->
-    <div class="pagination">
-        <span class="step-links">
-            {% if page_obj1.has_previous %}
-                <a href="?page1=1&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">첫 페이지</a>
-                <a href="?page1={{ page_obj1.previous_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">이전</a>
-            {% endif %}
-
-            <span class="current">
-                Page {{ page_obj1.number }} of {{ page_obj1.paginator.num_pages }}.
-            </span>
-
-            {% if page_obj1.has_next %}
-                <a href="?page1={{ page_obj1.next_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">다음</a>
-                <a href="?page1={{ page_obj1.paginator.num_pages }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">마지막 페이지</a>
-            {% endif %}
-        </span>
     </div>
+    <div class = "container">
+        <form method="get">
+            <label for="sort_by">정렬:</label>
+            <select name="sort_by" id="sort_by">
+                <option value="care_type" {% if current_sort_by == 'care_type' %}selected{% endif %}>케어 타입</option>
+                <option value="datetime" {% if current_sort_by == 'datetime' %}selected{% endif %}>시간</option>
+                <option value="care_state" {% if current_sort_by == 'care_state' %}selected{% endif %}>케어 상태</option>
+            </select>
+            <select name="order" id="order">
+                <option value="asc" {% if current_order == 'asc' %}selected{% endif %}>오름차순</option>
+                <option value="desc" {% if current_order == 'desc' %}selected{% endif %}>내림차순</option>
+            </select>
+            <label for="user">신청자:</label>
+            <select name="user" id="user">
+                <option value="">전체</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}" {% if user.id == selected_user %}selected{% endif %}>{{ user.username }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">적용하기</button>
+        </form>
 
-    <h2>APPROVED 상태의 케어</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>케어타입</th>
-                <th>시간</th>
-                <th>제목</th>
-                <th>상태</th>
-                <th>신청자</th>
-                <th>대상 어르신</th>
-                <th>파킨슨병 진단 요청</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for care in page_obj2.object_list %}
-                <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
-                    <td>{{ care.care_type }}</td>
-                    <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
-                    <td>{{ care.title }}</td>
-                    <td>{{ care.get_care_state_display }}</td>
-                    <td>{{ care.user_id.username }}</td>
-                    <td>{% for senior in care.seniors.all %}
-                        {{ senior.name }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}</td>
-                    <td>{% if care.parkinson_diagnosis %} O
-                        {%else%}X
-                        {%endif%}
-                    </td>
+        <h2>[요청 승인 <span class="pending-approval-text">대기</span>] 목록</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>케어타입</th>
+                    <th>시간</th>
+                    <th>제목</th>
+                    <th>상태</th>
+                    <th>신청자</th>
+                    <th>대상 어르신</th>
+                    <th>파킨슨병 진단 요청</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for care in page_obj1.object_list %}
+                    <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
+                        <td>{{ care.care_type }}</td>
+                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
+                        <td>{{ care.title }}</td>
+                        <td class="{% if care.care_state == 'NOT_APPROVED' %}pending-approval{% endif %}">{{ care.get_care_state_display }}</td>
+                        <td>{{ care.user_id.username }}</td>
+                        <td>{% for senior in care.seniors.all %}
+                            {{ senior.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}</td>
+                        <td>{% if care.parkinson_diagnosis %} O
+                            {%else%}X
+                            {%endif%}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <!-- 페이지네이션 링크 추가 -->
-    <div class="pagination">
-        <span class="step-links">
-            {% if page_obj2.has_previous %}
-                <a href="?page2=1&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">첫 페이지</a>
-                <a href="?page2={{ page_obj2.previous_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">이전</a>
-            {% endif %}
+        <!-- 페이지네이션 링크 추가 -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj1.has_previous %}
+                    <a href="?page1=1&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">처음</a>
+                    <a href="?page1={{ page_obj1.previous_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}"><</a>
+                {% endif %}
 
-            <span class="current">
-                Page {{ page_obj2.number }} of {{ page_obj2.paginator.num_pages }}.
+                {% for num in page_obj1.paginator.page_range %}
+                    {% if page_obj1.number == num %}
+                        <span class="current">{{ num }}</span>
+                    {% elif num > page_obj1.number|add:'-2' and num < page_obj1.number|add:'3' %}
+                        <a href="?page1={{ num }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj1.has_next %}
+                    <a href="?page1={{ page_obj1.next_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">></a>
+                    <a href="?page1={{ page_obj1.paginator.num_pages }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">마지막</a>
+                {% endif %}
             </span>
+        </div>
+        <hr style = "margin-top:30px;">
+        <h2>[요청 승인 <span class="pending-approval-text">완료</span>] 목록</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>케어타입</th>
+                    <th>시간</th>
+                    <th>제목</th>
+                    <th>상태</th>
+                    <th>신청자</th>
+                    <th>대상 어르신</th>
+                    <th>파킨슨병 진단 요청</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for care in page_obj2.object_list %}
+                    <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
+                        <td>{{ care.care_type }}</td>
+                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
+                        <td>{{ care.title }}</td>
+                        <td>{{ care.get_care_state_display }}</td>
+                        <td>{{ care.user_id.username }}</td>
+                        <td>{% for senior in care.seniors.all %}
+                            {{ senior.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}</td>
+                        <td>{% if care.parkinson_diagnosis %} O
+                            {%else%}X
+                            {%endif%}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-            {% if page_obj2.has_next %}
-                <a href="?page2={{ page_obj2.next_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">다음</a>
-                <a href="?page2={{ page_obj2.paginator.num_pages }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">마지막 페이지</a>
-            {% endif %}
-        </span>
+        <!-- 페이지네이션 링크 추가 -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj2.has_previous %}
+                    <a href="?page2=1&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">처음</a>
+                    <a href="?page2={{ page_obj2.previous_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}"><</a>
+                {% endif %}
+
+                {% for num in page_obj2.paginator.page_range %}
+                    {% if page_obj2.number == num %}
+                        <span class="current">{{ num }}</span>
+                    {% elif num > page_obj2.number|add:'-2' and num < page_obj2.number|add:'3' %}
+                        <a href="?page2={{ num }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj2.has_next %}
+                    <a href="?page2={{ page_obj2.next_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">></a>
+                    <a href="?page2={{ page_obj2.paginator.num_pages }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">마지막</a>
+                {% endif %}
+            </span>
+        </div>
     </div>
     {% endblock %}
 </body>

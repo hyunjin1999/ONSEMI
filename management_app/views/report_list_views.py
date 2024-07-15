@@ -13,7 +13,7 @@ def report_list(request):
 
     reports = Report.objects.all().order_by(sort_by)
 
-    if user_id:
+    if user_id and user_id != 'None':
         reports = reports.filter(user_id=user_id)
         seniors = Senior.objects.filter(user_id=user_id)
     else:
@@ -30,21 +30,25 @@ def report_list(request):
     elif status_filter == 'not_completed':
         reports = reports.filter(status='미등록')
 
-    paginator = Paginator(reports, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    report_paginator = Paginator(reports, 5)
+    report_page_number = request.GET.get('report_page')
+    report_page_obj = report_paginator.get_page(report_page_number)
 
-    # 작성해야 할 보고서 개수 계산
-    pending_reports_count = Care.objects.filter(care_state='APPROVED').exclude(id__in=Report.objects.values('care_id')).count()
+    pending_cares = Care.objects.filter(care_state='APPROVED').exclude(id__in=Report.objects.values('care_id'))
+    pending_paginator = Paginator(pending_cares, 5)
+    pending_page_number = request.GET.get('pending_page')
+    pending_page_obj = pending_paginator.get_page(pending_page_number)
+
+    pending_reports_count = pending_cares.count()
 
     return render(request, 'management_app/volunteer_report_list.html', {
-        'page_obj': page_obj,
+        'report_page_obj': report_page_obj,
+        'pending_page_obj': pending_page_obj,
         'sort_by': sort_by,
         'user_id': user_id,
         'seniors': seniors,
         'selected_senior_ids': senior_ids,
         'status_filter': status_filter,
         'users': User.objects.all(),
-        'pending_reports_count': pending_reports_count,  # 작성해야 할 보고서 개수 전달
-        'cares': Care.objects.filter(care_state='APPROVED').exclude(id__in=Report.objects.values('care_id'))  # 작성해야 할 보고서에 대한 care 객체 전달
+        'pending_reports_count': pending_reports_count,
     })

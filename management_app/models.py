@@ -1,4 +1,5 @@
-from django.db import models
+from django.db import models, IntegrityError
+from django.conf import settings
 from auth_app.models import User
 from django.utils import timezone
 from datetime import datetime
@@ -25,10 +26,12 @@ class Senior(models.Model):
     class Meta:
         db_table = "senior"
 
-#UNIQUE constraint failed: care.title, care.user_id
-from django.db import models
+
+from django.db import models, IntegrityError, transaction
 from django.utils import timezone
-from auth_app.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class Care(models.Model):
     care_type = models.CharField(max_length=100)  # SHOP, VISIT
@@ -41,7 +44,6 @@ class Care(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="user_id")
     seniors = models.ManyToManyField("Senior", related_name="cares_seniors")
     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="cares_approved")
-
 
     CARE_STATE_CHOICES = [
         ('NOT_APPROVED', '요청 승인 대기'),
@@ -60,10 +62,9 @@ class Care(models.Model):
 
     class Meta:
         db_table = "care"
-        constraints = [
-            models.UniqueConstraint(fields=['title', 'user_id'], name='unique_care_request')
-        ]
-
+        
+        
+        
 
 def upload_to(instance, filename):
     today = datetime.today().strftime('%Y%m%d')
