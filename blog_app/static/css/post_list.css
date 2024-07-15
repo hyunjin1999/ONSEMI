@@ -15,10 +15,11 @@ nav {
 }
 
 nav a {
-    margin: 0 15px;
+    margin: 0 30px;
     text-decoration: none;
     color: #156741;
     font-weight: bold;
+    font-size: large;
 }
 
 nav a:hover {
