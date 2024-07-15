@@ -11,3 +11,4 @@ wikipedia
 Django==5.0.6
 tensorflow
 librosa
+django-allauth

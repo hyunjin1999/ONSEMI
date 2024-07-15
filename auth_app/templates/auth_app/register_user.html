@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     {% load static %}
+    {% load socialaccount %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
     <style>
@@ -159,6 +160,14 @@
         <hr>
         <button type="button" onclick="window.location.href = '/'">취소</button>
     </form>
+    <br>
+    <hr>
+    <div>
+        <p> 간단 회원가입 </p>
+        <a href="{% provider_login_url 'google' %}">
+            <img src="{% static 'auth/google_logo.png' %}" alt="구글" width="50px" height="50px"/>
+        </a>
+    </div>
 </div>
 </body>
 </html>
