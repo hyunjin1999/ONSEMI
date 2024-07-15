@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     {% load static %}
+    {% load socialaccount %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인</title>
     <style>
@@ -116,6 +117,12 @@
                 <a href="/user/reset_password/">비밀번호 찾기</a>
             </div>
         </form>
+        <div>
+            <p> 간단 로그인 </p>
+            <a href="{% provider_login_url 'google' %}">
+                <img src="{% static 'auth/google_logo.png' %}" alt="구글" width="50px" height="50px"/>
+            </a>
+        </div>
     </div>
 </body>
 </html>

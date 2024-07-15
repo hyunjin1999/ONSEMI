@@ -11,6 +11,12 @@ from auth_app.models import User
 signal_received = False
    
 def family_monitor(request):
+    user = User.objects.get(email=request.user.email)
+    if user.user_type == '':
+        user.user_type = 'FAMILY'
+        user.save()
+        
+    
     sort_by = request.GET.get("sort_by", "datetime")
     order = request.GET.get("order", "asc")
     selected_senior_id = request.GET.get('selected_senior_id', '')
