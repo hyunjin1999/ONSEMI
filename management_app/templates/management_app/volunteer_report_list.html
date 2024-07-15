@@ -176,20 +176,21 @@
                 <option value="completed">등록완료</option>
                 <option value="not_completed">미등록</option>
             </select>
-            <label for="user">신청자:</label>
-            <select name="user" id="user">
-                <option value="">전체</option>
-                {% for user in users %}
-                    {% if user.user_type == 'FAMILY' %}
-                        <option value="{{ user.id }}" {% if user.id == user_id %}selected{% endif %}>{{ user.username }}</option>
-                    {% endif %}
+            <label for="volunteer_id">승인한 봉사자:</label>
+            <select name="volunteer_id" id="volunteer_id">
+                {% for volunteer in volunteers %}
+                    <option value="{{ volunteer.id }}" {% if volunteer.id|stringformat:"s" == selected_volunteer_id %}selected{% endif %}>
+                        {{ volunteer.username }}{% if volunteer.id == request.user.id %} (현재 로그인){% endif %}
+                    </option>
                 {% endfor %}
             </select>
             <label for="senior">대상 어르신:</label>
             <select name="senior_ids" id="senior">
-                <option value="">전체</option>
+                <option value="all">전체</option>
                 {% for senior in seniors %}
-                    <option value="{{ senior.id }}" {% if senior.id|stringformat:"s" in senior_ids %}selected{% endif %}>{{ senior.name }}</option>
+                    <option value="{{ senior.id }}_{{ senior.user_id }}" {% if senior.id|stringformat:"s" == selected_senior_id %}selected{% endif %}>
+                        {{ senior.name }} (보호자: {{ senior.user_id__username }})
+                    </option>
                 {% endfor %}
             </select>
             <button type="submit">적용</button>
@@ -312,6 +313,36 @@
             const url = "{% url 'management_app:update_report' 0 %}".replace('0', reportId);
             location.href = url;
         }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            var volunteerSelect = document.getElementById("volunteer_id");
+            var seniorSelect = document.getElementById("senior");
+
+            function loadSeniorsForVolunteer(volunteerId) {
+                fetch(`api/seniors_for_volunteer/${volunteerId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        seniorSelect.innerHTML = '<option value="all">전체</option>';
+                        data.seniors.forEach(function(senior) {
+                            var option = document.createElement("option");
+                            option.value = senior.id + '_' + senior.user_id;
+                            option.textContent = senior.name + " (보호자: " + senior.user_id__username + ")";
+                            seniorSelect.appendChild(option);
+                        });
+                    });
+            }
+
+            loadSeniorsForVolunteer(volunteerSelect.value);
+
+            volunteerSelect.addEventListener("change", function() {
+                var selectedVolunteer = volunteerSelect.value;
+                if (selectedVolunteer === "all") {
+                    seniorSelect.innerHTML = '<option value="all">전체</option>';
+                } else {
+                    loadSeniorsForVolunteer(selectedVolunteer);
+                }
+            });
+        });
     </script>
     {% endblock %}
 </body>
