@@ -129,8 +129,8 @@ li{
     border-image: initial;
     padding-block: 1px;
     padding-inline: 2px;
-    background-color: black;
-    color: white;
+    background-color:white;
+    color: rgb(0, 0, 0);
 } 
 
 
@@ -140,7 +140,7 @@ li{
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 20px;
-    background-color: #f9f9f9;
+    
 }
 
 .main-content h2 {
@@ -211,12 +211,13 @@ img.senior-profile {
 }
 
 .sidebar select {
-    background: black;
-    color: white;
+    background: white;
+    color: black;
     margin-bottom: 20px;
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
+    text-align: center;
 }
 
 .heading-download-container {
