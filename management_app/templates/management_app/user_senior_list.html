@@ -1,0 +1,103 @@
+<!-- care_app/templates/care_app/list_seniors.html -->
+{% extends "layout.html" %}
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'base.css' %}">
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        justify-content: center;
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    li {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 10px;
+        border-radius: 5px;
+        transition: box-shadow 0.3s;
+        text-align: center;
+        display: inline-block;
+        width: 300px;
+        height:auto;
+        box-sizing: border-box;
+        
+    }
+    li:hover {
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    img {
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+    a {
+        text-decoration: none;
+        color: black;
+    }
+    .actions a:first-child{
+        text-decoration: none;
+        color: blue ;
+        font-size:20px;
+    }
+
+    .actions a:last-child{
+        text-decoration: none;
+        color: gray ;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    .actions {
+        text-align: center;
+        margin-top: 20px;
+    }
+    strong{
+        color:black;
+    }
+</style>
+{% endblock %}
+</head>
+<body>
+    {% block content %}
+    <h1>어르신 목록</h1>
+    {% if seniors %}
+        <ul>
+            {% for senior in seniors %}
+            <li>
+                <a href='/management/senior/update/{{ senior.id }}/'>
+                    {% if senior.photo %}
+                        <img src="{{ senior.photo.url }}" alt="{{ senior.name }}'s photo" style="max-width:200px; max-height:200px;"><br>
+                    {% endif %}
+                    <strong>성함:</strong>{{ senior.name }}<br>
+                    <strong>연세:</strong> {{ senior.age }}<br>
+                    <strong>성별:</strong> {{ senior.gender_display }}<br>
+                    <strong>핸드폰 번호:</strong> {{ senior.phone_number }}<br>
+                    <strong>치매 유무:</strong> {{ senior.has_alzheimers_display }}<br>
+                    <strong>파킨슨 유무:</strong> {{ senior.has_parkinsons_display }}<br>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No seniors registered yet.</p>
+    {% endif %}
+    <br>
+    <div class="actions">
+        <a href='/management/add/senior/'>어르신 추가 등록</a><br>
+        <a href="{% url 'monitoring_app:family_monitor' %}">뒤로 가기</a>
+    </div>
+    {% endblock %}
+</body>
+</html>

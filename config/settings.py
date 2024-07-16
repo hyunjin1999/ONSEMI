@@ -35,6 +35,7 @@ AUTH_USER_MODEL = "auth_app.User"
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
+    "django.contrib.sites",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -42,11 +43,21 @@ INSTALLED_APPS = [
     "auth_app",
     "main_app",
     "blog_app",
+    "qa_app",
     'shop_app',
     'cart_app',
     'orders_app',
     'payment_app',
     'voice_app',
+    "management_app",
+    'monitoring_app',
+    'django_celery_results',
+    
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +68,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -115,13 +127,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ko"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Seoul"
 
 USE_I18N = True
 
 USE_TZ = True
+
+USE_L10N = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -141,9 +155,32 @@ STATICFILES_DIRS = [
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+AUTHENTICATION_BACKEND = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationsBackend',
+)
+
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/monitoring/family_monitor'
+LOGOUT_REDIRECT_URL = '/'
+SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_QUERY_EMAIL = True
+
+SOCIAL_AUTH_LOGOUT_URL_PARAMETER = 'next'
+
 CART_SESSION_ID = 'cart'
 
 IAMPORT_API_KEY = 'imp10781812'
 IAMPORT_API_SECRET = 'tVZHIXzhBmmOvdJjhmEVd3osXkAE2Td1BLlrKtz5vrGIgFLTzv4RqeqKkaGP5boVbH6HFlUQHLr6qtlj'
 
 IAMPORT_CODE = 'imp10781812'
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Seoul'

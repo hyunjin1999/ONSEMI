@@ -2,24 +2,109 @@
 {% load static %}
 
 {% block title %}
-  {% if category %}{{ category.name }}{% else %}Products{% endif %}
+  {% if category %}{{ category.name }}{% else %}상품{% endif %}
 {% endblock %}
 
 {% block content %}
+{{ block.super }}
+<style>
+  #content {
+    display: flex;
+  }
+
+  #main {
+    flex: 4;
+    margin-right: 50px;
+    margin-left:50px;
+  }
+
+  .recent-products {
+    margin-top: 30px;
+    flex: 1;
+    margin-left: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 150px; /* Adjusted width */
+    margin-bottom:30px;
+  }
+
+  .recent-products h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    color: #333;
+  }
+
+  .recent-products .product-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .recent-products .product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .recent-products img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+  }
+
+  .recent-products h3 {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 1.2em;
+    color: #333;
+  }
+
+  .recent-products form {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .recent-products button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .recent-products button:hover {
+    background-color: #e60000;
+  }
+</style>
+<div id="content" style="display: flex; flex-wrap: wrap;">
   <div id="sidebar">
-    <h3>Categories</h3>
+    <h2>카테고리</h2>
     <ul>
       <li {% if not category %}class="selected"{% endif %}>
-        <a href="{% url "shop_app:product_list" %}">All</a>
+        <a href="{% url "shop_app:product_list" %}">전체</a>
       </li>
       {% for c in categories %}
         <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-          <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+          <a href="{% url 'shop_app:product_list_by_category' category_slug=c.slug %}">{{ c.name }}</a>
         </li>
       {% endfor %}
     </ul>
+    <h2><a href="{% url 'orders_app:my_orders' %}" class="btn btn-primary">주문 내역</a></h2>
   </div>
-  <div id="main" class="product-list">
+  <div id="main" class="product-list" style="flex: 3; margin-right: 20px;">
     <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
     {% for product in products %}
       <div class="item">
@@ -28,8 +113,24 @@
         </a>
         <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
         <br>
-        ${{ product.price }}
+        {{ product.price }}원
       </div>
     {% endfor %}
   </div>
+  <div class="recent-products">
+    <h2>최근 본 상품</h2>
+    {% for product in recent_products %}
+      <div class="product-item">
+        <a href="{% url 'shop_app:product_detail' product.id product.slug %}">
+          <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="{{ product.name }}">
+          <h3>{{ product.name }}</h3>
+        </a>
+        <form action="{% url 'shop_app:remove_from_recent_products' product.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit">X</button>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}

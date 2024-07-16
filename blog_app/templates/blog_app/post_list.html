@@ -1,108 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Post List</title>
+    {% extends "layout.html" %}
     {% load static %}
+    <meta charset="UTF-8">
+    {% block title %}Post List{% endblock %}
+
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/post_list.css' %}">
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/image.css' rel='stylesheet'>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        main {
-            width: 80%;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:hover {
-            background-color: #f9f9f9;
-            cursor: pointer;
-        }
-        .new a {
+        .gg-image {
             display: inline-block;
-            padding: 10px 20px;
-            margin: 10px 0;
-            background-color: #28a745;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
+            width: 15px;
+            height: 15px;
+            vertical-align: middle;
+            margin-left: 10px;
         }
-        .new a:hover {
-            background-color: #218838;
+        /* Adjust column widths */
+        table#container th:nth-child(1), /* 제목 */
+        table#container td:nth-child(1) {
+            width: 40%; /* Adjust width as needed */
         }
-        form {
-            margin-top: 20px;
+        table#container th:nth-child(2), /* 작성자 */
+        table#container td:nth-child(2) {
+            width: 10%; /* Adjust width as needed */
         }
-        label {
-            font-weight: bold;
+        table#container th:nth-child(3), /* 등록 일자 */
+        table#container td:nth-child(3) {
+            width: 15%; /* Adjust width as needed */
         }
-        input[type="text"] {
-            width: calc(100% - 120px);
-            padding: 10px;
-            margin-right: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        table#container th:nth-child(4), /* 좋아요 */
+        table#container td:nth-child(4) {
+            width: 10%; /* Adjust width as needed */
+        }
+        table#container th:nth-child(5), /* 조회수 */
+        table#container td:nth-child(5) {
+            width: 10%; /* Adjust width as needed */
         }
     </style>
+    {% endblock %}
 </head>
 <body>
+    {% block content %}
     <main>
-        {% if post_list %}
+        <nav>
+            <a id='selected' href="{% url 'blog_app:post_list' %}">자유게시판</a>
+            <a href="{% url 'blog_app:notice_list' %}">공지사항</a>
+        </nav>
+        {% if page_obj %}
         <table id="container">
             <thead>
                 <tr>
-                    <th>등록 일자</th>
                     <th>제목</th>
                     <th>작성자</th>
-                    <th>이미지</th>
+                    <th>등록 일자</th>
+                    <th>좋아요</th>
+                    <th>조회수</th>
                 </tr>
             </thead>
             <tbody>
-                {% for post in post_list %}
-                <tr onclick="location.href='{% url 'blog_app:post_detail' post.pk %}';">
-                    <td>{{ post.datetime }} </td>
-                    <td>{{ post.title }}</td>
-                    <td>{{ post.name }}</td>
+                {% for item in page_obj %}
+                <tr onclick="location.href='{% url 'blog_app:post_detail' item.post.pk %}?page={{ page_obj.number }}';">
                     <td>
-                    {% if post.image %}
-                        <img src="{{ post.image.url }}" alt="{{ post.title }}" width=80 height=120>
-                    {% endif %}
+                        <span class="short-title">{{ item.post.title }}</span>
+                        {% if item.comment_count > 0 %}
+                            <span class="comment-indicator">[{{ item.comment_count }}]</span>
+                        {% endif %}
+                        {% if item.has_image %}
+                            <i class="gg-image"></i>
+                        {% endif %}
                     </td>
+                    <td>{{ item.post.name }}</td>
+                    <td>{{ item.post.datetime }}</td>
+                    <td>{{ item.post.post_likes.count }}</td>
+                    <td>{{ item.post.views }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         {% else %}
-        <p>No posts available.</p>
+        <p>게시물이 존재하지 않습니다.</p>
         {% endif %}
 
         <div class="new">
-            <a href="upload"> + New</a>
+            <a href="upload"> + 게시물 등록하기</a>
         </div>
         
-        <div>
+        <div class="search">
             <form action="{% url 'blog_app:search' %}" method="get">
-                <label for="search">Search: </label>
-                <input type="text" id="search" name="search" placeholder="검색어를 입력하세요">
+                <label for="search">검색 : </label>
+                <select name="search_method" id="search_method"> <!-- 드롭다운 메뉴 -->
+                    <option value="title">제목</option>
+                    <option value="writer">작성자</option>
+                    <option value="both">제목 + 작성자</option>
+                </select>
+                <input type="text" id="search" name="search" placeholder="검색어를 입력하세요" value="{{ search_query }}">
             </form>
         </div>
+
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1&search={{ search_query }}">&laquo; 처음</a>
+                <a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}">이전</a>
+            {% endif %}
+
+            {% for page_num in page_obj.paginator.page_range %}
+                {% if page_num >= page_obj.number|add:'-2' and page_num <= page_obj.number|add:'2' %}
+                    {% if page_num == page_obj.number %}
+                        <span class="active">{{ page_num }}</span>
+                    {% else %}
+                        <a href="?page={{ page_num }}&search={{ search_query }}">{{ page_num }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}">다음</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}">끝 &raquo;</a>
+            {% endif %}
+        </div>
     </main>
+    {% endblock %}
 </body>
 </html>

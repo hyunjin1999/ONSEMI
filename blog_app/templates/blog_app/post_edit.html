@@ -1,18 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit Post</title>
+    {% extends "layout.html" %}
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    {% block title %}Edit Post{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/post_edit.css' %}">
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    {% endblock %}
 </head>
 <body>
-    <div class="container">
-        <h1>Edit Post</h1>
+    {% block content %}
+    <main>
+        <h1>게시물 수정</h1>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
+            {{ formset.management_form }}
+            <div id="image-upload-container" class="image-upload-container">
+                {% for image in images %}
+                <div class="image-upload">
+                    <img src="{{ image.image.url }}" alt="이미지 미리보기" class="image-preview">
+                    <button type="button" class="remove-image" data-id="{{ image.id }}">&times;</button>
+                    <input type="hidden" name="existing_images" value="{{ image.id }}">
+                </div>
+                {% endfor %}
+                <div class="add-image-button" id="add-image">+</div>
+            </div>
             <button type="submit">저장하기</button>
         </form>
-    </div>
+    </main>
+
+        {% block extra_js %}
+        <script src="{% static 'js/post_edit.js' %}"></script>
+        {% endblock %}
+    {% endblock %}
 </body>
 </html>

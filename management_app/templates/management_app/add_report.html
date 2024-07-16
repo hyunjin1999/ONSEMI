@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>새로운 보고서 작성</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="checkbox"], input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 100px;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button.cancle {
+            background-color: #dc3545;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        button.cancle:hover {
+            background-color: #c82333;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkbox-group label {
+            position: relative;
+            padding-left: 35px;
+            margin-right: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .checkbox-group label::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox-group label::after {
+            content: "✓";
+            position: absolute;
+            left: 3px;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            font-size: 16px;
+            color: #fff;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked + label::before {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked + label::after {
+            transform: translateY(-50%) scale(1);
+        }
+
+        .bbar {
+            margin: 0px 10px;
+            opacity: 0.5;
+        }
+
+        .image-upload-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .image-upload {
+            position: relative;
+            margin-right: 10px;
+        }
+
+        .image-upload img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .image-upload .remove-image {
+            position: absolute;
+            top: -20px;
+            right: 0;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 20%;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .add-image-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #888;
+            font-size: 24px;
+            background-color: #f4f4f4;
+            flex-shrink: 0;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        .dimmed {
+            color: #ccc;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const noIssueCheckbox = document.querySelector('input[name="no_issue"]');
+            const otherCheckboxes = document.querySelectorAll('input[name="eye"], input[name="teeth"], input[name="skin"], input[name="back"], input[name="other"]');
+            const noIssueLabel = document.querySelector('label[for="no_issue"]');
+            const otherLabels = document.querySelectorAll('label[for="eye"], label[for="teeth"], label[for="skin"], label[for="back"], label[for="other-checkbox"]');
+
+            function toggleCheckboxes() {
+                if (noIssueCheckbox.checked) {
+                    otherCheckboxes.forEach(checkbox => checkbox.disabled = true);
+                    otherLabels.forEach(label => label.classList.add('dimmed'));
+                } else {
+                    otherCheckboxes.forEach(checkbox => checkbox.disabled = false);
+                    otherLabels.forEach(label => label.classList.remove('dimmed'));
+                }
+
+                if (Array.from(otherCheckboxes).some(checkbox => checkbox.checked)) {
+                    noIssueCheckbox.disabled = true;
+                    noIssueLabel.classList.add('dimmed');
+                } else {
+                    noIssueCheckbox.disabled = false;
+                    noIssueLabel.classList.remove('dimmed');
+                }
+            }
+
+            noIssueCheckbox.addEventListener('change', toggleCheckboxes);
+            otherCheckboxes.forEach(checkbox => checkbox.addEventListener('change', toggleCheckboxes));
+
+            // Initialize state on page load
+            toggleCheckboxes();
+
+            document.getElementById('other-checkbox').addEventListener('change', function() {
+                var otherText = document.getElementById('other-text');
+                if (this.checked) {
+                    otherText.style.display = 'block';
+                } else {
+                    otherText.style.display = 'none';
+                }
+            });
+
+            let imageUploadContainer = document.getElementById('image-upload-container');
+            let addImageButton = document.getElementById('add-image');
+
+            function createImageUploadField() {
+                let newForm = document.createElement('div');
+                newForm.classList.add('image-upload');
+                newForm.innerHTML = `
+                    <input type="file" name="images" style="display: none;">
+                    <img src="" alt="이미지 미리보기" class="image-preview" style="display: none;">
+                `;
+                imageUploadContainer.insertBefore(newForm, addImageButton);
+
+                let fileInput = newForm.querySelector(`input[type="file"]`);
+                let previewImage = newForm.querySelector('.image-preview');
+                fileInput.click();
+
+                fileInput.addEventListener('change', function() {
+                    if (fileInput.files && fileInput.files[0]) {
+                        let reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImage.src = e.target.result;
+                            previewImage.style.display = 'block';
+
+                            let removeButton = document.createElement('button');
+                            removeButton.type = 'button';
+                            removeButton.className = 'remove-image';
+                            removeButton.innerHTML = '&times;';
+                            newForm.appendChild(removeButton);
+
+                            removeButton.addEventListener('click', function() {
+                                newForm.remove();
+                            });
+                        }
+                        reader.readAsDataURL(fileInput.files[0]);
+                    } else {
+                        newForm.remove();
+                    }
+                });
+            }
+
+            addImageButton.addEventListener('click', function() {
+                createImageUploadField();
+            });
+
+            document.querySelector('form').addEventListener('submit', function(event) {
+                const imageInputs = document.querySelectorAll('input[type="file"]');
+                let hasImage = false;
+
+                imageInputs.forEach(input => {
+                    if (input.files.length > 0) {
+                        hasImage = true;
+                    }
+                });
+
+                if (!hasImage) {
+                    event.preventDefault();
+                    alert('사진은 필수입니다');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align:center;">{{ senior.name }}님의 보고서 작성</h1>
+        <hr style="margin: 30px 0px;">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label>이상 부위 :</label>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="no_issue" name="no_issue">
+                <label for="no_issue">특이사항 없음</label>
+                <span class="bbar">|</span>
+
+                <input type="checkbox" id="eye" name="eye">
+                <label for="eye">눈</label>
+                <span class="bbar">|</span>
+
+                <input type="checkbox" id="teeth" name="teeth">
+                <label for="teeth">치아</label>
+                <span class="bbar">|</span>
+
+                <input type="checkbox" id="skin" name="skin">
+                <label for="skin">피부</label>
+                <span class="bbar">|</span>
+
+                <input type="checkbox" id="back" name="back">
+                <label for="back">허리</label>
+                <span class="bbar">|</span>
+
+                <input type="checkbox" id="other-checkbox" name="other">
+                <label for="other-checkbox">기타</label>
+            </div>
+            <input type="text" name="other_text" id="other-text" style="display:none;">
+
+            <label>이미지 파일 업로드 :</label>
+            <div id="image-upload-container" class="image-upload-container">
+                <div class="add-image-button" id="add-image">+</div>
+            </div>
+
+            {%if care.parkinson_diagnosis %}
+                <br><label>음성 파일 업로드 :</label>
+                <input type="file" name="audio_file">
+            {% endif %}
+
+            {%if care.care_type == '병원'%}
+                <br><label>의사 소견 :</label>
+                <textarea name="doctor_opinion"></textarea><br>
+            {% endif %}
+
+            <br><label>보호자님께 전달할 사항 :</label>
+            <textarea class="user_request" name="user_request"></textarea><br>
+
+            <button type="submit">보고서 작성하기</button>
+            <button type="button" onclick="window.location.href = '/management/report/list/'" class="cancle">취소</button>
+        </form>
+    </div>
+</body>
+</html>

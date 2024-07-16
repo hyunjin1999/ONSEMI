@@ -1,33 +1,252 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
 {% load static %}
 
-{% block title %}ONSEMI{% endblock %}
+{% block title %}Main Page{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'base.css' %}">
-{% endblock %}
-{% block content %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <div class="sidebar">
-        <img src="{% static 'main/onsemi.png' %}" alt="ONSEMI Logo">
-        <ul class="menu">
-            <li><a href="index/">홈</a></li>
-            <li><a href="introduce/">소개</a></li>
-            <li><a href="login/">로그인</a></li>
-            <li><a href="family/">사용자 페이지</a></li>
-            <li><a href="volunteer/">봉사자 페이지</a></li>
-        </ul>
-    </div>
-    <div class="content">
-        <img src="{% static 'main/onsemi2.png' %}" alt="ONSEMI Image">
-        <p>함께하면 희망이 솓아나는 우리</p>
-        <p>ONSEMI</p>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden; /* 기본적으로 스크롤 막기 */
+    }
 
+    .header-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100vh; /* 전체 뷰포트 높이 */
+        overflow: hidden; /* 내부 컨텐츠가 넘치지 않게 숨김 */
+    }
+
+    .main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: transparent;
+        color: white;
+    }
+
+    .logo img {
+        filter: brightness(0) invert(1);
+    }
+
+    nav ul li a {
+        color: white;
+    }
+
+    .main-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        text-align: center;
+        color: white;
+        animation: enlargeText 2s ease-out forwards; /* 애니메이션 추가 */
+    }
+
+    @keyframes enlargeText {
+        0% {
+            font-size: 1.17em; /* 기본 h3 크기 */
+            font-weight: normal;
+            letter-spacing: normal;
+        }
+        100% {
+            font-size: 2em; /* h1 크기 */
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+    }
+
+    .scroll-button {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .content-wrapper {
+        display: none; /* 버튼 클릭 전까지 숨김 */
+        width: 100%;
+        box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
+        margin: 0;
+        padding: 0;
+    }
+
+    h1, h2, h3 {
+        text-align: center;
+        color: black;
+        margin: 0;
+    }
+
+    .main {
+        padding: 0; /* 여백 없애기 */
+        background-color: #fff;
+        margin: 0;
+    }
+
+    .vision-section {
+        position: relative;
+        text-align: center;
+        height: 800px;
+        margin: 0; /* 여백 없애기 */
+        padding: 0; /* 패딩 없애기 */
+    }
+
+    .vision-section img {
+        width: 100%;
+        height: 100%;
+        opacity: 0.75;
+        margin: 0; /* 여백 없애기 */
+        padding: 0; /* 패딩 없애기 */
+    }
+
+    .vision-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+        padding: 0;
+    }
+
+    .vision-text h1 {
+        font-size: 36px;
+        margin: 0;
+    }
+
+    .vision-text p {
+        font-size: 18px;
+        margin: 0;
+    }
+
+    .values-section {
+        text-align: center;
+        padding: 40px 20px;
+        margin: 0; /* 여백 없애기 */
+    }
+
+    .values-section h2 {
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .values-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+
+    .value-box {
+        background-color: #f0f4f8;
+        padding: 20px;
+        margin: 10px;
+        border-radius: 8px;
+        width: 45%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .value-box img {
+        width: 50px;
+        height: 50px;
+        margin-right: 20px;
+    }
+
+    .value-box .text {
+        text-align: left;
+    }
+
+    .value-box .text h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header-wrapper">
+    <img src="{% static 'main/onsemi_main.png' %}" alt="Main Image" class="main-image">
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="{% static 'main/onsemi_logo3.png' %}" alt="ONSEMI" class="logo">
+            </div>
+            <nav>
+                <ul>
+                    <li> <a href="/">홈</a></li>
+                    <li> <a href="/introduce/">소개</a></li>
+                    {% if request.user.is_authenticated %}
+                    <li> <a href="{% url 'account_logout' %}" class="logout">로그아웃</a></li>
+                    <li><a href="/user/profile">프로필</a></li>
+                    <li><a href="/blog/notice_list">공지사항</a></li>
+                    {% else %}
+                    <li><a href="/user/login/">로그인</a></li>
+                    <li><a href="/user/register/">회원가입</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="main-content">
+        <h3 class="animated-text">메인 콘텐츠 제목</h3>
+        <p>메인 콘텐츠 내용</p>
     </div>
-</body>
-</html>
+    <button class="scroll-button" onclick="showContent()">더보기</button>
+</div>
+<div class="content-wrapper" id="extra-content">
+    <div class="main">
+        <div class="vision-section">
+            <img src="{% static 'main/subimage.png' %}" alt="Vision Image">
+            <div class="vision-text">
+                <h3>A neighborhood where it is not easy to find groceries</h3>
+                <h3>My parents have become very old in that world</h3>
+                <h3>Hearts and news that could not be sent to each other</h3>
+                <h2>Onsaemi will fill all your thirst by becoming the spring water gushing from this land</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    function showContent() {
+        document.body.style.overflowY = 'auto'; /* 세로 스크롤만 활성화 */
+        document.body.style.overflowX = 'hidden'; /* 가로 스크롤 비활성화 */
+        document.querySelector('.scroll-button').style.display = 'none'; /* 버튼 숨기기 */
+        document.getElementById('extra-content').style.display = 'block'; /* 추가 콘텐츠 표시 */
+        document.getElementById('extra-content').scrollIntoView({ behavior: 'smooth' }); /* 부드럽게 스크롤 */
+    }
+
+    // Wheel event to handle visibility
+    let scrolled = false;
+    window.addEventListener('wheel', function(event) {
+        if (event.deltaY > 0 && !scrolled) {
+            scrolled = true;
+            document.body.style.overflowY = 'auto'; /* 세로 스크롤만 활성화 */
+            document.body.style.overflowX = 'hidden'; /* 가로 스크롤 비활성화 */
+            document.querySelector('.scroll-button').style.display = 'none'; /* 버튼 숨기기 */
+            document.getElementById('extra-content').style.display = 'block'; /* 추가 콘텐츠 표시 */
+            document.getElementById('extra-content').scrollIntoView({ behavior: 'smooth' }); /* 부드럽게 스크롤 */
+        }
+    });
+</script>
 {% endblock %}

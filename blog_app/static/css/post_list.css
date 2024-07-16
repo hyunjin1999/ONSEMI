@@ -1,0 +1,139 @@
+main {
+    width: 70%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+nav {
+    text-align: center;
+}
+
+.wrapper nav {
+    margin-bottom: 20px;
+    font-size: large;
+}
+
+nav a {
+    margin: 0 30px;
+    text-decoration: none;
+    color: #156741;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: red;
+}
+
+nav a#selected {
+    color: red;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.new a {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    background-color: #156741;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.new a:hover {
+    background-color: #104e31;
+}
+
+form {
+    margin-top: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"] {
+    width: calc(100% - 900px);
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 15px;
+}
+
+.comment-indicator {
+    color: red;
+}
+
+.short-title {
+    display: inline-block;
+    max-width: 300px; /* Adjust as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+div.search{
+    text-align: center;
+}
+
+div form select{
+    height: 35px;
+    border-radius: 5px;
+}
+
+.gg-image {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background: url('{% static "path/to/your/icon.png" %}') no-repeat center center;
+    background-size: contain;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination span,
+.pagination a {
+    margin: 0 5px;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #000;
+    border: 1px solid #ddd;
+}
+
+.pagination a {
+    color: #156741;
+}
+
+.pagination .active {
+    font-weight: bold;
+    color: red;
+}

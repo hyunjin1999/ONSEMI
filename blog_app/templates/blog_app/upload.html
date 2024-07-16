@@ -1,70 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% extends "layout.html" %}
     {% load static %}
     <meta charset="UTF-8">
-    <title>새로운 글 등록</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        main {
-            width: 60%;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-top: 10px;
-            font-weight: bold;
-            color: #555;
-        }
-        input[type="text"],
-        input[type="file"],
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        textarea {
-            height: 150px;
-        }
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-    </style>
+    {% block title %}새로운 글 등록{% endblock %}
+
+    {% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/upload.css' %}">
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <script src="{% static 'js/upload.js' %}"></script>
+    {% endblock %}
 </head>
 <body>
+
+    {% block content %}
     <main>
         <h1>새로운 글 등록</h1>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {{ formset.management_form }}
+            <div id="image-upload-container" class="image-upload-container">
+                <div class="add-image-button" id="add-image">+</div>
+            </div>
             <button type="submit">업로드</button>
         </form>
     </main>
+    {% endblock %}
 </body>
 </html>

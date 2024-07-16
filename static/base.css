@@ -1,67 +1,91 @@
 @font-face {
-    font-family: 'KCC-Hanbit';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2') format('woff2');
+    font-family: 'GmarketSansMedium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
-
 body {
-    font-family: 'KCC-Hanbit';
-    font-size: 30px;
+    font-family: 'GmarketSansMedium';
+    font-size: 15px;
     margin: 0;
     padding: 0;
-    display: flex;
-    height: 100%;
-    background-color: #f0f0f0;
-    overflow: hidden;
-    
+    background-color: #f4f4f4;
 }
 
-
-.sidebar {
-    width: 50%;
-    height: 100vh;
-    background-color: #f8f8f8;
-    padding: 20px;
-    text-align: center;
-    /* border-right: 1px solid #ddd; */
-    justify-content: center; 
-    align-items: center; 
-}
-.sidebar img {
-    margin-top:100px;
-    width:200px;
-    height: 200px;
-}
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-    justify-content: center; 
-    align-items: center;
-}
-
-.menu{
-    margin-top: 50px; 
-    padding: 0;
-    list-style-type: none;
-}
-
-.sidebar ul li {
-    margin: 50px 0;
-    justify-content: center;
-    align-items: center;
+/* .wrapper {
     display: flex;
     flex-direction: column;
+    height: 100vh;
+} */
 
-}
-.content {
-    flex-grow: 1;
+.header {
+    background-color: white;
     padding: 20px;
-    background-color: #e7f4fc;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
-.content img {
-    width: 50%;
-    margin-top:80px;
+
+.header img {
+    height: 50px;
+    width: 50px;
+} 
+
+
+.header nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px;
+    background-color: #e7f5fe;
+}
+
+.text-container {
+    max-width: 50%;
+}
+
+.text-container h1 {
+    font-size: 2.5em;
+    color: #333;
+}
+
+.text-container h2 {
+    font-size: 2em;
+    color: #007bff;
+}
+
+.text-container p {
+    font-size: 1.2em;
+    color: #555;
+}
+
+.image-container {
+    max-width: 45%;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+}
+#chat-list {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+#chat-list img {
+    width: 100%;
+    height: auto;
 }

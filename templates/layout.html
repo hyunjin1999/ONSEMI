@@ -6,14 +6,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{% static 'main/onsemi.ico' %}">
     <link rel="stylesheet" href="{% static 'layout.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <title>{% block title %}{% endblock %}</title>
-    <!-- 추가적인 스타일시트 및 스크립트 태그들 -->
-    {% block extra_css %}{% endblock %}
+    {% block extra_css %}
+    {% endblock %}
 </head>
 <body>
 
-    {% block content %}{% endblock %}
+    <div class="page-container">
+        <header>
+            <div class="container">
+                <div class="logo">
+                    <img src="{% static 'main/onsemi_logos.png' %}" alt="ONSEMI" class="logo">
+                </div>
+                <nav>
+                    <ul>
+                        <li> <a href="/">홈</a></li>
+                        <li> <a href="/introduce/">소개</a></li>
+                        {% if request.user.is_authenticated %}
+                        <li> <a href="{% url 'account_logout' %}" class="logout">로그아웃</a></li>
+                        <li><a href="/user/profile">프로필</a></li>
+                        <li><a href="/blog/notice_list">공지사항</a></li>
+                        {% else %}
+                        <li><a href="/user/login/">로그인</a></li>
+                        <li><a href="/user/register/">회원가입</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <div class="wrapper">
+            {% block content %}{% endblock %}
+        </div>
+        {% if request.user.is_authenticated %}
+        <div id="chat-link-container">
+            <a href="{% url 'qa:chatting' %}" id="chat-link">
+                <span class="material-symbols-outlined">
+                    chat
+                </span>
+            </a>
+        </div>
+        {% endif %}
+        <footer id="footer">
+            <div class="footer-content">
+                <p><a href="terms/">이용약관</a></p>
+                <p>
+                    (주)케이티 경기도 성남시 분당구 불정로 90 (정자동) 대표자명: 김영섭 사업자등록번호: 102-81-42945 통신판매업신고: 2002-경기성남-0048
+                </p>
+                <p>&copy; 2024 ONSEMI. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+    <script>
+        function adjustFooter() {
+            const footer = document.getElementById('footer');
+            const contentHeight = document.querySelector('.page-container').offsetHeight;
+            const windowHeight = window.innerHeight;
 
+            if (contentHeight < windowHeight) {
+                footer.style.position = 'absolute';
+                footer.style.bottom = '0';
+                footer.style.width = '100%';
+            } else {
+                footer.style.position = 'relative';
+            }
+        }
+
+        window.addEventListener('load', adjustFooter);
+        window.addEventListener('resize', adjustFooter);
+    </script>
 </body>
 </html>
-
+{% block script %}
+{% endblock %}
