@@ -59,8 +59,8 @@ def care_list(request):
     users = User.objects.all()
 
     # 페이지네이션 설정
-    paginator1 = Paginator(not_approved_cares, 10)  # 페이지당 10개의 객체를 보여줌
-    paginator2 = Paginator(approved_cares, 10)  # 페이지당 10개의 객체를 보여줌
+    paginator1 = Paginator(not_approved_cares, 5)  # 페이지당 10개의 객체를 보여줌
+    paginator2 = Paginator(approved_cares, 5)  # 페이지당 10개의 객체를 보여줌
     page_number1 = request.GET.get('page1')
     page_number2 = request.GET.get('page2')
     page_obj1 = paginator1.get_page(page_number1)

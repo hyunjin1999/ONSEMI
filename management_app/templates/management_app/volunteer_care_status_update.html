@@ -104,7 +104,7 @@
                 <label for="APPROVED">요청 승인 완료</label>
             </div>
             
-            <div id="visit-details" class="hidden">
+            <div id="visit-details" class="{% if care.care_state != 'APPROVED' %}hidden{% endif %}">
                 <label for="visit_date">방문 날짜:</label>
                 <input type="date" id="visit_date" name="visit_date" value="{{ care.visit_date|date:'Y-m-d' }}">
                 <br><br>
@@ -121,44 +121,55 @@
     </form>
     </div>
     <script>
-        document.getElementById('APPROVED').addEventListener('change', function() {
-            document.getElementById('visit-details').classList.remove('hidden');
-            checkFormValidity();
-        });
-
-        document.getElementById('NOT_APPROVED').addEventListener('change', function() {
-            document.getElementById('visit-details').classList.add('hidden');
-            document.getElementById('update-button').classList.add('disabled');
-            document.getElementById('update-button').disabled = true;
-        });
-
-        document.getElementById('visit_date').addEventListener('change', function() {
-            const visitDate = new Date(this.value);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0); // 오늘 날짜의 시간을 0으로 설정
-
-            if (visitDate < today) {
-                alert('오늘 이후 날짜를 선택해주세요.');
-                this.value = '';
-            }
-            checkFormValidity();
-        });
-
-        document.getElementById('visit_time').addEventListener('change', checkFormValidity);
-
-        function checkFormValidity() {
-            const visitDate = document.getElementById('visit_date').value;
-            const visitTime = document.getElementById('visit_time').value;
+        document.addEventListener('DOMContentLoaded', function () {
+            const approvedRadio = document.getElementById('APPROVED');
+            const notApprovedRadio = document.getElementById('NOT_APPROVED');
+            const visitDetails = document.getElementById('visit-details');
+            const visitDateInput = document.getElementById('visit_date');
+            const visitTimeInput = document.getElementById('visit_time');
             const updateButton = document.getElementById('update-button');
-            
-            if (document.getElementById('APPROVED').checked && visitDate && visitTime) {
-                updateButton.classList.remove('disabled');
-                updateButton.disabled = false;
-            } else {
-                updateButton.classList.add('disabled');
-                updateButton.disabled = true;
+
+            function toggleVisitDetails() {
+                if (approvedRadio.checked) {
+                    visitDetails.classList.remove('hidden');
+                } else {
+                    visitDetails.classList.add('hidden');
+                    updateButton.classList.add('disabled');
+                    updateButton.disabled = true;
+                }
+                checkFormValidity();
             }
-        }
+
+            function checkFormValidity() {
+                const visitDate = visitDateInput.value;
+                const visitTime = visitTimeInput.value;
+                
+                if (approvedRadio.checked && visitDate && visitTime) {
+                    updateButton.classList.remove('disabled');
+                    updateButton.disabled = false;
+                } else {
+                    updateButton.classList.add('disabled');
+                    updateButton.disabled = true;
+                }
+            }
+
+            approvedRadio.addEventListener('change', toggleVisitDetails);
+            notApprovedRadio.addEventListener('change', toggleVisitDetails);
+            visitDateInput.addEventListener('change', function() {
+                const visitDate = new Date(this.value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // 오늘 날짜의 시간을 0으로 설정
+
+                if (visitDate < today) {
+                    alert('오늘 이후 날짜를 선택해주세요.');
+                    this.value = '';
+                }
+                checkFormValidity();
+            });
+            visitTimeInput.addEventListener('change', checkFormValidity);
+
+            toggleVisitDetails();
+        });
     </script>
 </body>
 </html>

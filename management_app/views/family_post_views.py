@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
-from django.db import transaction
+from django.db import IntegrityError
 from auth_app.models import User
 from management_app.models import Care, Senior
 from auth_app.utils import family_required  # 해당 페이지는 보호자로 로그인했을 때만 접근이 가능하게 수정!!
+from datetime import datetime
+from django.contrib.auth import get_user_model
 
 
 # Create your views here.
@@ -29,13 +31,12 @@ from auth_app.utils import family_required  # 해당 페이지는 보호자로 �
 # 위에거랑 같은데 유저별은 없겠죠?
 # NOT_APPROVED, CONFIRMED, APPROVED
 
-
+from django.http import JsonResponse
 @login_required
 @family_required
 def add_care(request):
     if request.method == "GET":
         user = request.user
-        user = User.objects.get(pk=user.id)
         user_senior_list = user.senior_set.all()
         context = {"seniors": user_senior_list}
         return render(request, "management_app/add_care.html", context)
@@ -44,7 +45,7 @@ def add_care(request):
         care_type = request.POST.get("care_type")
         title = request.POST.get("title")
         content = request.POST.get("content")
-        senior = request.POST.get("senior")
+        senior_id = request.POST.get("senior")
         parkinson_diagnosis = request.POST.get("parkinson_diagnosis")
         
         if parkinson_diagnosis == "on":
@@ -53,22 +54,30 @@ def add_care(request):
             parkinson_diagnosis = False
                 
         user = request.user
-        user = get_object_or_404(User, pk=user.id)
+        senior = Senior.objects.get(pk=senior_id)
+        
+        existing_care = Care.objects.filter(
+            seniors=senior,
+            care_state='NOT_APPROVED'
+        ).first()
+
+        if existing_care:
+            message = f"{senior.name}님은 승인 되지 않은 요청 건이 존재합니다. 요청은 1개만 보낼 수 있습니다. 마이 페이지에서 수정 및 확인이 가능합니다."
+            return JsonResponse({'error': message})
 
         care = Care(
             care_type=care_type,
             title=title,
             content=content,
             user_id=user,
-            parkinson_diagnosis = parkinson_diagnosis,
+            parkinson_diagnosis=parkinson_diagnosis,
         )
         care.save()
+        care.seniors.add(senior)
 
-        user_senior = Senior.objects.get(pk=senior)
-        care.seniors.add(user_senior)
-
-        return redirect("/monitoring/family_monitor/")
-
+        return JsonResponse({'success': True, 'redirect_url': "/monitoring/family_monitor/"})
+    
+        
 
 @login_required
 @family_required

@@ -47,7 +47,6 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        
         /* input[type="submit"]와 button의 공통 스타일 */
         input[type="submit"],
         button {
@@ -59,69 +58,79 @@
             font-size: 16px;
             cursor: pointer;
         }
-       
         .cancle {
             background-color: #dc3545;
             margin-top: 10px;
         }
-        
         .submit {
             background-color: blue;
         }
-
         input[type="submit"]:hover,
         button:hover {
             opacity: 0.9;
         }
-
         #content {
             height: 150px;
             width: 100%;
-            /* 다른 스타일 속성들도 추가할 수 있습니다 */
         }
     </style>
+    <script>
+        function submitForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else if (data.success) {
+                    window.location.href = data.redirect_url;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 </head>
 <body>
     <div class="container">
-    <h2>케어 작성</h2>
-    <form method="post">
-        {% csrf_token %}
-        
-        <label>케어 종류</label><br>
-        <div class="form-group inline">
-        <input type="radio" id="care_type_a" name="care_type" value="방문" required>
-        <label for="care_type_a">방문</label><br>
-        
-        <input type="radio" id="care_type_b" name="care_type" value="병원" required>
-        <label for="care_type_b">병원</label><br>
-        </div>
-
-        <label>파킨슨병 진단 요청</label><br>
-        <div class="form-group inline">
-        <input type="checkbox" id="parkinson_diagnosis" name="parkinson_diagnosis">
-        <label for="parkinson_diagnosis">요청</label><br>
-        </div>
-
-        <label for="title">제목</label>
-        <input type="text" id="title" name="title" maxlength="200"><br>
-
-        <label for="content">내용</label>
-        <textarea id="content" name="content"></textarea><br>
-
-        <div class="form-group">
-            <label>서비스 대상자</label>
-            <div class="radio-group">
-                {% for senior in seniors %}
-                <label><input type="radio" name="senior" value="{{ senior.id }}" required> {{ senior.name }}</label>
-                {% endfor %}
+        <h2>케어 작성</h2>
+        <form method="post" onsubmit="submitForm(event)">
+            {% csrf_token %}
+            <label>케어 종류</label><br>
+            <div class="form-group inline">
+                <input type="radio" id="care_type_a" name="care_type" value="방문" required>
+                <label for="care_type_a">방문</label><br>
+                <input type="radio" id="care_type_b" name="care_type" value="병원" required>
+                <label for="care_type_b">병원</label><br>
             </div>
-        </div>
-
-        <button type="submit" class="submit">요청</button>
-
-        <button type="button" onclick="window.location.href = '/monitoring/family_monitor/'" class="cancle">취소</button>
-    </form>
-</div>
-
+            <label>파킨슨병 진단 요청</label><br>
+            <div class="form-group inline">
+                <input type="checkbox" id="parkinson_diagnosis" name="parkinson_diagnosis">
+                <label for="parkinson_diagnosis">요청</label><br>
+            </div>
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" maxlength="200"><br>
+            <label for="content">내용</label>
+            <textarea id="content" name="content"></textarea><br>
+            <div class="form-group">
+                <label>서비스 대상자</label>
+                <div class="radio-group">
+                    {% for senior in seniors %}
+                        <label><input type="radio" name="senior" value="{{ senior.id }}" required> {{ senior.name }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+            <button type="submit" class="submit">요청</button>
+            <button type="button" onclick="window.location.href = '/monitoring/family_monitor/'" class="cancle">취소</button>
+        </form>
+    </div>
 </body>
 </html>

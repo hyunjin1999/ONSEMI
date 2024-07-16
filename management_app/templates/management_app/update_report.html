@@ -3,22 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <title>Manage Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="checkbox"], input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 100px;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button.cancle {
+            background-color: #dc3545;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        button.cancle:hover {
+            background-color: #c82333;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkbox-group label {
+            position: relative;
+            padding-left: 35px;
+            margin-right: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .checkbox-group label::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox-group label::after {
+            content: "✓";
+            position: absolute;
+            left: 3px;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            font-size: 16px;
+            color: #fff;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked + label::before {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked + label::after {
+            transform: translateY(-50%) scale(1);
+        }
+
+        .bbar {
+            margin: 0px 10px;
+            opacity: 0.5;
+        }
+
+        .image-upload-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .image-upload {
+            position: relative;
+            margin-right: 10px;
+        }
+
+        .image-upload img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .image-upload .remove-image {
+            position: absolute;
+            top: -20px;
+            right: 0;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 20%;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .add-image-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #888;
+            font-size: 24px;
+            background-color: #f4f4f4;
+            flex-shrink: 0;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        .disabled {
+            color: #ccc;
+        }
+        
+    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const noIssueCheckbox = document.querySelector('input[name="no_issue"]');
             const otherCheckboxes = document.querySelectorAll('input[name="eye"], input[name="teeth"], input[name="skin"], input[name="back"], input[name="other"]');
+            const otherCheckboxLabels = document.querySelectorAll('input[name="eye"] + label, input[name="teeth"] + label, input[name="skin"] + label, input[name="back"] + label, input[name="other"] + label');
+            const noIssueLabel = document.querySelector('input[name="no_issue"] + label');
 
             function toggleCheckboxes() {
                 if (noIssueCheckbox.checked) {
                     otherCheckboxes.forEach(checkbox => checkbox.disabled = true);
+                    otherCheckboxLabels.forEach(label => label.classList.add('disabled'));
                 } else {
                     otherCheckboxes.forEach(checkbox => checkbox.disabled = false);
+                    otherCheckboxLabels.forEach(label => label.classList.remove('disabled'));
                 }
 
                 if (Array.from(otherCheckboxes).some(checkbox => checkbox.checked)) {
                     noIssueCheckbox.disabled = true;
+                    noIssueLabel.classList.add('disabled');
                 } else {
                     noIssueCheckbox.disabled = false;
+                    noIssueLabel.classList.remove('disabled');
                 }
             }
 
@@ -28,93 +239,152 @@
             // Initialize state on page load
             toggleCheckboxes();
 
-            document.getElementById('other').addEventListener('change', function() {
-                var otherText = document.getElementById('other_text');
+            document.getElementById('other-checkbox').addEventListener('change', function() {
+                var otherText = document.getElementById('other-text');
                 if (this.checked) {
                     otherText.style.display = 'block';
                 } else {
                     otherText.style.display = 'none';
                 }
             });
+
+            let imageUploadContainer = document.getElementById('image-upload-container');
+            let addImageButton = document.getElementById('add-image');
+
+            function createImageUploadField(existingImageUrl, imageId) {
+                let newForm = document.createElement('div');
+                newForm.classList.add('image-upload');
+                newForm.innerHTML = `
+                    <input type="file" name="images" style="display: none;">
+                    <img src="${existingImageUrl || ''}" alt="이미지 미리보기" class="image-preview" style="display: ${existingImageUrl ? 'block' : 'none'};">
+                    <button type="button" class="remove-image" style="display: ${existingImageUrl ? 'flex' : 'none'};" data-image-id="${imageId || ''}">&times;</button>
+                `;
+                imageUploadContainer.insertBefore(newForm, addImageButton);
+
+                let fileInput = newForm.querySelector(`input[type="file"]`);
+                let previewImage = newForm.querySelector('.image-preview');
+                let removeImageButton = newForm.querySelector('.remove-image');
+
+                if (!existingImageUrl) {
+                    fileInput.click();
+                    fileInput.addEventListener('change', function() {
+                        if (fileInput.files && fileInput.files[0]) {
+                            let reader = new FileReader();
+                            reader.onload = function(e) {
+                                previewImage.src = e.target.result;
+                                previewImage.style.display = 'block';
+                                removeImageButton.style.display = 'flex';
+                            }
+                            reader.readAsDataURL(fileInput.files[0]);
+                        } else {
+                            newForm.remove();
+                        }
+                    });
+                }
+
+                removeImageButton.addEventListener('click', function() {
+                    if (imageId) {
+                        // 이미 등록된 이미지를 삭제하는 경우
+                        let deleteInput = document.createElement('input');
+                        deleteInput.type = 'hidden';
+                        deleteInput.name = 'delete_images';
+                        deleteInput.value = imageId;
+                        document.querySelector('form').appendChild(deleteInput);
+                    }
+                    newForm.remove();
+                });
+            }
+
+            addImageButton.addEventListener('click', function() {
+                createImageUploadField();
+            });
+
+            // 기존 이미지 로드
+            {% for image in report.images.all %}
+                createImageUploadField('{{ image.image.url }}', '{{ image.id }}');
+            {% endfor %}
+
+            document.querySelector('form').addEventListener('submit', function(event) {
+                const imageInputs = document.querySelectorAll('.image-upload');
+                let hasImage = false;
+
+                imageInputs.forEach(upload => {
+                    const preview = upload.querySelector('.image-preview');
+                    if (preview && preview.style.display === 'block') {
+                        hasImage = true;
+                    }
+                });
+
+                if (!hasImage) {
+                    event.preventDefault();
+                    alert('이미지는 필수입니다');
+                }
+            });
         });
     </script>
 </head>
 <body>
-    <h1>보고서 수정</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <h3>Status</h3>
-        <div>
-            <label>{{report.status}}</label>
-        </div>
+    <div class="container">
+        <h1 style="text-align:center;">{{ senior.name }}님의 보고서 수정</h1>
+        <hr style="margin: 30px 0px;">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        <h3>Notes</h3>
-        <div>
-            <label><input type="checkbox" name="no_issue" {% if report.no_issue %}checked{% endif %}> 특이사항 없음</label>
-        </div>
-        <div>
-            <label><input type="checkbox" name="eye" {% if report.eye %}checked{% endif %}> 눈</label>
-        </div>
-        <div>
-            <label><input type="checkbox" name="teeth" {% if report.teeth %}checked{% endif %}> 치아</label>
-        </div>
-        <div>
-            <label><input type="checkbox" name="skin" {% if report.skin %}checked{% endif %}> 피부</label>
-        </div>
-        <div>
-            <label><input type="checkbox" name="back" {% if report.back %}checked{% endif %}> 허리</label>
-        </div>
-        <div>
-            <label><input type="checkbox" name="other" id="other" {% if report.other %}checked{% endif %}> 기타</label><br>
-            <input type="text" name="other_text" id="other_text" value="{{ report.other_text }}" {% if not report.other %}style="display:none;"{% endif %}>
-        </div>
+            <h3>Status</h3>
+            <div>
+                <label>{{ report.status }}</label>
+            </div>
+            <br>
+            <label>이상 부위 :</label>
+            <div class="checkbox-group">
+                <input type="checkbox" name="no_issue" id="no_issue" {% if report.no_issue %}checked{% endif %}>
+                <label for="no_issue">특이사항 없음</label> 
+                <span class="bbar">|</span>
+                <input type="checkbox" name="eye" id="eye" {% if report.eye %}checked{% endif %}>
+                <label for="eye">눈</label>
+                <span class="bbar">|</span>
+                <input type="checkbox" name="teeth" id="teeth" {% if report.teeth %}checked{% endif %}>
+                <label for="teeth">치아</label>
+                <span class="bbar">|</span>
+                <input type="checkbox" name="skin" id="skin" {% if report.skin %}checked{% endif %}>
+                <label for="skin">피부</label>
+                <span class="bbar">|</span>
+                <input type="checkbox" name="back" id="back" {% if report.back %}checked{% endif %}>
+                <label for="back">허리</label>
+                <span class="bbar">|</span>
+                <input type="checkbox" name="other" id="other-checkbox" {% if report.other %}checked{% endif %}>
+                <label for="other-checkbox">기타</label>
+            </div>
+            <input type="text" name="other_text" id="other-text" value="{{ report.other_text }}" {% if not report.other %}style="display:none;"{% endif %}><br>
 
-        <h3>Upload Images</h3>
-        <input type="file" name="images" multiple>
-        <button type="submit" name="add_image">Upload Images</button>
-         <!-- 이미 등록된 이미지들 표시 -->
-        {% if report.images.exists %}
-            <h3>Already Uploaded Images</h3>
-            <ul>
-                {% for image in report.images.all %}
+            <label>이미지 파일 업로드 :</label>
+            <div id="image-upload-container" class="image-upload-container">
+                <div class="add-image-button" id="add-image">+</div>
+            </div>
+
+            {%if report.care.parkinson_diagnosis %}
+                <label>음성 파일 업로드 :</label>
+                <input type="file" name="audio_file">
+                {% if report.audio_test_result %}
                     <div>
-                        <img src="{{ image.image.url }}" style="max-width: 200px; max-height: 200px;">
-                        <button type="submit" name="delete_image" value="{{ image.id }}">Delete</button>
-                        {% comment %} <button type="submit" name="delete_image" value="{{ image.id }}">Delete</button> {% endcomment %}
+                        <label>음성 파일 분석 결과 :</label>
+                        <p>{{ report.audio_test_result }}</p>
                     </div>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        {% comment %} <ul>
-            {% for image in images %}
-                <li>{{ image.image.url }} <button type="submit" name="delete_image" value="{{ image.id }}">Delete</button></li>
-            {% endfor %}
-        </ul> 
-        <button type="submit" name="delete_all_images">Delete All Images</button>{% endcomment %}
-
-        {%if report.care.parkinson_diagnosis %}
-            <h3>음성 Test</h3>
-            <input type="file" name="audio_file">
-            {% if report.audio_test_result %}
-                <div>
-                    <h3>Audio Test Result</h3>
-                    <p>{{ report.audio_test_result }}</p>
-                </div>
+                {% endif %}
             {% endif %}
-        {% endif %}
 
-        {%if report.care.care_type == '병원'%}
-            <h3>의사 소견</h3>
-            <textarea name="doctor_opinion">{{ report.doctor_opinion }}</textarea>
-        {% endif %}
+            {%if report.care.care_type == '병원'%}
+                <label>의사 소견 :</label>
+                <textarea name="doctor_opinion">{{ report.doctor_opinion }}</textarea>
+            {% endif %}
 
-        <h3>전달 사항</h3>
-        <textarea name="user_request">{{ report.user_request }}</textarea>
+            <label>보호자님께 전달할 사항 :</label>
+            <textarea name="user_request">{{ report.user_request }}</textarea>
 
-        <br>
-        <input type="submit" value="등록">
-        <button type="submit" name="delete_report">삭제</button>
-    </form>
+            <br>
+            <button type="submit">수정하기</button>
+            <button type="button" onclick="window.location.href = '/management/report/list/'" class="cancle">취소</button>
+        </form>
+    </div>
 </body>
 </html>
