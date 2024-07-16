@@ -89,7 +89,7 @@ def status_update(request, care_id):
         care.visit_time = request.POST.get('visit_time')
         care.approved_by = request.user
         care.save()
-        my_signal.send(sender=care, username=care.user_id.username, senior_name=care.seniors.all()[0].name)
+        my_signal.send(sender=care)
         return redirect('/management/care/list/')
     
     context = {

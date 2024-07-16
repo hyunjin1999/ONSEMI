@@ -1,29 +1,85 @@
 @font-face {
-    font-family: 'KCC-Hanbit';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2') format('woff2');
+    font-family: 'GmarketSansMedium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
-body {
-    font-family: 'KCC-Hanbit';
+html, body {
+    height: 100%;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    font-family: 'GmarketSansMedium';
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .wrapper {
-    height: 100vh;
+    flex: 1;
 }
 
-footer {
-    background-color: #f1f1f1;
-    padding: 20px;
-    text-align: center;
+/* 추가 스타일 */
+header {
+    background: url('background.jpg') no-repeat center center;
+    background-size: cover;
+    padding: 20px 0;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+
+nav ul li a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    font-size: 16px;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
 }
 
 .footer-content {
-    max-width: 800px;
-    margin: 0 auto;
+    background-color: #f1f1f1;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .footer-content p {
@@ -39,6 +95,7 @@ footer {
 .footer-content a:hover {
     text-decoration: underline;
 }
+
 #chat-link-container {
     position: fixed;
     bottom: 20px;
@@ -63,4 +120,3 @@ footer {
 #chat-link:hover {
     background-color: #0056b3;
 }
-

@@ -2,6 +2,7 @@ from django.shortcuts import render, reverse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.dispatch import receiver
+from django.db.models import Max
 
 from monitoring_app.signals import my_signal
 from management_app.models import Care, Senior, Report, ReportImage
@@ -11,6 +12,12 @@ from auth_app.models import User
 signal_received = False
    
 def family_monitor(request):
+    user = User.objects.get(email=request.user.email)
+    if user.user_type == '':
+        user.user_type = 'FAMILY'
+        user.save()
+        
+    
     sort_by = request.GET.get("sort_by", "datetime")
     order = request.GET.get("order", "asc")
     selected_senior_id = request.GET.get('selected_senior_id', '')
@@ -45,9 +52,14 @@ def family_monitor(request):
    
     reports = Report.objects.filter(care__in=cares)
     sorted_reports = reports.order_by('-created_at')  # created_at 등 원하는 필드로 정렬
-   
+    sorted_cares = cares.order_by('-datetime')
+    
+    latest_date = sorted_cares.aggregate(latest_date=Max('datetime__date'))['latest_date']
+    sorted_cares_latest = sorted_cares.filter(datetime__date=latest_date)
+    
     context = {
-        "cares": cares,
+        "cares" : cares,
+        "sorted_cares_latest": sorted_cares_latest,
         "users": users,
         "selected_user": user_id,
         'selected_senior_id': selected_senior_id,
@@ -87,10 +99,13 @@ def poll_signal(request):
             if request.user == care.user_id:
                 print('request', request.user)
                 print('care', care.user_id)
+                print(care.seniors.all())
                 response = {'signal_received': signal_received,
                             'username': care.user_id.username,
                             'seniorname': care.seniors.all()[0].name,
-                            'state': care.care_state}
+                            'state': care.care_state,
+                            'visit_date': care.visit_date,
+                            'visit_time': care.visit_time}
             # 시그널을 처리한 후 다시 초기화
             signal_received = False
         return JsonResponse(response)

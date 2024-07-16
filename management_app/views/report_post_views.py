@@ -16,6 +16,7 @@ from django.core.files.storage import default_storage
 from pydub import AudioSegment
 from io import BytesIO
 import os
+from monitoring_app.signals import my_signal
 
 # ##### 윈도우 #####
 # https://www.gyan.dev/ffmpeg/builds/에서 ffmpeg-git-full.7z 다운로드 받고, 경로 수정
@@ -76,6 +77,9 @@ def create_report(request, care_id):
 
         care.care_state = 'COMPLETED'
         care.save()
+
+        my_signal.send(sender=care)
+        
 
         report.status = '등록'
         report.save()

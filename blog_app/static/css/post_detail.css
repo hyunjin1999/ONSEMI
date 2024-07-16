@@ -1,0 +1,281 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.post-header h1 {
+    font-size: 24px;
+    color: #333;
+    margin: 0;
+}
+
+.post-meta {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: #777;
+}
+
+.post-meta span {
+    display: flex;
+    align-items: center;
+}
+
+.post-meta span strong {
+    margin-left: 5px;
+    color: #333;
+}
+
+.main-content-post h2 {
+    font-size: 20px;
+    color: #333;
+}
+
+.main-content-post p {
+    line-height: 1.6;
+    color: #666;
+    margin: 10px 0;
+}
+
+.main-content-post img {
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+}
+
+button {
+    background-color: none;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 10px 15px;
+    text-decoration: none;
+    cursor: pointer;
+    margin: 5px 5px 5px 0;
+    display: inline-block;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #939393;
+}
+
+.comments {
+    margin-top: 40px;
+}
+
+.comments h2 {
+    font-size: 18px;
+    color: #333;
+}
+
+.comments div {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-left: 3px solid #007BFF;
+}
+
+.comments strong {
+    color: #333;
+}
+
+.comments p {
+    color: #666;
+}
+
+form {
+    margin-top: 20px;
+}
+
+form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+form input[type="submit"], form button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    text-decoration: none;
+    cursor: pointer;
+    margin: 10px 0;
+    display: inline-block;
+}
+
+form input[type="submit"]:hover, form button:hover {
+    background-color: #218838;
+}
+
+.return-button {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.return-button:hover {
+    background-color: #5a6268;
+}
+
+.action-buttons {
+    margin-top: 20px;
+    text-align: right;
+}
+
+#post-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2em 0;
+}
+
+#post-table th, #post-table td {
+    padding: 1em;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+#post-table th {
+    background-color: #f4f4f4;
+}
+
+#post-table tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+.comment, .reply {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    text-align: left;
+}
+
+.reply {
+    margin-left: 40px;
+}
+.comment-author {
+    font-weight: bold;
+}
+.comment-time {
+    font-size: 0.9em;
+    color: #888;
+}
+.comment-actions {
+    margin-top: 10px;
+}
+.reply-link {
+    color: #007BFF;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.post-title{
+    text-align: left;
+    margin-bottom: 5px; 
+}
+.post-right-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 25px;
+    color: #848e97;
+}
+.post-info-item {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.post-content {
+    padding-top : 20px;
+    padding-bottom : 20px;
+    text-align: left;
+    color: #120907;
+}
+.bar {
+    color:#edecec;
+}
+.comment-section {
+    text-align: left;
+}
+
+/* 윤혁 */
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* 오른쪽 정렬 */
+}
+
+.comment-form p {
+    width: 100%;
+    margin-bottom: 10px; /* 여백 추가 */
+}
+
+.comment-submit-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-right: 30px;
+}
+
+.comment-form .comment-submit-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.comment-submit-button:hover {
+    background-color: #0056b3;
+}
+
+.action-buttons * {
+    background-color: none;
+}
+
+.comment-actions > button {
+    background-color: none;
+    font-weight: bold;
+}
