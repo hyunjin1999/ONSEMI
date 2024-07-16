@@ -34,14 +34,19 @@ def login_user(request):
 
         if user:
             login(request, user)
+            print(user.user_type)
             if user.user_type == 'FAMILY':  # 사용자의 유형이 'FAMILY'인 경우
                 return redirect("/monitoring/family_monitor")
             
             elif user.user_type == 'VOLUNTEER':  # 사용자의 유형이 'VOLUNTEER'인 경우
                 return redirect("/management/care/list")
             
-            elif user.user_type == 'admin':  # 사용자의 유형이 'ADMIN'인 경우
+            elif user.user_type == 'ADMIN':  # 사용자의 유형이 'ADMIN'인 경우
                 return redirect("/admin")
+            elif user.user_type == '':
+                user.user_type = 'FAMILY'
+                user.save()
+                return redirect("/monitoring/family_monitor")
             
             return redirect("/")  # 다른 사용자 유형은 홈 페이지로 리디렉션
 
