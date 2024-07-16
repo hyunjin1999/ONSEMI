@@ -9,6 +9,7 @@
         height: 100%;
         margin: 0;
         overflow: hidden; /* 기본적으로 스크롤 막기 */
+        min-width:100%;
     }
 
     .header-wrapper {
@@ -16,6 +17,7 @@
         width: 100%;
         height: 100vh; /* 전체 뷰포트 높이 */
         overflow: hidden; /* 내부 컨텐츠가 넘치지 않게 숨김 */
+        min-width:100%;
     }
 
     .main-image {
@@ -23,6 +25,7 @@
         height: 100%;
         object-fit: cover;
         display: block;
+        min-width:100%;
     }
 
     header {
@@ -36,6 +39,7 @@
 
     .logo img {
         filter: brightness(0) invert(1);
+       
     }
 
     nav ul li a {
@@ -50,7 +54,8 @@
         width: 100%;
         text-align: center;
         color: white;
-        animation: enlargeText 2s ease-out forwards; /* 애니메이션 추가 */
+        animation: enlargeText 2s ease-out forwards;
+        min-width:100%;
     }
 
     @keyframes enlargeText {
@@ -94,7 +99,7 @@
     }
 
     .main {
-        padding: 0; /* 여백 없애기 */
+        padding: 0;
         background-color: #fff;
         margin: 0;
     }
@@ -102,17 +107,17 @@
     .vision-section {
         position: relative;
         text-align: center;
-        height: 800px;
-        margin: 0; /* 여백 없애기 */
-        padding: 0; /* 패딩 없애기 */
+        margin: 0; 
+        padding: 0; 
+        height:100vh;
     }
 
     .vision-section img {
         width: 100%;
         height: 100%;
         opacity: 0.75;
-        margin: 0; /* 여백 없애기 */
-        padding: 0; /* 패딩 없애기 */
+        margin: 0; 
+        padding: 0;
     }
 
     .vision-text {
@@ -137,7 +142,7 @@
     .values-section {
         text-align: center;
         padding: 40px 20px;
-        margin: 0; /* 여백 없애기 */
+        margin: 0; 
     }
 
     .values-section h2 {
