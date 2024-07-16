@@ -443,10 +443,17 @@
                         <span class="tooltip">온새미마트</span>
                     </a>
                 </div>
-              
+                <div class="dropdown">
+                    <button class="dropbtn material-symbols-outlined">person_search</button>
+                    <div class="dropdown-content">
+                        {% for senior in seniors %}
+                            <a href="?selected_senior_id={{ senior.id }}">{{ senior.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
             </div>
            
-        </div>
         <div class="main-content">
             <div class="top-section">
                 <div class="photo-box card">
