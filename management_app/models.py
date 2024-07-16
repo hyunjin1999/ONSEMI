@@ -26,14 +26,22 @@ class Senior(models.Model):
         db_table = "senior"
 
 #UNIQUE constraint failed: care.title, care.user_id
+from django.db import models
+from django.utils import timezone
+from auth_app.models import User
+
 class Care(models.Model):
     care_type = models.CharField(max_length=100)  # SHOP, VISIT
     parkinson_diagnosis = models.BooleanField(default=False)
     datetime = models.DateTimeField(default=timezone.now)
+    visit_date = models.DateField(null=True, blank=True)
+    visit_time = models.TimeField(null=True, blank=True)
     title = models.CharField(max_length=200, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="user_id")
     seniors = models.ManyToManyField("Senior", related_name="cares_seniors")
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="cares_approved")
+
 
     CARE_STATE_CHOICES = [
         ('NOT_APPROVED', '요청 승인 대기'),
@@ -43,7 +51,7 @@ class Care(models.Model):
     ]
 
     care_state = models.CharField(
-        max_length=50, default="요청 승인 대기",  choices=CARE_STATE_CHOICES
+        max_length=50, default="NOT_APPROVED",  choices=CARE_STATE_CHOICES
     )
     admin_message = models.TextField(blank=True, null=True)
 

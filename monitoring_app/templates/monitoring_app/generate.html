@@ -2,9 +2,11 @@
 {% load static %}
  
 {% block title %}ONSEMI{% endblock %}
-<!DOCTYPE html><html lang="ko">
+<!DOCTYPE html>
+<html lang="ko">
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/styles.css' %}"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
 <script src="{% static 'js/scripts.js' %}"></script>
 {% endblock %}
 {% block content %}
@@ -14,37 +16,38 @@
     <div class="container">
         <div class="sidebar">
             <h2>기간 선택</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.start_date.label_tag }} {{ form.start_date }}
-            {{ form.end_date.label_tag }} {{ form.end_date }}
-            {{ form.category_order.label_tag }} {{ form.category_order }}
-            {{ form.category_service.label_tag }} {{ form.category_service }}
-            {{ form.selected_senior.label_tag }} {{ form.selected_senior }}
-            <button type="submit" class="btn">서비스 이용 내역 조회</button>
-        </form>
-    </div>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.start_date.label_tag }} {{ form.start_date }}
+                {{ form.end_date.label_tag }} {{ form.end_date }}
+                {{ form.category_order.label_tag }} {{ form.category_order }}
+                {{ form.category_service.label_tag }} {{ form.category_service }}
+                {{ form.selected_senior.label_tag }} {{ form.selected_senior }}
+                <button type="submit" class="btn">서비스 이용 내역 조회</button>
+            </form>
+        </div>
         <div class="main-content">
             <h2>보호자 모니터링</h2>
             {% if request.method == 'POST' %}
             {% endif %}
-            {% if pie_chart_url %}
-                <div class="chart-container">
-                    <h3>카테고리별 분포</h3>
-                    <p><a href="{% url 'monitoring_app:csv_view' %}?type=order">주문 내역 자세히 보기</a></p>
-                    <img src="{{ pie_chart_url }}" alt="Category Distribution Pie Chart">
-                </div>
-            {% endif %}
-            {% if graph_url %}
-                <div class="chart-container">
-                    <h3>카테고리별 서비스 주간 요청량</h3>
-                    {% if request.method == 'POST' %}
-                        <p><a href="{% url 'monitoring_app:csv_view' %}?type=care">서비스 요청 데이터 자세히 보기</a></p>
-                    {% endif %}
-                    <img src="{{ graph_url }}" alt="Daily Order Quantity by Category">
-                </div>
-            {% endif %}
-
+            <div class="charts-wrapper">
+                {% if pie_chart_url %}
+                    <div class="chart-container">
+                        <h3>주문 카테고리별 분포</h3>
+                        <p><a class="detail" href="{% url 'monitoring_app:csv_view' %}?type=order">주문 내역 자세히 보기</a></p>
+                        <img src="{{ pie_chart_url }}" alt="Category Distribution Pie Chart">
+                    </div>
+                {% endif %}
+                {% if graph_url %}
+                    <div class="chart-container">
+                        <h3>주간별 케어 요청량</h3>
+                        {% if request.method == 'POST' %}
+                            <p><a class="detail" href="{% url 'monitoring_app:csv_view' %}?type=care">케어 요청 데이터 자세히 보기</a></p>
+                        {% endif %}
+                        <img src="{{ graph_url }}" alt="Daily Order Quantity by Category">
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </body>

@@ -1,0 +1,168 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+}
+
+.header nav a {
+    color: #fff;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+ .info-box {
+    display: none;
+    position: absolute;
+    top: 65px;
+    right: 10px;
+    width: 300px;
+    background-color: #156741;
+    border: 1px solid #156741;
+    padding: 10px;
+    height: auto;
+    justify-content: center;
+    text-align: center;
+    border-radius: 30px;
+    z-index: 1000; 
+    color: rgb(0, 0, 0);
+} 
+
+#navigateButton {
+    margin-top: auto;
+    border-radius: 20px;
+    display: block;
+    margin: auto;
+    background-color: black;
+    color: white;
+}
+
+.info-box .button-container {
+    display: flex;
+    gap: 10px;
+}
+
+.info-box .button-container a,
+.info-box .button-container button {
+    flex: 1; / 
+}
+
+.content-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+.sidebar {
+    background-color: #2E7D32;
+    padding: 20px;
+    width: 200px;
+    flex-shrink: 0;
+    overflow: auto;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    height: 40%;
+}
+
+.bottom-section {
+    height: 50%;
+}
+
+.section {
+    flex: 1;
+    margin-right: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    overflow: auto;
+}
+
+.photo-box, .health-box, .order-box {
+    flex: 1;
+    overflow: hidden;
+}
+
+.add-button {
+    float: right;
+    background-color: #2E7D32;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.photo-box::-webkit-scrollbar,
+.health-box::-webkit-scrollbar,
+.order-box::-webkit-scrollbar {
+    display: none;
+}
+
+.image-box {
+    text-decoration: none;
+    color: black;
+}
+
+footer {
+    background-color: #f1f1f1;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.footer-content {
+    margin: 0 auto;
+    font-size: 12px; 
+}
+
+#chat-link-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000; 
+}
+
+#chat-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#chat-link:hover {
+    background-color: #0056b3;
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
+    <style>
+        .text {
+            margin-bottom: 10px;
+        }
+ 
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        button.back {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            background: #156741;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        button.back:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1>리포트 상세</h1>
+        <div class="text"><strong>리포트 종류:</strong> {{ report.care.care_type }}</div>
+        <div class="text"><strong>등록 시간:</strong> {{ report.care.datetime|date:"Y년 n월 j일 A g:i" }}</div>
+        <div class="text"><strong>제목:</strong> {{ report.care.title }}</div>
+        <div class="text"><strong>내용:</strong> {{ report.care.content }}</div>
+        <div class="text"><strong>특이사항:</strong> 
+            {% if report.no_issue %}
+            특이사항 없음
+            {% else %}
+                {% if report.eye %}
+                    눈 진찰 필요
+                {% endif %}
+                {% if report.teeth %}
+                    치아 진찰 필요
+                {% endif %}
+                {% if report.skin %}
+                    피부 진찰 필요
+                {% endif %}
+                {% if report.back %}
+                    허리 진찰 필요
+                {% endif %}
+                {% if report.other %}
+                    {{report.other_text}} 진찰 필요
+                {% endif %}
+            {% endif %}
+        </div>
+        {% if report.images.all %}
+            <div class="text"><strong>업로드 이미지:</strong><br> 
+            {% for image in report.images.all %}
+                <img src="{{ image.image.url }}" alt="Report Image" style="max-width: 200px; max-height: 200px;">
+            {% endfor %}
+        {% endif %}
+        {% if report.care.parkinson_diagnosis %}
+            <div class="text"><strong>파킨슨병 진단 결과:</strong> {{report.audio_test_result }}</div>
+        {% endif %}
+        {% if report.doctor_opinion %}
+            <div class="text"><strong>의사소견:</strong> {{ report.doctor_opinion }}</div>
+        {% endif %}   
+        <div class="text"><strong>전달사항:</strong> {{ report.user_request }}</div>
+        
+        <button type="button" onclick="window.location.href = '/monitoring/family_monitor/report/list/?{{ filter_params }}';" class="back">뒤로가기</button>
+    </body>
+</html>
