@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 {% load static %}
 
-<!DOCTYPE html><html lang="ko"><head>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
     <meta charset="UTF-8">
     {% block title %}Update Senior{% endblock %}
     {% block extra_css %}
@@ -14,9 +16,9 @@
             border-radius: 10px;
             background: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width:600px;
-            margin-top:20px;
-            margin-bottom:20px;
+            width: 600px;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
         .form-container h1 {
             text-align: center;
@@ -34,7 +36,7 @@
         .form-container input[type="file"],
         .form-container input[type="radio"] {
             width: 90%;
-            padding: 20px;
+            padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
@@ -60,7 +62,6 @@
             font-size: 16px;
             margin-bottom: 10px;
         }
-        
         .form-container .delete-button {
             background-color: red;
             color: white;
@@ -76,9 +77,50 @@
             text-align: center;
             margin-top: 20px;
         }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .preview-container {
+            margin-top: 10px;
+        }
+        .preview-container img {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+            display: block;
+        }
     </style>
+    <script>
+        function previewImage(event) {
+            const fileInput = event.target;
+            const previewImage = document.getElementById('preview-image');
+            const existingImage = document.getElementById('existing-image');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                    if (existingImage) {
+                        existingImage.style.display = 'none';
+                    }
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+    </script>
     {% endblock %}
-</head><body>
+</head>
+<body>
     {% block content %}
     <div class="form-container">
         <h1>수정하기</h1>
@@ -94,38 +136,40 @@
             </p>
             <p>
                 <label>성별:</label>
-                <input type="radio" id="Male" name="gender" value="Male" {% if senior.gender == 'Male' %}checked{% endif %}>
-                <label for="Male">남성</label>
-                <input type="radio" id="Female" name="gender" value="Female" {% if senior.gender == 'Female' %}checked{% endif %}>
-                <label for="Female">여성</label>
+                <div class="radio-group">
+                    <label><input type="radio" id="Male" name="gender" value="Male" {% if senior.gender == 'Male' %}checked{% endif %}> 남성</label>
+                    <label><input type="radio" id="Female" name="gender" value="Female" {% if senior.gender == 'Female' %}checked{% endif %}> 여성</label>
+                </div>
             </p>
             <p>
                 <label for="phone">전화번호:</label>
                 <input type="text" id="phone" name="phone" value="{{ senior.phone_number }}">
             </p>
             <p>
-                <label for="has_alzheimers">치매 유:</label>
-                <input type="radio" id="has_alzheimers_yes" name="has_alzheimers" value="True" {% if senior.has_alzheimers %}checked{% endif %}>
-                <label for="has_alzheimers_yes">유</label>
-                <input type="radio" id="has_alzheimers_no" name="has_alzheimers" value="False" {% if not senior.has_alzheimers %}checked{% endif %}>
-                <label for="has_alzheimers_no">무</label>
+                <label>치매 유/무:</label>
+                <div class="radio-group">
+                    <label><input type="radio" id="has_alzheimers_yes" name="has_alzheimers" value="True" {% if senior.has_alzheimers %}checked{% endif %}> 유</label>
+                    <label><input type="radio" id="has_alzheimers_no" name="has_alzheimers" value="False" {% if not senior.has_alzheimers %}checked{% endif %}> 무</label>
+                </div>
             </p>
             <p>
-                <label for="has_parkinsons">파킨슨 유:</label>
-                <input type="radio" id="has_parkinsons_yes" name="has_parkinsons" value="True" {% if senior.has_parkinsons %}checked{% endif %}>
-                <label for="has_parkinsons_yes">유</label>
-                <input type="radio" id="has_parkinsons_no" name="has_parkinsons" value="False" {% if not senior.has_parkinsons %}checked{% endif %}>
-                <label for="has_parkinsons_no">무</label>
+                <label>파킨슨 유/무:</label>
+                <div class="radio-group">
+                    <label><input type="radio" id="has_parkinsons_yes" name="has_parkinsons" value="True" {% if senior.has_parkinsons %}checked{% endif %}> 유</label>
+                    <label><input type="radio" id="has_parkinsons_no" name="has_parkinsons" value="False" {% if not senior.has_parkinsons %}checked{% endif %}> 무</label>
+                </div>
             </p>
             <p>
                 <label for="photo">사진:</label>
-                <input type="file" id="photo" name="photo">
-                {% if senior.photo %}
-                    <br>
-                    <img src="{{ senior.photo.url }}" alt="{{ senior.name }}'s photo" style="max-width:200px; max-height:200px;"><br>
-                {% endif %}
+                <input type="file" id="photo" name="photo" onchange="previewImage(event)">
+                <div id="preview-container" class="preview-container">
+                    {% if senior.photo %}
+                        <img id="existing-image" src="{{ senior.photo.url }}" alt="{{ senior.name }}'s photo">
+                    {% endif %}
+                    <img id="preview-image" src="#" alt="미리보기" style="display: none;">
+                </div>
             </p>
-            <button type="submit" class="upload-button">업로드</button>
+            <button type="submit" class="upload-button">수정하기</button>
         </form>
         <form method="post" action="{% url 'management_app:delete_senior' senior.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
             {% csrf_token %}
@@ -134,4 +178,5 @@
         <a href="{% url 'management_app:list_senior' %}" class="back-link">뒤로가기</a>
     </div>
     {% endblock %}
-</body></html>
+</body>
+</html>

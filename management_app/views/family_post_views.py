@@ -8,6 +8,7 @@ from management_app.models import Care, Senior
 from auth_app.utils import family_required  # 해당 페이지는 보호자로 로그인했을 때만 접근이 가능하게 수정!!
 from datetime import datetime
 from django.contrib.auth import get_user_model
+from datetime import date
 
 
 # Create your views here.
@@ -141,6 +142,10 @@ def delete_care(request, care_id):
     return redirect('/monitoring/family_monitor/') 
 
   
+def calculate_age(birthdate):
+    today = date.today()
+    return today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+
 @login_required
 @family_required
 def add_senior(request):
@@ -151,8 +156,11 @@ def add_senior(request):
     if request.method == "POST":
         name = request.POST.get("name")
         address = request.POST.get("address")
-        age = request.POST.get("age")
         gender = request.POST.get("gender")
+        year = int(request.POST.get('year'))
+        month = int(request.POST.get('month'))
+        day = int(request.POST.get('day'))
+        birthdate = date(year, month, day)
         phone_number = request.POST.get("phone_number")
         has_alzheimers = request.POST.get("has_alzheimers")
         has_parkinsons = request.POST.get("has_parkinsons")
@@ -166,7 +174,7 @@ def add_senior(request):
         senior = Senior(
             name=name,
             address=address,
-            age=age,
+            birthdate=birthdate,
             gender=gender,
             phone_number=phone_number,
             has_alzheimers =has_alzheimers,

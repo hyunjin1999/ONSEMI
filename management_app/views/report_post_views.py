@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from auth_app.utils import volunteer_required
 from management_app.models import Senior, Care, Report, ReportImage
 from django.http import JsonResponse
 from django.urls import reverse
@@ -20,6 +21,7 @@ from monitoring_app.signals import my_signal
 
 # report 생성 기능
 @login_required
+@volunteer_required
 def create_report(request, care_id):
     care = get_object_or_404(Care, id=care_id)
     senior = care.seniors.first()
@@ -62,6 +64,7 @@ def create_report(request, care_id):
 
 # report 수정 기능
 @login_required
+@volunteer_required
 def update_report(request, report_id):
     report = get_object_or_404(Report, id=report_id)
     care = get_object_or_404(Care, id=report.care_id)

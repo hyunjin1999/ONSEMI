@@ -6,12 +6,13 @@ from datetime import datetime
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import os
+from datetime import date
 
 class Senior(models.Model):
     id = models.AutoField(primary_key=True)
     address = models.CharField(max_length=255)
     name = models.CharField(max_length=100)
-    age = models.IntegerField()
+    birthdate = models.DateField(default=date(1900, 1, 1))
     gender = models.CharField(max_length=10)
     phone_number = models.CharField(max_length=15)
     has_alzheimers = models.BooleanField(default=False, null=True, blank=True)
