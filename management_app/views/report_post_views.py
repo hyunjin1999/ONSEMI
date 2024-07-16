@@ -18,17 +18,6 @@ from io import BytesIO
 import os
 from monitoring_app.signals import my_signal
 
-# ##### 윈도우 #####
-# https://www.gyan.dev/ffmpeg/builds/에서 ffmpeg-git-full.7z 다운로드 받고, 경로 수정
-# ffmpeg 경로 설정
-AudioSegment.converter = r"C:\Users\prime\Downloads\설치파일\Install\ffmpeg-2024-07-07-git-0619138639-full_build\ffmpeg-2024-07-07-git-0619138639-full_build\bin\ffmpeg.exe"
-AudioSegment.ffprobe = r"C:\Users\prime\Downloads\설치파일\Install\ffmpeg-2024-07-07-git-0619138639-full_build\ffmpeg-2024-07-07-git-0619138639-full_build\bin\ffprobe.exe"
-
-# 환경 변수 설정
-os.environ["PATH"] += os.pathsep + r"C:\Users\prime\Downloads\설치파일\Install\ffmpeg-2024-07-07-git-0619138639-full_build\ffmpeg-2024-07-07-git-0619138639-full_build\bin"
-
-# ##### #####
-
 # report 생성 기능
 @login_required
 def create_report(request, care_id):
@@ -45,22 +34,7 @@ def create_report(request, care_id):
                 ReportImage.objects.create(report=report, image=f)
 
         # 음성 파일 업로드 및 처리 부분
-        if 'audio_file' in request.FILES:
-            audio_file = request.FILES['audio_file']
-            audio_path = default_storage.save('tmp/' + audio_file.name, audio_file)
-            audio_path = default_storage.path(audio_path)
-
-            # 오디오 파일을 처리하고 예측 수행
-            model_path = "D:/Aivle/parkinson_voice_test.keras"
-            predictions = predict_audio_segments(audio_path, model_path)
-            result = analyze_results(predictions)
-
-            # 예측 결과 저장
-            report.audio_test_result = result  # 이진 분류를 가정하고 필요에 따라 조정
-            report.save()
-
-            # 임시 파일 삭제
-            os.remove(audio_path)
+        handle_audio_file_upload(request, report)
 
         # 텍스트 입력
         report.doctor_opinion = request.POST.get('doctor_opinion', '')
@@ -80,7 +54,6 @@ def create_report(request, care_id):
 
         my_signal.send(sender=care)
         
-
         report.status = '등록'
         report.save()
         return redirect('management_app:report_list')
@@ -118,26 +91,12 @@ def update_report(request, report_id):
                 ReportImage.objects.create(report=report, image=image)
 
         # 음성 파일 업로드 및 처리 부분
-        if 'audio_file' in request.FILES:
-            audio_file = request.FILES['audio_file']
-            audio_path = default_storage.save('tmp/' + audio_file.name, audio_file)
-            audio_path = default_storage.path(audio_path)
-
-            # 오디오 파일을 처리하고 예측 수행
-            model_path = "D:/Aivle/parkinson_voice_test.keras"
-            predictions = predict_audio_segments(audio_path, model_path)
-            result = analyze_results(predictions)
-
-            # 예측 결과 저장
-            report.audio_test_result = result
-
-            # 임시 파일 삭제
-            os.remove(audio_path)
+        handle_audio_file_upload(request, report)
 
         report.save()
         return redirect('management_app:report_list')
 
-    return render(request, 'management_app/update_report.html', {'report': report, 'senior':senior})
+    return render(request, 'management_app/update_report.html', {'report': report, 'senior': senior})
 
 
 # 무슨 기능?
@@ -213,3 +172,21 @@ def analyze_results(predictions):
         return "병원에 방문하셔서 진단을 받는 것을 추천드립니다"
     else:
         return "정상입니다"
+
+def handle_audio_file_upload(request, report):
+    if 'audio_file' in request.FILES:
+        audio_file = request.FILES['audio_file']
+        audio_path = default_storage.save('tmp/' + audio_file.name, audio_file)
+        audio_path = default_storage.path(audio_path)
+
+        # 오디오 파일을 처리하고 예측 수행
+        model_path = "management_app/savemodel_101_all_Dense_32.h5" # 가중치 파일 경로
+        predictions = predict_audio_segments(audio_path, model_path)
+        result = analyze_results(predictions)
+
+        # 예측 결과 저장
+        report.audio_test_result = result
+        report.save()
+
+        # 임시 파일 삭제
+        os.remove(audio_path)
