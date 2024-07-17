@@ -31,7 +31,7 @@ def download_order_csv(request):
     response.write(u'\ufeff'.encode('utf8'))  # UTF-8 BOM 추가, 아니면 한글이 깨짐
 
     writer = csv.writer(response)
-    writer.writerow(['Order ID', 'Product', 'Category', 'Price', 'Quantity', 'Total Cost', 'Created'])
+    writer.writerow(['주문 번호', '상품명', '카테고리', '가격', '수량', '결제 금액', '결제 날짜'])
 
     for order in df.to_dict('records'):
         writer.writerow([
@@ -59,9 +59,9 @@ def download_care_csv(request):
     response.write(u'\ufeff'.encode('utf8'))  # UTF-8 BOM 추가
 
     writer = csv.writer(response)
-    writer.writerow(['Care Type', 'Datetime', 'Care State'])
+    writer.writerow(['제목', '케어 종류', '요청 날짜', '방문 예정 날짜' '처리 상태', '요청 내용', '대상 노인'])
 
     for care in filtered_cares:
-        writer.writerow([care['care_type'], care['datetime'], care['care_state']])
+        writer.writerow([care['title'], care['care_type'], care['datetime'], care['visit_date'], care['care_state'], care['content'], care['seniors']])
 
     return response

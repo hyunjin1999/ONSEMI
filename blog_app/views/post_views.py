@@ -2,6 +2,7 @@ from blog_app.models import *
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 @login_required
 def post_all(request):
@@ -34,8 +35,15 @@ def post_all(request):
 @login_required
 def search(request):
     search_query = request.GET.get('search', '')
-    query = Blog.objects.filter(blog_type='BLOG', title__icontains=search_query).order_by('-datetime')
-
+    search_method = request.GET.get('search_method', '')
+    
+    if search_method == 'title':
+        query = Blog.objects.filter(blog_type='BLOG', title__icontains=search_query).order_by('-datetime')
+    elif search_method == 'writer':
+        query = Blog.objects.filter(blog_type='BLOG', name__icontains=search_query).order_by('-datetime')
+    elif search_method == 'both':
+        query = Blog.objects.filter(blog_type='BLOG').filter(Q(title__icontains=search_query) | Q(name__icontains=search_query)).order_by('-datetime')
+    
     # 각 게시물의 댓글 수 계산 및 이미지 존재 여부 확인
     post_list = []
     for post in query:

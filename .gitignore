@@ -27,3 +27,8 @@
 
 *voice_app/models
 
+*.pem
+
+*.env
+
+*.jar
