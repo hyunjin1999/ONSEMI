@@ -21,85 +21,7 @@
             margin: 0;
             padding: 0;
         }
-        .header {
-            background-color: #fff;
-            color: #333;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border-bottom:1px solid #e9ebf2;
-        }
-        .header .left-controls {
-            display: flex;
-            align-items: center;
-        }
-        .header .logo {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #2E7D32;
-            margin-left: 20px;
-        }
-        .header .user-controls {
-            display: flex;
-            align-items: center;
-        }
-        .header .user-controls .icon {
-            font-size: 1.5em;
-            cursor: pointer;
-            margin-right: 15px;
-        }
-        .header .user-controls .icon:hover {
-            color: #2E7D32;
-        }
-        .header .user-controls .logout {
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            margin-top: 8px;
-            margin-left: 15px;
-        }
-        .header .user-controls .logout:hover {
-            color: #2E7D32;
-        }
-        .header .user-profile {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            position: relative;
-        }
-        .header .user-profile .info-box {
-            display: none;
-            position: absolute;
-            top: 35px;
-            right: 0;
-            width: 200px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            z-index: 1000;
-        }
-        .header .user-profile .info-box p {
-            margin: 10px;
-            font-size: 0.9em;
-            color: #333;
-        }
-        .header .user-profile .info-box .button-container {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-        }
-        .header .user-profile .info-box .button-container button,
-        .header .user-profile .info-box .button-container a button {
-            background-color: #2E7D32;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            text-align: center;
-        }
+
         .content-container {
             display: flex;
             height: calc(100vh - 60px);
@@ -450,7 +372,7 @@
     </style>
 </head>
 <body>
-    <div class="header">
+    {% comment %} <div class="header">
         <div class="left-controls">
             <span class="material-symbols-outlined hamburger-menu" onclick="toggleSidebar()">menu</span>
             <img src="{% static 'main/onsemi_logos.png' %}" alt="Main Image">
@@ -473,7 +395,7 @@
                 <span class="material-symbols-outlined icon">logout</span>
             </a>
         </div>
-    </div>
+    </div> {% endcomment %}
     <div class="content-container">
         <div class="sidebar">
             {% if selected_senior %}
@@ -530,8 +452,8 @@
                     </div>
                 </div>
             </div>
-            <span class="material-symbols-outlined toggle-icon" onclick="toggleSidebar()">chevron_left</span>
-        </div>
+            </div>
+           
         <div class="main-content">
             <div class="top-section">
                 <div class="photo-box card">
@@ -645,6 +567,8 @@
                                             <td>
                                                 {% if care.care_state == 'APPROVED' %}
                                                     {{ care.visit_date }} {{ care.visit_time }}
+                                                {% else %}
+                                                    방문 날짜가 정해지지 않았습니다.
                                                 {% endif %}
                                             </td>
                                             <td>{{ care.get_care_state_display }}</td>
@@ -664,32 +588,7 @@
             </div>
         </div>
     </div>
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('expanded');
-            const dropdown = document.querySelector('.dropdown');
-            dropdown.classList.toggle('expanded');
-            const seniorPhoto = document.querySelector('.senior-photo img');
-            if (sidebar.classList.contains('expanded')) {
-                seniorPhoto.classList.remove('small-round-photo');
-            } else {
-                seniorPhoto.classList.add('small-round-photo');
-            }
-        }
-
-        function toggleInfoBox() {
-            const infoBox = document.getElementById('infoBox');
-            infoBox.style.display = infoBox.style.display === 'block' ? 'none' : 'block';
-        }
-
-        document.addEventListener('click', function(event) {
-            const infoBox = document.getElementById('infoBox');
-            if (!infoBox.contains(event.target) && !event.target.matches('.user-profile, .user-profile *')) {
-                infoBox.style.display = 'none';
-            }
-        });
-    </script>
+    
 </body>
 {% endblock %}
 </html>

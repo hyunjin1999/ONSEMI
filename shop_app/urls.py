@@ -16,7 +16,7 @@
 # ]
 
 from django.urls import path
-from .views import views, comment_star_views
+from shop_app.views import views, comment_star_views
 from django.conf import settings
 from django.conf.urls.static import static
 

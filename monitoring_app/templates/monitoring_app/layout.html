@@ -10,37 +10,42 @@
     <title>{% block title %}{% endblock %}</title>
     {% block extra_css %}{% endblock %}
 </head>
+<style>
+ 
+</style>
 <body>
-    {% comment %} <div class="header">
-        <img src="{% static 'main/onsemi_logos.png' %}" alt="ONSEMI" class="logo">
-        <nav>
-            <a href="/">홈</a>
-            {% if request.user.is_authenticated %}
-            <a href="/user/logout/" class="logout">로그아웃</a>
-            {% else %}
-            <a href="/user/login/">로그인</a>
-            {% endif %}
-            {% if request.user.is_authenticated %}
-            <a href="/user/profile/">나의 정보</a>
-            <a href="/blog/notice_list/">공지사항</a>
-            <a href="{% url 'management_app:add_senior' %}">어르신 등록</a>
-            <a href="/shop">온새미마트</a>
-            {% else %}
-            <a href="/user/register/">회원가입</a>
-            {% endif %}
-            <img src="{% static 'images/person.png' %}" alt="MyPage" id="seniorImage">
-            <div id="infoBox" class="info-box">
-                <p id="signal-message1">알림이 없습니다.</p>
-                <p id="signal-message2"></p>
-                <div class="button-container">
-                    <a href="{% url 'monitoring_app:family_monitor' %}">
-                        <button id="navigateButton">모니터링</button>
-                    </a>
-                    <button id="navigateButton" class="close-button">알림 지우기</button> <!-- Added close button -->
+    <div class="header">
+        <div class="left-controls">
+            <span class="material-symbols-outlined hamburger-menu" onclick="toggleSidebar()">menu</span>
+            <img src="{% static 'main/onsemi_logos.png' %}" alt="Main Image">
+        </div>
+        
+        <div class="user-controls" class="home">
+            <a href="/">
+                <span class="material-symbols-outlined nav-icon selected">home</span>
+            </a>
+
+            <a href="/shop">
+                <span class="material-symbols-outlined nav-icon">storefront</span>
+            </a>
+            <div class="user-profile" onclick="toggleInfoBox()">
+                <span class="material-symbols-outlined icon">notifications</span>
+                <div id="infoBox" class="info-box">
+                    <p id="signal-message1">알림이 없습니다.</p>
+                    <p id="signal-message2"></p>
+                    <div class="button-container">
+                        <a href="{% url 'monitoring_app:family_monitor' %}">
+                            <button id="navigateButton">모니터링</button>
+                        </a>
+                        <button id="clearButton" class="close-button">알림 지우기</button>
+                    </div>
                 </div>
             </div>
-        </nav>
-    </div> {% endcomment %}
+            <a href="/user/logout/" class="logout">
+                <span class="material-symbols-outlined icon">logout</span>
+            </a>
+        </div>
+    </div>
     <div class="wrapper">
         {% block content %}{% endblock %}
     </div>
@@ -119,6 +124,32 @@
             console.log('Message cleared'); // Debug message
         });
     });
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('expanded');
+            const dropdown = document.querySelector('.dropdown');
+            dropdown.classList.toggle('expanded');
+            const seniorPhoto = document.querySelector('.senior-photo img');
+            if (sidebar.classList.contains('expanded')) {
+                seniorPhoto.classList.remove('small-round-photo');
+            } else {
+                seniorPhoto.classList.add('small-round-photo');
+            }
+        }
+
+        function toggleInfoBox() {
+            const infoBox = document.getElementById('infoBox');
+            infoBox.style.display = infoBox.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function(event) {
+            const infoBox = document.getElementById('infoBox');
+            if (!infoBox.contains(event.target) && !event.target.matches('.user-profile, .user-profile *')) {
+                infoBox.style.display = 'none';
+            }
+        });
+    
 
 </script>
 {% block script %}

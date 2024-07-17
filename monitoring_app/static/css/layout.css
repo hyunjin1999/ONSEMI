@@ -17,18 +17,101 @@ body {
 }
 
 .header {
-    background-color: #333;
-    color: #fff;
+    background-color: #fff;
+    color: #333;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #e9ebf2;
+}
+
+.header .left-controls {
+    display: flex;
+    align-items: center;
+}
+
+.header .logo {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #2E7D32;
+    margin-left: 20px;
+}
+
+.header .user-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header .user-controls .icon,
+.header .user-controls .nav-icon {
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.header .user-controls .icon:hover,
+.header .user-controls .nav-icon:hover {
+    color: #2E7D32;
+}
+
+.header .user-controls .logout,
+.header .user-controls a {
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+}
+
+.header .user-controls .logout:hover {
+    color: #2E7D32;
+}
+
+.header .user-profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.header .user-profile .info-box {
+    display: none;
+    position: absolute;
+    top: 35px;
+    right: 0;
+    width: 200px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.header .user-profile .info-box p {
+    margin: 10px;
+    font-size: 0.9em;
+    color: #333;
+}
+
+.header .user-profile .info-box .button-container {
+    display: flex;
+    justify-content: space-between;
     padding: 10px;
 }
 
-.header nav a {
-    color: #fff;
-    margin: 0 10px;
-    text-decoration: none;
+.header .user-profile .info-box .button-container button,
+.header .user-profile .info-box .button-container a button {
+    background-color: #2E7D32;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
 }
 
- .info-box {
+.info-box {
     display: none;
     position: absolute;
     top: 65px;
@@ -41,9 +124,9 @@ body {
     justify-content: center;
     text-align: center;
     border-radius: 30px;
-    z-index: 1000; 
+    z-index: 1000;
     color: rgb(0, 0, 0);
-} 
+}
 
 #navigateButton {
     margin-top: auto;
@@ -61,7 +144,7 @@ body {
 
 .info-box .button-container a,
 .info-box .button-container button {
-    flex: 1; / 
+    flex: 1;
 }
 
 .content-container {
@@ -106,7 +189,9 @@ body {
     overflow: auto;
 }
 
-.photo-box, .health-box, .order-box {
+.photo-box,
+.health-box,
+.order-box {
     flex: 1;
     overflow: hidden;
 }
@@ -139,14 +224,14 @@ footer {
 
 .footer-content {
     margin: 0 auto;
-    font-size: 12px; 
+    font-size: 12px;
 }
 
 #chat-link-container {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 1000; 
+    z-index: 1000;
 }
 
 #chat-link {
