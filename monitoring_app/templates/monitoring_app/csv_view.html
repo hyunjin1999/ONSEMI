@@ -266,7 +266,7 @@
                 </thead>
                 <tbody>
                     {% for care in filtered_cares %}
-                        <tr class="clickable-row" onclick="location.href='/management/care/detail/{{ care.id }}/'">
+                        <tr class="clickable-row" >
                             <td>{{ care.care_title }}</td>
                             <td>{{ care.care_type }}</td>
                             <td>{{ care.datetime }}</td>
