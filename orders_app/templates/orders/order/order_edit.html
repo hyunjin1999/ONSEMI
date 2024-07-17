@@ -58,21 +58,32 @@
   }
   
   .form-wrapper form button {
-    width: 100px;
+    width: 300px; /* 버튼의 가로 길이를 더 길게 설정 */
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
-    color: white;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
   
-  .form-wrapper form button:hover {
+  .form-wrapper form button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .form-wrapper form button.back {
+    background-color: #6c757d; /* 취소 버튼의 배경색을 회색으로 설정 */
+    color: white;
+  }
+  
+  .form-wrapper form button[type="submit"]:hover {
     background-color: #0056b3;
   }
   
+  .form-wrapper form button.back:hover {
+    background-color: #5a6268; /* 취소 버튼의 호버 배경색 설정 */
+  }
   @media (max-width: 600px) {
     .form-container {
       width: 95%;
@@ -100,7 +111,8 @@
               {% csrf_token %}
               {{ form.as_p }}
               <div class="form-actions">
-                <button type="submit">저장</button>
+                <button type="submit">저장</button><br>
+                <button type="button" onclick="window.location.href = '/orders/order/{{ order.id }}/';" class="back">취소</button>
               </div>
             </form>
           </div>
