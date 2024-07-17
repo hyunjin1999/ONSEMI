@@ -15,6 +15,15 @@ nav {
     font-size: large;
 }
 
+
+nav a:first-child {
+    margin: 0px;
+    
+}
+
+nav a:first-child:hover {
+    color: #156741;
+}
 nav a {
     margin: 0 30px;
     text-decoration: none;
