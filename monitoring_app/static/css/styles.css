@@ -68,8 +68,8 @@ li{
 
 .sidebar {
     width: 260px;
-    background-color: #156741;
-    color: white;;
+    background-color:white;
+    color: black;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     height: auto;
@@ -462,6 +462,7 @@ th {
 
 .sidebar h3 {
     margin-top: 0;
+    color:black;
 }
 
 .small-light-text {
