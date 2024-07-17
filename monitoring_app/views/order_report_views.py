@@ -15,15 +15,12 @@ from orders_app.models import Order
 from datetime import datetime, time
 from management_app.models import Care , Senior
 from matplotlib import font_manager, rc
-
-# 맥 전용 한글 폰트
-# from matplotlib import rc
-# rc('font', family='AppleGothic')
+import matplotlib.font_manager as fm
 
 # 한글 폰트 설정
-font_path = '/usr/share/fonts/truetype/gmarketsans/GmarketSansMedium.ttf'  # 폰트 경로 설정
-font_name = font_manager.FontProperties(fname=font_path).get_name()
-rc('font', family=font_name)
+font_path = '/usr/share/fonts/truetype/apple/AppleGothic.ttf'
+font_name = fm.FontProperties(fname=font_path, size=10).get_name()
+plt.rcParams['font.family'] = font_name
 
 # 주문 데이터 DataFrame으로 변환
 def order_to_dataframe(orders):
@@ -154,11 +151,12 @@ def generate(request):
             for idx, column in enumerate(weekly_data.columns):
                 plt.plot(weekly_data.index, weekly_data[column], marker='o', label=column, color=colors[idx % len(colors)])
             
-            plt.legend(title='케어 종류')
-            plt.xlabel('기간')
-            plt.ylabel('요청횟수')
+            plt.legend(prop=fm.FontProperties(fname=font_path))
+            plt.xlabel('기간', fontproperties=fm.FontProperties(fname=font_path))
+            plt.ylabel('요청횟수', fontproperties=fm.FontProperties(fname=font_path))
             plt.ylim(0, 10)
-            plt.xticks(rotation=45)
+            plt.xticks(rotation=45, fontproperties=fm.FontProperties(fname=font_path))
+            plt.yticks(fontproperties=fm.FontProperties(fname=font_path))
             plt.tight_layout()
 
             # 그래프 이미지를 메모리에 저장
@@ -174,10 +172,11 @@ def generate(request):
         else:
             # 데이터가 없을 경우 빈 꺾은선 그래프 생성
             plt.figure(figsize=(10, 6))
-            plt.title('요청된 데이터가 없습니다')
-            plt.xlabel('기간')
-            plt.ylabel('요청횟수')
-            plt.xticks(rotation=45)
+            plt.title('요청된 데이터가 없습니다', fontproperties=fm.FontProperties(fname=font_path))
+            plt.xlabel('기간', fontproperties=fm.FontProperties(fname=font_path))
+            plt.ylabel('요청횟수', fontproperties=fm.FontProperties(fname=font_path))
+            plt.xticks(rotation=45, fontproperties=fm.FontProperties(fname=font_path))
+            plt.yticks(fontproperties=fm.FontProperties(fname=font_path))
             plt.tight_layout()
 
             # 빈 그래프 이미지를 메모리에 저장
@@ -196,7 +195,7 @@ def generate(request):
             orders = orders.filter(created__gte=start_date)
         if end_date:
             orders = orders.filter(created__lte=end_date)
-
+        
         all_data = []
         for order in orders:
             for item in order.items.all():
@@ -210,9 +209,9 @@ def generate(request):
         if not all_df.empty:
             plt.figure(figsize=(10, 6))
             category_counts = all_df.groupby('Category')['Quantity'].sum()
-            plt.pie(category_counts, labels=category_counts.index, colors=colors[:len(category_counts)], autopct='%1.1f%%', startangle=140)
+            plt.pie(category_counts, labels=category_counts.index, colors=colors[:len(category_counts)], autopct='%1.1f%%', startangle=140,
+                    textprops={'fontproperties': fm.FontProperties(fname=font_path)})
             plt.axis('equal')
-            plt.title('전체 데이터 기반 원형 그래프')
 
             buffer = BytesIO()
             plt.savefig(buffer, format='png')
@@ -225,7 +224,7 @@ def generate(request):
 
         else:
             plt.figure(figsize=(10, 6))
-            plt.title('요청된 데이터가 없습니다')
+            plt.title('요청된 데이터가 없습니다', fontproperties=fm.FontProperties(fname=font_path))
             plt.axis('equal')
 
             buffer = BytesIO()
