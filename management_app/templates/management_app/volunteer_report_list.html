@@ -185,37 +185,6 @@
         <a id='selected' href="{% url 'management_app:report_list' %}">보고서 목록</a>
     </div>
     <div class="body-container">
-        <form method="get" class="filter-form">
-            <label for="sort_by">정렬:</label>
-            <select name="sort_by" id="sort_by">
-                <option value="-created_at">최신순</option>
-                <option value="created_at">오래된 순</option>
-            </select>
-            <label for="status_filter">상태:</label>
-            <select name="status_filter" id="status_filter">
-                <option value="all">전체</option>
-                <option value="completed">등록완료</option>
-                <option value="not_completed">미등록</option>
-            </select>
-            <label for="volunteer_id">승인한 봉사자:</label>
-            <select name="volunteer_id" id="volunteer_id">
-                {% for volunteer in volunteers %}
-                    <option value="{{ volunteer.id }}" {% if volunteer.id|stringformat:"s" == selected_volunteer_id %}selected{% endif %}>
-                        {{ volunteer.username }}{% if volunteer.id == request.user.id %} (현재 로그인){% endif %}
-                    </option>
-                {% endfor %}
-            </select>
-            <label for="senior">대상 어르신:</label>
-            <select name="senior_ids" id="senior">
-                <option value="all">전체</option>
-                {% for senior in seniors %}
-                    <option value="{{ senior.id }}_{{ senior.user_id }}" {% if senior.id|stringformat:"s" == selected_senior_id %}selected{% endif %}>
-                        {{ senior.name }} (보호자: {{ senior.user_id__username }})
-                    </option>
-                {% endfor %}
-            </select>
-            <button type="submit">적용</button>
-        </form>
 
         <div>
             <h2>작성 <span class="pending-approval-text">예정</span> 보고서 목록 ({{ pending_reports_count }}개)</h2>
@@ -229,6 +198,7 @@
                         <th>제목</th>
                         <th>내용</th>
                         <th>대상 어르신</th>
+                        <th>주소</th>
                         <th>파킨슨병 진단 요청</th>
                         <th></th>
                     </tr>
@@ -243,6 +213,7 @@
                             <td>{% for senior in care.seniors.all %}
                                 {{ senior.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}</td>
+                            <td>서울특별시 서대문구 OO로 12</td>
                             <td>{% if care.parkinson_diagnosis %} O
                                 {%else%}X
                                 {%endif%}
@@ -281,6 +252,37 @@
         <hr style="margin:50px 0px;">
         
         <h2>작성 <span class="pending-approval-text">완료</span> 보고서 목록</h2>
+        <form method="get" class="filter-form">
+            <label for="sort_by">정렬:</label>
+            <select name="sort_by" id="sort_by">
+                <option value="-created_at">최신순</option>
+                <option value="created_at">오래된 순</option>
+            </select>
+            <label for="status_filter">상태:</label>
+            <select name="status_filter" id="status_filter">
+                <option value="all">전체</option>
+                <option value="completed">등록완료</option>
+                <option value="not_completed">미등록</option>
+            </select>
+            <label for="volunteer_id">승인한 봉사자:</label>
+            <select name="volunteer_id" id="volunteer_id">
+                {% for volunteer in volunteers %}
+                    <option value="{{ volunteer.id }}" {% if volunteer.id|stringformat:"s" == selected_volunteer_id %}selected{% endif %}>
+                        {{ volunteer.username }}{% if volunteer.id == request.user.id %} (현재 로그인){% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+            <label for="senior">대상 어르신:</label>
+            <select name="senior_ids" id="senior">
+                <option value="all">전체</option>
+                {% for senior in seniors %}
+                    <option value="{{ senior.id }}_{{ senior.user_id }}" {% if senior.id|stringformat:"s" == selected_senior_id %}selected{% endif %}>
+                        {{ senior.name }} (보호자: {{ senior.user_id__username }})
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">적용</button>
+        </form>
         <div class="table-wrapper">
             <table class="table-report">
                 <thead>
@@ -289,6 +291,7 @@
                         <th>등록 시간</th>
                         <th>제목</th>
                         <th>대상 어르신</th>
+                        <th>주소</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -300,6 +303,7 @@
                             <td>{% for senior in report.care.seniors.all %}
                                 {{ senior.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}</td>
+                            <td>서울특별시 서대문구 OO로 1</td>
                         </tr>
                     {% endfor %}
                 </tbody>
