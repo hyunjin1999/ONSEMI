@@ -1,128 +1,139 @@
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Details</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-      body {
-          font-family: 'Roboto', sans-serif;
-          background-color: #f7fafc;
-          color: #2d3748;
-      }
-      .container {
-          max-width: 900px;
-          margin: 2rem auto;
-          padding: 1.5rem;
-          background-color: #ffffff;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          border-radius: 0.5rem;
-      }
-      .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1rem;
-      }
-      .header h1 {
-          font-size: 1.5rem;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7fafc;
+            color: #2d3748;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .button {
+            padding: 0.5rem 1rem;
+            background-color: #4299e1;
+            color: #ffffff;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+        .order-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .order-items {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .order-item {
+            display: flex;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .order-item img {
+            width: 4rem;
+            height: 4rem;
+            object-fit: cover;
+            border-radius: 0.25rem;
+            margin-right: 1rem;
+        }
+        .order-item div {
+            font-size: 0.875rem;
+        }
+        .order-total {
+            text-align: right;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+        .view-detail {
+            text-align: right;
+        }
+        .view-detail a {
+            padding: 0.5rem 1rem;
+            background-color: #4299e1;
+            color: #ffffff;
+            border: none;
+            border-radius: 0.25rem;
+            text-decoration: none;
+        }
+        .divider {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 1.5rem 0;
+        }
+        .back {
+          width: 160px;
+          height: 40px;
+          background: #156741;
+          border: none;
+          border-radius: 0.25rem;
           font-weight: bold;
-      }
-      .button {
-          padding: 0.5rem 1rem;
-          background-color: #4299e1;
-          color: #ffffff;
-          border: none;
-          border-radius: 0.25rem;
-          cursor: pointer;
-      }
-      .order-info {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 1rem;
-      }
-      .order-items {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 1rem;
-          margin-bottom: 1rem;
-      }
-      .order-item {
-          display: flex;
-          align-items: center;
-          border: 1px solid #e2e8f0;
-          padding: 1rem;
-          border-radius: 0.5rem;
-      }
-      .order-item img {
-          width: 4rem;
-          height: 4rem;
-          object-fit: cover;
-          border-radius: 0.25rem;
-          margin-right: 1rem;
-      }
-      .order-item div {
-          font-size: 0.875rem;
-      }
-      .order-total {
-          text-align: right;
-          font-weight: bold;
-          margin-bottom: 1.5rem;
-      }
-      .view-detail {
-          text-align: right;
-      }
-      .view-detail a {
-          padding: 0.5rem 1rem;
-          background-color: #4299e1;
-          color: #ffffff;
-          border: none;
-          border-radius: 0.25rem;
-          text-decoration: none;
-      }
-      .divider {
-          border: none;
-          border-top: 1px solid #e2e8f0;
-          margin: 1.5rem 0;
-      }
-  </style>
-</head>
-<body>
-  <div class="container">
-      <div class="header">
-          <h1>주문 내역</h1>
-      </div>
-      {% for order in orders %}
-      <div class="order-info">
-          <span>주문일시: {{ order.created|date:"Y년 n월 j일 A g:i" }}</span>
-          <span>승인 여부: 
-              {% for choice in order.care.CARE_STATE_CHOICES %}
-                  {% if choice.0 == order.care.care_state %}
-                      {{ choice.1 }}
-                  {% endif %}
-              {% endfor %}
-          </span>
-      </div>
-      <div class="order-items">
-          {% for item in order.items.all %}
-          <div class="order-item">
-              <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
-              <div>
-                  <div class="font-bold">{{ item.product.name }}</div>
-                  <div>가격: {{ item.price }}원</div>
-                  <div>주문수량: {{ item.quantity }}</div>
-              </div>
-          </div>
-          {% endfor %}
-      </div>
-      <div class="order-total">
-          총 결제액: {{ order.get_total_cost }} 원
-      </div>
-      <div class="view-detail">
-          <a href="{% url 'orders_app:order_detail' order.id %}">상세보기</a>
-      </div>
-      <hr class="divider">
-      {% endfor %}
-  </div>
-</body>
-</html>
+          color: white;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <div class="header">
+            <h1>주문 내역</h1>
+        <div>
+          <button type="button" onclick="window.location.href = '/shop/';" class="back">쇼핑하기</button>
+        </div>
+        </div>
+        {% for order in orders %}
+        <div class="order-info">
+            <span>주문일시: {{ order.created|date:"Y년 n월 j일 A g:i" }}</span>
+            <span>승인 여부:
+                {% for choice in order.care.CARE_STATE_CHOICES %}
+                    {% if choice.0 == order.care.care_state %}
+                        {{ choice.1 }}
+                    {% endif %}
+                {% endfor %}
+            </span>
+        </div>
+        <div class="order-items">
+            {% for item in order.items.all %}
+            <div class="order-item">
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                <div>
+                    <div class="font-bold">{{ item.product.name }}</div>
+                    <div>가격: {{ item.price }}원</div>
+                    <div>주문수량: {{ item.quantity }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="order-total">
+            총 결제액: {{ order.get_total_cost }} 원
+        </div>
+        <div class="view-detail">
+            <a href="{% url 'orders_app:order_detail' order.id %}">상세보기</a>
+        </div>
+        <hr class="divider">
+        {% endfor %}
+    </div>
+  </body>
+  </html>
