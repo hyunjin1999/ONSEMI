@@ -87,9 +87,13 @@ def csv_view(request):
 
         for care in cares:
             data_care.append({
+                'care_title' : care.title,
                 'care_type': care.care_type,
                 'datetime': care.datetime.strftime('%Y년 %m월 %d일 %H시 %M분'),
+                'visit_date': care.visit_date.strftime('%Y년 %m월 %d일 %H시 %M분'),
                 'care_state': care.care_state,
+                'care_content': care.content,
+                'care_seniors': care.seniors,
             })
         request.session['filtered_cares'] = data_care
 
