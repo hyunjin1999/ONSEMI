@@ -142,12 +142,16 @@
  
   }
  
-  .ordered-list {
+  .ordered-list-container {
     display: flex;
     justify-content: flex-end;
     padding-right: 20px;
   }
- 
+  .ordered-list {
+      text-decoration: none; /* 밑줄 제거 */
+      color: black; /* 원하는 색상으로 변경하세요 */
+      padding: 0; /* 패딩을 0으로 설정하여 텍스트 부분만 클릭 가능하게 함 */
+  }
 </style>
 <body>
 <div id="content">
@@ -164,7 +168,8 @@
       {% endfor %}
     </ul>
     <hr>
-    <h2><a href="{% url 'orders_app:my_orders' %}" class="ordered-list">주문 내역</a></h2>
+    <h2><div class="ordered-list-container">
+      <a href="{% url 'orders_app:my_orders' %}" class="ordered-list">주문 내역</a></h2>
   </div>
   <div id="main" class="product-list">
     <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
