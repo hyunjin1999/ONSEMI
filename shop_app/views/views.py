@@ -7,6 +7,7 @@ from ..forms import CommentForm, ReplyForm
 from django.views.decorators.http import require_POST
 from orders_app.models import OrderItem
 from django.db.models import Avg
+from django.core.paginator import Paginator
 
 @login_required
 def product_list(request, category_slug=None):
@@ -54,16 +55,22 @@ def product_detail(request, id, slug):
     # 사용자 구매 여부 확인
     has_purchased = OrderItem.objects.filter(order__user=request.user, product=product).exists()
 
-    return render(request,
-                  'shop/product/detail.html',
-                  {'product': product,
-                   'cart_product_form': cart_product_form,
-                   'stock_alert': stock_alert,
-                   'comment_form': comment_form,
-                   'reply_form': reply_form,
-                   'comments': comments,
-                   'has_purchased': has_purchased,
-                   'average_rating': average_rating,})
+    paginator = Paginator(comments, 5)  
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'product': product,
+        'cart_product_form': cart_product_form,
+        'stock_alert': stock_alert,
+        'comment_form': comment_form,
+        'reply_form': reply_form,
+        'comments': comments,
+        'has_purchased': has_purchased,
+        'average_rating': average_rating,
+        'page_obj': page_obj,
+    }
+    return render(request,'shop/product/detail.html',context)
 
 @login_required
 def add_to_recent_products(request, id):
