@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{% static 'main/onsemi.ico' %}">
-    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/layoutshop.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <title>{% block title %}{% endblock %}</title>
@@ -13,7 +13,7 @@
     {% endblock %}
 </head>
 <body>
- 
+
     <div class="page-container">
         <header>
             <div class="container">
@@ -63,7 +63,7 @@
             const footer = document.getElementById('footer');
             const contentHeight = document.querySelector('.page-container').offsetHeight;
             const windowHeight = window.innerHeight;
- 
+
             if (contentHeight < windowHeight) {
                 footer.style.position = 'absolute';
                 footer.style.bottom = '0';
@@ -72,7 +72,7 @@
                 footer.style.position = 'relative';
             }
         }
- 
+
         window.addEventListener('load', adjustFooter);
         window.addEventListener('resize', adjustFooter);
     </script>
@@ -80,5 +80,3 @@
 </html>
 {% block script %}
 {% endblock %}
- 
- 

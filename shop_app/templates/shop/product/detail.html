@@ -244,64 +244,88 @@ thead th{
   font-weight: bold;
   background-color: #ddd;
 }
-</style>
 
+.product-detail img{
+  width:300px;
+  height:300px;
+}
 
+.product-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.product-detail {
+  display: flex;
+  align-items: flex-start;
+  max-width: 800px; /* Adjust this width as necessary */
+}
+
+.product-image {
+  margin-right: 20px;
+  max-width: 200px; /* Adjust the image size as necessary */
+}
+
+.product-info {
+  max-width: 600px; /* Adjust as necessary */
+}
 </style>
-<div class="product-detail">
-    <img src="{% if product.image %}{{ product.image.url }}{% else %}
-    {% static "img/no_image.png" %}{% endif %}" class="product-image">
-    <div class="product-info">
-        <h1>{{ product.name }}</h1>
-        <h2>
-            <a href="{{ product.category.get_absolute_url }}">
-                {{ product.category }}
-            </a>
-        </h2>
-        <div class="star">
-         
-        {% for i in "12345" %}
-        {% if i <= average_rating|stringformat:"i" %}
-        <svg class="custom-star" fill="red" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-        </svg>
-        {% else %}
-        <svg class="custom-star" fill="gray" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-        </svg>
-        {% endif %}
-        {% endfor %}
-      <p>평점:
-      {% for i in "12345" %}
-          {% if i <= average_rating|stringformat:"i" %}
-          <i class="fas fa-star"></i>
-          {% else %}
-          <i class="far fa-star"></i>
-          {% endif %}
-      {% endfor %}
-      ({{ average_rating|floatformat:1 }}점)
-      </p>
+<div class="product-container">
+  <div class="product-detail">
+      <img src="{% if product.image %}{{ product.image.url }}{% else %}
+      {% static 'img/no_image.png' %}{% endif %}" class="product-image">
+      <div class="product-info">
+          <h1>{{ product.name }}</h1>
+          <h2>
+              <a href="{{ product.category.get_absolute_url }}">
+                  {{ product.category }}
+              </a>
+          </h2>
+          <div class="star">
+              {% for i in "12345" %}
+              {% if i <= average_rating|stringformat:"i" %}
+              <svg class="custom-star2" fill="red" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                  <path d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+              </svg>
+              {% else %}
+              <svg class="custom-star2" fill="gray" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                  <path d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+              </svg>
+              {% endif %}
+              {% endfor %}
+              <p>평점:
+              {% for i in "12345" %}
+                  {% if i <= average_rating|stringformat:"i" %}
+                  <i class="fas fa-star"></i>
+                  {% else %}
+                  <i class="far fa-star"></i>
+                  {% endif %}
+              {% endfor %}
+              ({{ average_rating|floatformat:1 }}점)
+              </p>
+          </div>
+          <p class="price">{{ product.price }}원</p>
+          
+          <div class="cart-like-section">
+              <form action="{% url 'cart_app:cart_add' product.id %}" method="post" class="cart-form">
+                  {{ cart_product_form }}
+                  {% csrf_token %}
+                  <input type="submit" value="장바구니에 담기" class="button">
+              </form>
+              <!-- 상품 좋아요 -->
+              <form action="{% url 'shop_app:like_product' product.id %}" method="post" id="like-product-form">
+                  {% csrf_token %}
+                  <button type="submit" id="like-product-button" class="button"><span class="material-symbols-outlined">
+                    thumb_up
+                    </span> <span id="product-likes">{{ product.total_likes }}</span></button>
+              </form>
+              <button id="toggle-reviews" class="button">후기 작성</button>
+          </div>
       </div>
-        <p class="price">{{ product.price }}원</p>
-        
-        <div class="cart-like-section">
-            <form action="{% url "cart_app:cart_add" product.id %}" method="post" class="cart-form">
-                {{ cart_product_form }}
-                {% csrf_token %}
-                <input type="submit" value="장바구니에 담기" class="button">
-            </form>
-            <!-- 상품 좋아요 -->
-            <form action="{% url 'shop_app:like_product' product.id %}" method="post" id="like-product-form">
-                {% csrf_token %}
-                <button type="submit" id="like-product-button" class="button"><span class="material-symbols-outlined">
-                  thumb_up
-                  </span> <span id="product-likes">{{ product.total_likes }}</span></button>
-            </form>
-            <button id="toggle-reviews" class="button">후기 작성</button>
-        </div>
-       
+  </div></div>
         {{ product.description|linebreaks }}
         {% if stock_alert %}
         <p class="stock-alert">재고가 {{ product.stock }}개 남았습니다.</p>
