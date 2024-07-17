@@ -18,6 +18,7 @@
 *.wav
 
 *.png
+*.jpg
 
 
 .DS_Store
