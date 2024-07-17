@@ -11,13 +11,8 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    min-width: 100%;
 }
-
-/* .wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-} */
 
 .header {
     background-color: white;
@@ -28,9 +23,9 @@ body {
 }
 
 .header img {
-    height: 50px;
-    width: 50px;
-} 
+    width: 2.6vw;
+    height: auto; 
+}
 
 
 .header nav a {
@@ -51,6 +46,8 @@ body {
 
 .text-container {
     max-width: 50%;
+
+   
 }
 
 .text-container h1 {
