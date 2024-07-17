@@ -58,10 +58,10 @@ a.button, input[type="submit"] {
 .product-detail {
     display: flex;
     align-items: flex-start;
-    padding: 20px;
+    /* padding: 20px; */
     background-color: #f9f9f9;
     justify-content: center;
-    height: 100vh;
+   
     align-items: center;
 }
  
@@ -267,7 +267,7 @@ ul.errorlist {
     padding:0 100px;
     overflow:hidden;
     background-color:white;
-    height: 100vh;
+    
 }
  
 #sidebar {

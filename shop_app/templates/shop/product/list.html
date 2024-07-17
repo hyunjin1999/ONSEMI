@@ -5,7 +5,7 @@
 {% block title %}
   {% if category %}{{ category.name }}{% else %}상품{% endif %}
 {% endblock %}
-
+ 
 {% block content %}
 {{ block.super }}
 <style>
@@ -13,18 +13,18 @@
     display: flex;
     flex-wrap: wrap;
   }
-
+ 
   #sidebar {
     order: 1;
     width: 100%; /* 사이드바를 전체 너비로 설정 */
   }
-
+ 
   #main {
     order: 2;
     flex: 3; /* 나머지 공간을 차지하도록 설정 */
     margin-right: 20px;
   }
-
+ 
   .recent-products {
     order: 3;
     margin-top: 30px;
@@ -35,15 +35,16 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 150px; /* Adjusted width */
     margin-bottom: 30px;
+    position: sticky;
   }
-
+ 
   .recent-products h2 {
     text-align: center;
     margin-bottom: 20px;
     font-size: 1.5em;
     color: #333;
   }
-
+ 
   .recent-products .product-item {
     display: flex;
     flex-direction: column;
@@ -55,12 +56,12 @@
     border-radius: 8px;
     transition: transform 0.2s, box-shadow 0.2s;
   }
-
+ 
   .recent-products .product-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-
+ 
   .recent-products img {
     width: 100px;
     height: 100px;
@@ -68,20 +69,20 @@
     border: 2px solid #eee;
     border-radius: 8px;
   }
-
+ 
   .recent-products h3 {
     text-align: center;
     margin: 10px 0;
     font-size: 1.2em;
     color: #333;
   }
-
+ 
   .recent-products form {
     display: flex;
     justify-content: center;
     margin-top: 10px;
   }
-
+ 
   .recent-products button {
     background-color: #ff4d4d;
     color: white;
@@ -91,11 +92,11 @@
     cursor: pointer;
     transition: background-color 0.2s;
   }
-
+ 
   .recent-products button:hover {
     background-color: #e60000;
   }
-
+ 
   #sidebar ul {
     display: flex; /* ul 내부 요소를 가로로 배치 */
     flex-direction: row; /* 방향을 가로로 설정 */
@@ -104,25 +105,25 @@
     margin: 0; /* 기본 마진 제거 */
     justify-content: center; /* 가로 방향으로 중앙 정렬 */
     align-items: center; /* 세로 방향으로 중앙 정렬 */
-    margin-bottom: 50px;
+    margin-bottom: 15px;
   }
-  
+ 
   #sidebar li {
     margin: 0 50px; /* 각 항목 간의 간격을 50px로 설정 */
   }
-
+ 
   #sidebar li a {
     display: inline-block; /* a 요소를 인라인 블록으로 설정하여 가로로 나열 */
     padding: 5px 10px; /* 적절한 패딩 추가 */
     text-decoration: none; /* 텍스트 밑줄 제거 */
     color: #000; /* 텍스트 색상 설정 */
   }
-
+ 
   #sidebar li.selected a {
     color: white; /* 선택된 항목 글자색 */
     border-radius: 4px; /* 선택된 항목 모서리 둥글게 */
   }
-
+ 
   .product-list {
     display: flex;
     justify-content: center;
@@ -130,17 +131,23 @@
     flex-wrap: wrap;  /*줄바꿈 설정 */
     gap: 80px; /* 요소 간의 간격 설정 */
   }
-  
+ 
   .product-list h1 {
     flex-basis: 80%;  h1이 전체 너비를 차지하도록 설정 */
     /*margin-bottom: 10px;  h1과 나머지 요소 간의 간격 설정 */
   }
-  
+ 
   .product-list .item {
     /* flex: 1 1 calc(33.333% - 40px);  3개 열로 배치하고 간격 고려 */
-
+ 
   }
-
+ 
+  .ordered-list {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20px;
+  }
+ 
   img {
     width: 1000px;
     height: 100px;
@@ -160,7 +167,8 @@
         </li>
       {% endfor %}
     </ul>
-    <h2><a href="{% url 'orders_app:my_orders' %}" class="btn btn-primary">주문 내역</a></h2>
+    <hr>
+    <h2><a href="{% url 'orders_app:my_orders' %}" class="ordered-list">주문 내역</a></h2>
   </div>
   <div id="main" class="product-list">
     <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
