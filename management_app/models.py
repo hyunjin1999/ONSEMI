@@ -1,4 +1,4 @@
-from django.db import models, IntegrityError
+from django.db import models, IntegrityError, transaction
 from django.conf import settings
 from auth_app.models import User
 from django.utils import timezone
@@ -7,6 +7,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import os
 from datetime import date
+from django.contrib.auth import get_user_model
 
 class Senior(models.Model):
     id = models.AutoField(primary_key=True)
@@ -27,10 +28,6 @@ class Senior(models.Model):
     class Meta:
         db_table = "senior"
 
-
-from django.db import models, IntegrityError, transaction
-from django.utils import timezone
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 

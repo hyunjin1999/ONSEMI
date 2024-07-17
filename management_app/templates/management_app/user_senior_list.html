@@ -155,19 +155,19 @@
     <div class="container">
         {% if page_obj %}
             <ul class="senior-list">
-                {% for senior in page_obj.object_list %}
-                <li class="senior-item" onclick="location.href='/management/senior/update/{{ senior.id }}/'">
-                    {% if senior.photo %}
-                        <img src="{{ senior.photo.url }}" alt="{{ senior.name }}'s photo">
+                {% for senior_data in page_obj.object_list %}
+                <li class="senior-item" onclick="location.href='/management/senior/update/{{ senior_data.senior.id }}/'">
+                    {% if senior_data.senior.photo %}
+                        <img src="{{ senior_data.senior.photo.url }}" alt="{{ senior_data.senior.name }}'s photo">
                     {% endif %}
                     <div class="senior-info">
                         <ul>
-                            <li><strong>성함:</strong> {{ senior.name }}</li>
-                            <li><strong>연세:</strong> {{ senior.age }}</li>
-                            <li><strong>성별:</strong> {{ senior.gender_display }}</li>
-                            <li><strong>핸드폰 번호:</strong> {{ senior.phone_number }}</li>
-                            <li><strong>치매 유무:</strong> {{ senior.has_alzheimers_display }}</li>
-                            <li><strong>파킨슨 유무:</strong> {{ senior.has_parkinsons_display }}</li>
+                            <li><strong>성함:</strong> {{ senior_data.senior.name }}</li>
+                            <li><strong>연세:</strong> {{ senior_data.age }}</li>
+                            <li><strong>성별:</strong> {{ senior_data.gender_display }}</li>
+                            <li><strong>핸드폰 번호:</strong> {{ senior_data.senior.phone_number }}</li>
+                            <li><strong>치매 유무:</strong> {{ senior_data.has_alzheimers_display }}</li>
+                            <li><strong>파킨슨 유무:</strong> {{ senior_data.has_parkinsons_display }}</li>
                         </ul>
                     </div>
                 </li>

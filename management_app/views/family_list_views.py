@@ -8,18 +8,21 @@ from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from auth_app.utils import family_required
 from django.core.paginator import Paginator
+from datetime import date
 
 # Create your views here.
+
+def calculate_age(birthdate):
+    today = date.today()
+    return today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
 
 @login_required
 @family_required
 def list_senior(request):
-    # 현재 로그인한 사용자의 노인 리스트 가져오기
     user_id = request.user.id
     seniors = Senior.objects.filter(user_id=user_id)
     senior_data = []
-    
-    # 한글화 작업 및 나이 계산
+
     for senior in seniors:
         senior_data.append({
             'senior': senior,
@@ -28,12 +31,11 @@ def list_senior(request):
             'has_alzheimers_display': '유' if senior.has_alzheimers else '무',
             'has_parkinsons_display': '유' if senior.has_parkinsons else '무'
         })
-    
-    # 페이지네이션 설정
-    paginator = Paginator(senior_data, 8)  # 한 페이지에 8명씩 표시
+
+    paginator = Paginator(senior_data, 8)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
     context = {
         'page_obj': page_obj,
         'total_seniors': seniors.count(),

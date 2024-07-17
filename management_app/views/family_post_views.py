@@ -141,10 +141,6 @@ def delete_care(request, care_id):
     care.delete()
     return redirect('/monitoring/family_monitor/') 
 
-  
-def calculate_age(birthdate):
-    today = date.today()
-    return today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
 
 @login_required
 @family_required
