@@ -4,7 +4,7 @@
     {% extends "layout.html" %}
     {% load static %}
     <meta charset="UTF-8">
-    {% block title %}<title>{{ post.title }}</title>{% endblock %}
+    {% block title %}{{ post.title }}{% endblock %}
 
     {% block extra_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/post_detail.css' %}">

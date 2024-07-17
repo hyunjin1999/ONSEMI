@@ -9,6 +9,7 @@
         height: 100%;
         margin: 0;
         overflow: hidden; /* 기본적으로 스크롤 막기 */
+        min-width:100%;
     }
 
     .header-wrapper {
@@ -16,6 +17,7 @@
         width: 100%;
         height: 100vh; /* 전체 뷰포트 높이 */
         overflow: hidden; /* 내부 컨텐츠가 넘치지 않게 숨김 */
+        min-width:100%;
     }
 
     .main-image {
@@ -23,6 +25,8 @@
         height: 100%;
         object-fit: cover;
         display: block;
+        min-width:100%;        
+        filter: brightness(60%)
     }
 
     header {
@@ -36,6 +40,7 @@
 
     .logo img {
         filter: brightness(0) invert(1);
+       
     }
 
     nav ul li a {
@@ -50,7 +55,8 @@
         width: 100%;
         text-align: center;
         color: white;
-        animation: enlargeText 2s ease-out forwards; /* 애니메이션 추가 */
+        animation: enlargeText 2s ease-out forwards;
+        min-width:100%;
     }
 
     @keyframes enlargeText {
@@ -94,7 +100,7 @@
     }
 
     .main {
-        padding: 0; /* 여백 없애기 */
+        padding: 0;
         background-color: #fff;
         margin: 0;
     }
@@ -102,17 +108,17 @@
     .vision-section {
         position: relative;
         text-align: center;
-        height: 800px;
-        margin: 0; /* 여백 없애기 */
-        padding: 0; /* 패딩 없애기 */
+        margin: 0; 
+        padding: 0; 
+        height:100vh;
     }
 
     .vision-section img {
         width: 100%;
         height: 100%;
         opacity: 0.75;
-        margin: 0; /* 여백 없애기 */
-        padding: 0; /* 패딩 없애기 */
+        margin: 0; 
+        padding: 0;
     }
 
     .vision-text {
@@ -137,7 +143,7 @@
     .values-section {
         text-align: center;
         padding: 40px 20px;
-        margin: 0; /* 여백 없애기 */
+        margin: 0; 
     }
 
     .values-section h2 {
@@ -177,6 +183,12 @@
         font-size: 18px;
         font-weight: bold;
     }
+    .animated-text {
+        font-size: 50px;
+    }
+    .animated-small-text {
+        font-size : 20px;
+    }
 </style>
 {% endblock %}
 
@@ -193,20 +205,25 @@
                     <li> <a href="/">홈</a></li>
                     <li> <a href="/introduce/">소개</a></li>
                     {% if request.user.is_authenticated %}
-                    <li> <a href="{% url 'account_logout' %}" class="logout">로그아웃</a></li>
+                    {% comment %} <li> <a href="{% url 'account_logout' %}" class="logout">로그아웃</a></li> {% endcomment %}
+                    <li> <a href="/user/logout" class="logout">로그아웃</a></li>
                     <li><a href="/user/profile">프로필</a></li>
                     <li><a href="/blog/notice_list">공지사항</a></li>
                     {% else %}
                     <li><a href="/user/login/">로그인</a></li>
                     <li><a href="/user/register/">회원가입</a></li>
                     {% endif %}
+                    <li><a href="/user_page/">사용자페이지</a></li>
                 </ul>
             </nav>
         </div>
     </header>
     <div class="main-content">
-        <h3 class="animated-text">메인 콘텐츠 제목</h3>
-        <p>메인 콘텐츠 내용</p>
+        <P class="animated-text">부모님께 효도를 대신해 드리겠습니다.</p>
+        <p class="animated-small-text">방문 케어와 신선한 음식 배달을 통해<br>
+            노부모와 보호자의 행복과 마음의 평화를 보장합니다.<br>
+            Caring for Your Loved Ones, Wherever You Are
+            </p>
     </div>
     <button class="scroll-button" onclick="showContent()">더보기</button>
 </div>
