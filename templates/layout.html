@@ -9,13 +9,28 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <title>{% block title %}{% endblock %}</title>
     <style>
-      
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'GmarketSansMedium';
+            min-width: 100%;
+            width: 100%;
+        }
+
+        body {
+            -ms-overflow-style: none;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
         nav ul {
             list-style: none;
             margin: 0;
             padding: 0;
             display: flex;
-            
         }
 
         nav ul li {
@@ -23,7 +38,24 @@
             align-items: center;
         }
 
-
+        #chat-link2 {
+            display: none; /* Initially hide the button */
+            position: fixed;
+            bottom: 90px; /* Adjust to ensure it doesn't overlap with chat-link */
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 50%; /* Circular button */
+            width: 50px;
+            height: 50px;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000; /* Ensure it is above other elements */
+        }
 
         /* Responsive Styles */
         @media (max-width: 1200px) {
@@ -97,7 +129,7 @@
 </head>
 <body>
 
-    <div class="page-container">
+    <div class="page-container" id="start-image">
         <header>
             <div class="header-container">
                 <div class="logo">
@@ -130,6 +162,11 @@
                     chat
                 </span>
             </a>
+            <a href="#start-image" id="chat-link2">
+                <span class="material-symbols-outlined">
+                    arrow_upward
+                </span>
+            </a>
         </div>
         {% endif %}
         <footer id="footer">
@@ -143,22 +180,22 @@
         </footer>
     </div>
     <script>
-        function adjustFooter() {
-            const footer = document.getElementById('footer');
-            const contentHeight = document.querySelector('.page-container').offsetHeight;
-            const windowHeight = window.innerHeight;
-
-            if (contentHeight < windowHeight) {
-                footer.style.position = 'absolute';
-                footer.style.bottom = '0';
-                footer.style.width = '100%';
+        function handleScroll() {
+            const chatLink2 = document.getElementById('chat-link2');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > 600) { // Show the button when scroll is greater than 600px
+                chatLink2.style.display = 'flex';
             } else {
-                footer.style.position = 'relative';
+                chatLink2.style.display = 'none';
             }
         }
 
-        window.addEventListener('load', adjustFooter);
-        window.addEventListener('resize', adjustFooter);
+        // Ensure the button is hidden initially and only shown after scrolling
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatLink2 = document.getElementById('chat-link2');
+            chatLink2.style.display = 'none';
+            window.addEventListener('scroll', handleScroll);
+        });
     </script>
 </body>
 </html>

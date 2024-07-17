@@ -4,15 +4,7 @@
     font-weight: normal;
     font-style: normal;
 }
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: 'GmarketSansMedium';
-    overflow: hidden; /* 기본적으로 스크롤 막기 */
-    min-width:100%;
-  
-}
+
 
 
 body {
@@ -47,7 +39,7 @@ header {
     align-items: center;
     max-width: 100%;
     margin: 0 auto;
-    padding: 0 20px;
+   
 }
 
 .logo {
@@ -112,6 +104,8 @@ nav ul li a:hover {
     z-index: 1000; /* Ensures the link is above other content */
 }
 
+
+
 #chat-link {
     display: flex;
     align-items: center;
@@ -129,3 +123,24 @@ nav ul li a:hover {
 #chat-link:hover {
     background-color: #0056b3;
 }
+
+
+#chat-link2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #516b87;
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top:20px;
+}
+
+#chat-link:hover2 {
+    background-color: #0f2e4f;
+}
+

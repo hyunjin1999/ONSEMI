@@ -18,7 +18,7 @@ nav {
 
 nav a:first-child {
     margin: 0px;
-    
+   
 }
 
 nav a:first-child:hover {
@@ -28,7 +28,7 @@ nav a {
     margin: 0 30px;
     text-decoration: none;
     color: #156741;
-    font-weight: bold;
+    
 }
 
 nav a:hover {

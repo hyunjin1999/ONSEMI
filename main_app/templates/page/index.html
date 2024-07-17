@@ -5,13 +5,15 @@
 
 {% block extra_css %}
 <style>
- 
+    body{
+        overflow:hidden;
+    }
 
     .header-wrapper {
         position: relative;
         width: 100%;
         height: 100vh; /* 전체 뷰포트 높이 */
-        overflow: hidden; /* 내부 컨텐츠가 넘치지 않게 숨김 */
+        {% comment %} overflow: hidden; /* 내부 컨텐츠가 넘치지 않게 숨김 */ {% endcomment %}
         min-width:100%;
     }
 
@@ -208,6 +210,7 @@
                 <h3>My parents have become very old in that world</h3>
                 <h3>Hearts and news that could not be sent to each other</h3>
                 <h2>Onsaemi will fill all your thirst by becoming the spring water gushing from this land</h2>
+               
             </div>
         </div>
     </div>
