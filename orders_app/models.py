@@ -30,7 +30,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     paid = models.BooleanField(default=False)
-
+    care = models.ForeignKey(Care, on_delete=models.CASCADE, null=True, blank=True, default=None)  # 여기를 수정
 
     class Meta:
         ordering = ['-created']
@@ -44,21 +44,21 @@ class Order(models.Model):
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())
 
-    def save(self, *args, **kwargs):
-        if self.pk is not None:  # 업데이트되는 경우에만 처리
-            orig = Order.objects.get(pk=self.pk)
-            if not orig.paid and self.paid:  # 결제 상태가 False에서 True로 변경될 때만 실행
-                content = "\n".join([f"{item.quantity}x {item.product.name}" for item in self.items.all()])
-                care, created = Care.objects.update_or_create(
-                    care_type="SHOP",
-                    user_id=self.user,
-                    title=f'SHOP 서비스 요청 - {self.id}',
-                    defaults={
-                        'content': f'주문 번호 {self.id}에 대한 SHOP 서비스 요청입니다.\n\n{content}',
-                        'care_state': 'NOT_APPROVED',
-                    }
-                )
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if self.pk is not None:  # 업데이트되는 경우에만 처리
+    #         orig = Order.objects.get(pk=self.pk)
+    #         if not orig.paid and self.paid:  # 결제 상태가 False에서 True로 변경될 때만 실행
+    #             content = "\n".join([f"{item.quantity}x {item.product.name}" for item in self.items.all()])
+    #             care, created = Care.objects.update_or_create(
+    #                 care_type="SHOP",
+    #                 user_id=self.user,
+    #                 title=f'SHOP 서비스 요청 - {self.id}',
+    #                 defaults={
+    #                     'content': f'주문 번호 {self.id}에 대한 SHOP 서비스 요청입니다.\n\n{content}',
+    #                     'care_state': 'NOT_APPROVED',
+    #                 }
+    #             )
+    #     super().save(*args, **kwargs)
 
 
 class OrderItem(models.Model):

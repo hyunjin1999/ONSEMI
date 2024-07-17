@@ -6,13 +6,13 @@ from management_app.models import Senior, Care
 class FilterForm(forms.Form):
     start_date = forms.DateField(
         required=False, 
-        widget=forms.DateInput(attrs={'type': 'date'}),
-        label='시작 날짜'
+        widget=forms.DateInput(attrs={'placeholder': '날짜선택'}),
+        label='시작일'
     )
     end_date = forms.DateField(
         required=False, 
-        widget=forms.DateInput(attrs={'type': 'date'}),
-        label='종료 날짜'
+        widget=forms.DateInput(attrs={'placeholder': '날짜선택'}),
+        label='종료일'
     )
     category_order = forms.ChoiceField(
         choices=[], 

@@ -1,16 +1,21 @@
-from django.db import models
+from django.db import models, IntegrityError, transaction
+from django.conf import settings
 from auth_app.models import User
 from django.utils import timezone
 from datetime import datetime
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import os
+from datetime import date
+from django.contrib.auth import get_user_model
 
 class Senior(models.Model):
     id = models.AutoField(primary_key=True)
+    postcode = models.CharField(max_length=255, default=" ")
     address = models.CharField(max_length=255)
+    detail_address = models.CharField(max_length=255, default=" ")
     name = models.CharField(max_length=100)
-    age = models.IntegerField()
+    birthdate = models.DateField(default=date(1900, 1, 1))
     gender = models.CharField(max_length=10)
     phone_number = models.CharField(max_length=15)
     has_alzheimers = models.BooleanField(default=False, null=True, blank=True)
@@ -25,14 +30,20 @@ class Senior(models.Model):
     class Meta:
         db_table = "senior"
 
-#UNIQUE constraint failed: care.title, care.user_id
+
+User = get_user_model()
+
 class Care(models.Model):
     care_type = models.CharField(max_length=100)  # SHOP, VISIT
+    parkinson_diagnosis = models.BooleanField(default=False)
     datetime = models.DateTimeField(default=timezone.now)
+    visit_date = models.DateField(null=True, blank=True)
+    visit_time = models.TimeField(null=True, blank=True)
     title = models.CharField(max_length=200, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="user_id")
     seniors = models.ManyToManyField("Senior", related_name="cares_seniors")
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="cares_approved")
 
     CARE_STATE_CHOICES = [
         ('NOT_APPROVED', '요청 승인 대기'),
@@ -42,7 +53,7 @@ class Care(models.Model):
     ]
 
     care_state = models.CharField(
-        max_length=50, default="요청 승인 대기",  choices=CARE_STATE_CHOICES
+        max_length=50, default="NOT_APPROVED",  choices=CARE_STATE_CHOICES
     )
     admin_message = models.TextField(blank=True, null=True)
 
@@ -51,10 +62,9 @@ class Care(models.Model):
 
     class Meta:
         db_table = "care"
-        constraints = [
-            models.UniqueConstraint(fields=['title', 'user_id'], name='unique_care_request')
-        ]
-
+        
+        
+        
 
 def upload_to(instance, filename):
     today = datetime.today().strftime('%Y%m%d')

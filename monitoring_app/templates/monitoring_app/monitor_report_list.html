@@ -1,0 +1,136 @@
+{% extends "monitoring_app/layout.html" %}
+{% load static %}
+ 
+{% block title %}ONSEMI{% endblock %}
+<!DOCTYPE html><html lang="ko">
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<script src="{% static 'js/scripts.js' %}"></script>
+{% endblock %}
+{% block content %}
+<head>
+</head>
+<style>
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .sidebar form input,
+    .sidebar form select,
+    .sidebar form button {
+        margin-bottom: 10px;
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 4px;
+        border: none;
+        width: 100%;
+        max-width: 220px;
+        border: 1px solid #ccc;
+        color: black; /* Ensure the text color is visible */
+    }
+    .sidebar form input {
+        max-width: 200px;
+    }
+    /* Ensure all select elements have the same width */
+    .sidebar form select {
+        width: 100%;
+    }
+    .senior-photo {
+        text-align: center;
+        margin-bottom: 0px;
+    }
+    header .hamburger {
+        display: none;
+    }
+
+    .hamburger-menu {
+        display: none;
+    }
+</style>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            {% if selected_senior %}
+            <div class="senior-photo">
+                {% if selected_senior.photo %}
+                    <img src="{{ selected_senior.photo.url }}" alt="{{ selected_senior.name }}">
+                {% else %}
+                    <p>사진 없음</p>
+                {% endif %}
+            </div>
+            {% endif %}
+            <h3>{{ selected_senior.name }}</h3>
+            <form method="get" id="seniorForm">
+                <select name="selected_senior_id" onchange="document.getElementById('seniorForm').submit();">
+                    {% for senior in seniors %}
+                        <option value="{{ senior.id }}" {% if selected_senior_id == senior.id|stringformat:"s" %}selected{% endif %}>{{ senior.name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="sort_by">정렬:</label>
+                <select name="sort_by" id="sort_by">
+                    <option value="-created_at" {% if request.GET.sort_by == '-created_at' %}selected{% endif %}>최신순</option>
+                    <option value="created_at" {% if request.GET.sort_by == 'created_at' %}selected{% endif %}>오래된 순</option>
+                </select>
+                {{ form.start_date.label_tag }}
+                {{ form.start_date }}<br>
+                {{ form.end_date.label_tag }}
+                {{ form.end_date }}
+                <br>
+                <select name="type_filter" id="type_filter">
+                    <option value="all" {% if type_filter == 'all' %}selected{% endif %}>전체</option>
+                    <option value="shop" {% if type_filter == 'shop' %}selected{% endif %}>쇼핑</option>
+                    <option value="visit" {% if type_filter == 'visit' %}selected{% endif %}>방문</option>
+                    <option value="hospital" {% if type_filter == 'hospital' %}selected{% endif %}>병원</option>
+                </select>
+                <button type="submit">적용</button>
+            </form>
+        </div>
+        <div class="main-content">
+            <br><h2>작성된 보고서 리스트</h2>
+            <table class="table-report">
+                <thead>
+                    <tr>
+                        <th>케어 타입</th>
+                        <th>등록 시간</th>
+                        <th>제목</th>
+                        <th>내용</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in page_obj %}        
+                    {% comment %} {% for report in reports %} {% endcomment %}
+                            <tr class="clickable-row" onclick="location.href='/monitoring/family_monitor/report/list/{{report.id}}/?{{ request.GET.urlencode }}'">    
+                            <td>{{ report.care.care_type}}</td>
+                            <td>{{ report.created_at|date:"Y년 n월 j일 A g:i" }}</td>
+                            <td>{{ report.care.title }}</td>
+                            <td>{{ report.care.content }}</td>
+                        </tr></a>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% with request.GET.urlencode as params %}
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?{{ params }}&page=1">&laquo; 처음</a>
+                        <a href="?{{ params }}&page={{ page_obj.previous_page_number }}">이전</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?{{ params }}&page={{ page_obj.next_page_number }}">다음</a>
+                        <a href="?{{ params }}&page={{ page_obj.paginator.num_pages }}">마지막 &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+            {% endwith %}
+        </div>
+    </div>
+</body>
+{% endblock %}
+</html>

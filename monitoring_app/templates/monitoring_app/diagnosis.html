@@ -36,7 +36,8 @@
                     <h2 style="margin-top:20px;">의사진단 내용</h2>
                     {% for report in reports %}
                         <div class="doctors-box">                        
-                            <p class="small-light-text"> {{report.updated_at}} </p>
+                            <p class="small-light-text"> {{report.updated_at|date:"Y년 n월 j일 A g:i"}} </p>
+
                             <ul>
                                 <li class = "li-style"><p> 증상 요약 : 
                                     {% if report.no_issue == 1 %} 증상없음 {% endif %}
@@ -58,7 +59,8 @@
                         <h2>보호자님께 드리는 말씀</h2>
                         {% for report in reports %}
                             <hr>
-                            <p class="small-light-text"> 날짜 : {{report.updated_at}} </p>
+                            <p class="small-light-text"> 날짜 : {{report.updated_at|date:"Y년 n월 j일 A g:i" }} </p>
+
                             <p class="li-style">{{ report.user_request }}</p>
                         {% empty %}
                             <p class="li-style">보호자님께 드릴 말씀이 없습니다.</p>

@@ -1,14 +1,8 @@
-body {
-    background-color: #f7fafc; 
-}
-
-header {
-    background-color: #ffffff; 
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
-    padding: 1rem; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
+@font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
 
 .onsemi {
@@ -24,7 +18,7 @@ header {
     justify-content: center;
     align-items: center;
     border: none;
-    margin-top:-150px;
+    
 }
 
 .box {

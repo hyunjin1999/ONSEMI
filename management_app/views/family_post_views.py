@@ -2,10 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
-from django.db import transaction
+from django.db import IntegrityError
 from auth_app.models import User
 from management_app.models import Care, Senior
 from auth_app.utils import family_required  # 해당 페이지는 보호자로 로그인했을 때만 접근이 가능하게 수정!!
+from datetime import datetime
+from django.contrib.auth import get_user_model
+from datetime import date
 
 
 # Create your views here.
@@ -29,13 +32,12 @@ from auth_app.utils import family_required  # 해당 페이지는 보호자로 �
 # 위에거랑 같은데 유저별은 없겠죠?
 # NOT_APPROVED, CONFIRMED, APPROVED
 
-
+from django.http import JsonResponse
 @login_required
 @family_required
 def add_care(request):
     if request.method == "GET":
         user = request.user
-        user = User.objects.get(pk=user.id)
         user_senior_list = user.senior_set.all()
         context = {"seniors": user_senior_list}
         return render(request, "management_app/add_care.html", context)
@@ -44,24 +46,39 @@ def add_care(request):
         care_type = request.POST.get("care_type")
         title = request.POST.get("title")
         content = request.POST.get("content")
-        senior = request.POST.get("senior")
-
+        senior_id = request.POST.get("senior")
+        parkinson_diagnosis = request.POST.get("parkinson_diagnosis")
+        
+        if parkinson_diagnosis == "on":
+            parkinson_diagnosis = True
+        else:
+            parkinson_diagnosis = False
+                
         user = request.user
-        user = get_object_or_404(User, pk=user.id)
+        senior = Senior.objects.get(pk=senior_id)
+        
+        existing_care = Care.objects.filter(
+            seniors=senior,
+            care_state='NOT_APPROVED'
+        ).first()
+
+        if existing_care:
+            message = f"{senior.name}님은 승인 되지 않은 요청 건이 존재합니다. 요청은 1개만 보낼 수 있습니다. 마이 페이지에서 수정 및 확인이 가능합니다."
+            return JsonResponse({'error': message})
 
         care = Care(
             care_type=care_type,
             title=title,
             content=content,
             user_id=user,
+            parkinson_diagnosis=parkinson_diagnosis,
         )
         care.save()
+        care.seniors.add(senior)
 
-        user_senior = Senior.objects.get(pk=senior)
-        care.seniors.add(user_senior)
-
-        return redirect("/monitoring/family_monitor/")
-
+        return JsonResponse({'success': True, 'redirect_url': "/monitoring/family_monitor/"})
+    
+        
 
 @login_required
 @family_required
@@ -96,6 +113,7 @@ def update_care(request, care_id):
         title = request.POST.get("title")
         content = request.POST.get("content")
         senior_id = request.POST.get("senior")
+        parkinson_diagnosis = request.POST.get("parkinson_diagnosis")
 
         if care_type:
             care.care_type = care_type
@@ -107,6 +125,11 @@ def update_care(request, care_id):
             selected_senior = Senior.objects.get(pk=int(senior_id))
             care.seniors.clear()  # Clear existing seniors
             care.seniors.add(selected_senior)  # Add the selected senior
+            
+        if parkinson_diagnosis == "on":
+            care.parkinson_diagnosis = True
+        else:
+            care.parkinson_diagnosis = False
 
         care.save()
         return redirect(f"/management/care/detail/{care_id}/")
@@ -118,7 +141,7 @@ def delete_care(request, care_id):
     care.delete()
     return redirect('/monitoring/family_monitor/') 
 
-  
+
 @login_required
 @family_required
 def add_senior(request):
@@ -128,23 +151,26 @@ def add_senior(request):
 
     if request.method == "POST":
         name = request.POST.get("name")
+        postcode = request.POST.get("postcode")
         address = request.POST.get("address")
-        age = request.POST.get("age")
+        detail_address = request.POST.get("detail_address")        
         gender = request.POST.get("gender")
+        year = int(request.POST.get('year'))
+        month = int(request.POST.get('month'))
+        day = int(request.POST.get('day'))
+        birthdate = date(year, month, day)
         phone_number = request.POST.get("phone_number")
         has_alzheimers = request.POST.get("has_alzheimers")
         has_parkinsons = request.POST.get("has_parkinsons")
-        photo = request.FILES.get("photo")
-        user = request.user
+        photo = request.FILES.get("photo")        
 
-        # user = User.objects.get(pk=user.id)
-
-        # 기존에 재홍님께서 작성한 코드로는 이상하게 오류가 발생해서 새롬게 작성
         user = request.user
         senior = Senior(
             name=name,
+            postcode = postcode,
             address=address,
-            age=age,
+            detail_address = detail_address,
+            birthdate=birthdate,
             gender=gender,
             phone_number=phone_number,
             has_alzheimers =has_alzheimers,
@@ -165,11 +191,18 @@ def update_senior(request, id):
     
     if request.method == 'POST':
         senior.name = request.POST.get('name', senior.name)
-        senior.age = request.POST.get('age', senior.age)
+        year = int(request.POST.get('year', senior.birthdate.year))
+        month = int(request.POST.get('month', senior.birthdate.month))
+        day = int(request.POST.get('day', senior.birthdate.day))
+        senior.birthdate = datetime(year, month, day)
         senior.gender = request.POST.get('gender', senior.gender)
         senior.phone_number = request.POST.get('phone', senior.phone_number)
         senior.has_alzheimers = request.POST.get('has_alzheimers') 
         senior.has_parkinsons = request.POST.get('has_parkinsons')
+        senior.address = request.POST.get("address")
+        senior.detail_address = request.POST.get("detail_address")
+        senior.gender = request.POST.get("gender")
+        senior.postcode = request.POST.get("postcode")
 
         if 'photo' in request.FILES:
             senior.photo = request.FILES['photo']
