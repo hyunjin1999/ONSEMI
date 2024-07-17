@@ -32,6 +32,7 @@ header {
     background: url('background.jpg') no-repeat center center;
     background-size: cover;
     padding: 20px 0;
+    z-index: 10; /* 헤더가 이미지 위에 보이도록 z-index 설정 */
 }
 .header-container {
     display: flex;
