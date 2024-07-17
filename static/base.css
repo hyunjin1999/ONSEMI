@@ -4,27 +4,20 @@
     font-weight: normal;
     font-style: normal;
 }
-html, body {
-    height: 100%;
+
+body {
+    font-family: 'GmarketSansMedium';
+    font-size: 15px;
     margin: 0;
     padding: 0;
-
-    font-family: 'GmarketSansMedium';
-}
- 
-body {
-    display: flex;
-    flex-direction: column;
-}
- 
-.page-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-
     background-color: #f4f4f4;
-    min-width: 100%;
 }
+
+/* .wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+} */
 
 .header {
     background-color: white;
@@ -35,9 +28,9 @@ body {
 }
 
 .header img {
-    width: 2.6vw;
-    height: auto; 
-}
+    height: 50px;
+    width: 50px;
+} 
 
 
 .header nav a {
@@ -45,31 +38,12 @@ body {
     text-decoration: none;
     color: #333;
     font-weight: bold;
+}
 
-}
- 
-.wrapper {
+.main-content {
     flex: 1;
-}
- 
-/* 추가 스타일 */
-header {
-    background: url('background.jpg') no-repeat center center;
-    background-size: cover;
-    padding: 20px 0;
-}
- 
-.container {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
- 
-.logo {
-    display: flex;
     align-items: center;
     padding: 50px;
     background-color: #e7f5fe;
@@ -77,8 +51,6 @@ header {
 
 .text-container {
     max-width: 50%;
-
-   
 }
 
 .text-container h1 {
@@ -95,77 +67,25 @@ header {
     font-size: 1.2em;
     color: #555;
 }
- 
-.logo img {
-    height: 40px;
-    margin-right: 10px;
+
+.image-container {
+    max-width: 45%;
 }
- 
-nav ul {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
- 
-nav ul li {
-    margin: 0 15px;
-}
- 
- 
-nav ul li a {
-    color: rgb(0, 0, 0);
-    text-decoration: none;
-    font-size: 16px;
-}
- 
-nav ul li a:hover {
-    text-decoration: underline;
-}
- 
-.footer-content {
-    background-color: #f1f1f1;
-    padding: 20px;
-    text-align: center;
+
+.image-container img {
     width: 100%;
-    box-sizing: border-box;
+    height: auto;
 }
- 
-.footer-content p {
-    margin: 5px 0;
-    color: #555;
-}
- 
-.footer-content a {
-    color: #0066cc;
-    text-decoration: none;
-}
- 
-.footer-content a:hover {
-    text-decoration: underline;
-}
- 
-#chat-link-container {
+#chat-list {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 1000; /* Ensures the link is above other content */
-}
- 
-#chat-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 50px;
     height: 50px;
-    background-color: #007bff;
-    border-radius: 50%;
-    color: white;
-    text-decoration: none;
-    font-size: 24px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
 }
- 
-#chat-link:hover {
-    background-color: #0056b3;
+
+#chat-list img {
+    width: 100%;
+    height: auto;
 }
