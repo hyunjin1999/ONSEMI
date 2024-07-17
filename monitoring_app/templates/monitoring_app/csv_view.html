@@ -252,13 +252,13 @@
                     <span>{{ completed_rate|floatformat:1 }}%</span>
                 </div>
             </div>
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>제목</th>
                         <th>케어 종류</th>
                         <th>요청 날짜</th>
-                        <th>방문 예정 날짜</th>
+                        <th>방문 날짜</th>
                         <th>처리 상태</th>
                         <th>요청 내용</th>
                         <th>대상 노인</th>
@@ -266,25 +266,27 @@
                 </thead>
                 <tbody>
                     {% for care in filtered_cares %}
-                        <tr>
-                            <td>{{ care.title }}</td>
+                        <tr class="clickable-row" onclick="location.href='/management/care/detail/{{ care.id }}/'">
+                            <td>{{ care.care_title }}</td>
                             <td>{{ care.care_type }}</td>
                             <td>{{ care.datetime }}</td>
+                            <td>{{ care.visit_date }}</td>
                             <td>
                                 {% if care.care_state == 'APPROVED' %}
-                                    {{ care.visit_date }} {{ care.visit_time }}
+                                    요청 승인 완료
+                                {% elif care.care_state == 'NOT_APPROVED' %}
+                                    요청 승인 대기
+                                {% elif care.care_state == 'REJECT' %}
+                                    요청 거절
+                                {% elif care.care_state == 'COMPLETED' %}
+                                    요청 처리 완료
                                 {% endif %}
                             </td>
-                            <td>{{ care.care_state }}</td>
-                            <td>{{ care.content }}</td>
-                            <td>
-                                {% for senior in care.seniors.all %}
-                                    {{ senior.name }}{% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                            </td>
+                            <td>{{ care.care_content }}</td>
+                            <td>{{ care.care_seniors }}</td>
                         </tr>
                     {% endfor %}
-                </tbody>
+            </tbody>
             </table>
             {% else %}
                 <p>서비스 이용 내역이 없습니다.</p>
