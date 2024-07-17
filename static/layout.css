@@ -33,8 +33,7 @@ header {
     background-size: cover;
     padding: 20px 0;
 }
-
-.container {
+.header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
