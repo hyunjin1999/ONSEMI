@@ -14,10 +14,13 @@ from ..forms import FilterForm
 from orders_app.models import Order
 from datetime import datetime, time
 from management_app.models import Care , Senior
+from matplotlib import font_manager, rc
+import matplotlib.font_manager as fm
 
-# 맥 전용 한글 폰트
-from matplotlib import rc
-rc('font', family='AppleGothic')
+# 한글 폰트 설정
+font_path = '/usr/share/fonts/truetype/apple/AppleGothic.ttf'
+font_name = fm.FontProperties(fname=font_path, size=10).get_name()
+plt.rcParams['font.family'] = font_name
 
 # 주문 데이터 DataFrame으로 변환
 def order_to_dataframe(orders):
@@ -139,19 +142,21 @@ def generate(request):
         
 ####################################################################################
         if not df_care.empty:
-            
             # 꺾은선 그래프 생성 (주간 단위)
             df_care['Week'] = df_care['datetime'].dt.to_period('W').apply(lambda r: r.start_time)
             weekly_data = df_care.groupby(['Week', 'care_type']).size().unstack().fillna(0)
-            
+
             plt.figure(figsize=(10, 6))
-            for column in weekly_data.columns:
-                plt.plot(weekly_data.index, weekly_data[column], marker='o', label=column)
-            plt.legend(title='서비스 종류')
-            plt.xlabel('기간')
-            plt.ylabel('요청횟수')
+            colors = ['#2D4059', '#EA5455', '#F07B3F', '#FFD460', '#CABBE9']  # 필요한 색상을 리스트로 정의
+            for idx, column in enumerate(weekly_data.columns):
+                plt.plot(weekly_data.index, weekly_data[column], marker='o', label=column, color=colors[idx % len(colors)])
+            
+            plt.legend(prop=fm.FontProperties(fname=font_path))
+            plt.xlabel('기간', fontproperties=fm.FontProperties(fname=font_path))
+            plt.ylabel('요청횟수', fontproperties=fm.FontProperties(fname=font_path))
             plt.ylim(0, 10)
-            plt.xticks(rotation=45)
+            plt.xticks(rotation=45, fontproperties=fm.FontProperties(fname=font_path))
+            plt.yticks(fontproperties=fm.FontProperties(fname=font_path))
             plt.tight_layout()
 
             # 그래프 이미지를 메모리에 저장
@@ -165,15 +170,16 @@ def generate(request):
             graph_url = 'data:image/png;base64,' + graph_url
 
         else:
-            # 꺾은선 그래프 생성 (주간 단위)
+            # 데이터가 없을 경우 빈 꺾은선 그래프 생성
             plt.figure(figsize=(10, 6))
-            plt.legend(title='요청 종류')
-            plt.xlabel('기간')
-            plt.ylabel('요청 수')
-            plt.xticks(rotation=45)
+            plt.title('요청된 데이터가 없습니다', fontproperties=fm.FontProperties(fname=font_path))
+            plt.xlabel('기간', fontproperties=fm.FontProperties(fname=font_path))
+            plt.ylabel('요청횟수', fontproperties=fm.FontProperties(fname=font_path))
+            plt.xticks(rotation=45, fontproperties=fm.FontProperties(fname=font_path))
+            plt.yticks(fontproperties=fm.FontProperties(fname=font_path))
             plt.tight_layout()
 
-            # 그래프 이미지를 메모리에 저장
+            # 빈 그래프 이미지를 메모리에 저장
             buffer = BytesIO()
             plt.savefig(buffer, format='png')
             buffer.seek(0)
@@ -203,7 +209,8 @@ def generate(request):
         if not all_df.empty:
             plt.figure(figsize=(10, 6))
             category_counts = all_df.groupby('Category')['Quantity'].sum()
-            plt.pie(category_counts, labels=category_counts.index, autopct='%1.1f%%', startangle=140)
+            plt.pie(category_counts, labels=category_counts.index, colors=colors[:len(category_counts)], autopct='%1.1f%%', startangle=140,
+                    textprops={'fontproperties': fm.FontProperties(fname=font_path)})
             plt.axis('equal')
 
             buffer = BytesIO()
@@ -216,11 +223,8 @@ def generate(request):
             pie_chart_url = 'data:image/png;base64,' + pie_chart_url
 
         else:
-            all_df['Quantity'] = all_df['Quantity'].astype(float)
-
             plt.figure(figsize=(10, 6))
-            category_counts = all_df.groupby('Category')['Quantity'].sum()
-            plt.pie(category_counts, labels=category_counts.index, autopct='%1.1f%%', startangle=140)
+            plt.title('요청된 데이터가 없습니다', fontproperties=fm.FontProperties(fname=font_path))
             plt.axis('equal')
 
             buffer = BytesIO()

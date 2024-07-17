@@ -1,9 +1,123 @@
-{% extends "base.html" %}
+{% comment %} {% extends "shop/product/base.html" %} {% endcomment %}
+
+
 {% block content %}
-  <h2>Edit Order {{ order.id }}</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Changes</button>
-  </form>
+<style>
+  body {
+    background: linear-gradient(to right, #ece9e6, #ffffff);
+    margin: 0;
+    padding: 0;
+  }
+  .form-wrapper, .form-container, .form-details, .form-info, .form-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .form-container {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .form-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .form-info h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .form-wrapper form {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .form-wrapper form input, 
+  .form-wrapper form select, 
+  .form-wrapper form textarea {
+    width: 90%;
+    max-width: 400px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .form-wrapper form button {
+    width: 300px; /* 버튼의 가로 길이를 더 길게 설정 */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .form-wrapper form button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .form-wrapper form button.back {
+    background-color: #6c757d; /* 취소 버튼의 배경색을 회색으로 설정 */
+    color: white;
+  }
+  
+  .form-wrapper form button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  .form-wrapper form button.back:hover {
+    background-color: #5a6268; /* 취소 버튼의 호버 배경색 설정 */
+  }
+  @media (max-width: 600px) {
+    .form-container {
+      width: 95%;
+    }
+  
+    .form-actions {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .form-actions button {
+      margin-bottom: 10px;
+      width: 80%;
+      text-align: center;
+    }
+  }
+</style>
+<body>  
+<div class="form-wrapper">
+  <div class="form-container">
+      <div class="form-details">
+          <div class="form-info">
+            <h2>주문번호{{ order.id }} 수정</h2>
+            <form method="post">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <div class="form-actions">
+                <button type="submit">저장</button><br>
+                <button type="button" onclick="window.location.href = '/orders/order/{{ order.id }}/';" class="back">취소</button>
+              </div>
+            </form>
+          </div>
+      </div>
+  </div>
+</div>
+</body>
 {% endblock %}

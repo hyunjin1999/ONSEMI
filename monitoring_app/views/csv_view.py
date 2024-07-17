@@ -77,7 +77,7 @@ def csv_view(request):
             cares = cares.filter(care_type=category_service)
         if selected_senior and selected_senior != 'all':
             cares = cares.filter(seniors__id=selected_senior)
-
+        
         # 케어 완료 비율 계산
         total_cares = cares.count()
         completed_cares = cares.filter(care_state='COMPLETED').count()
@@ -86,11 +86,26 @@ def csv_view(request):
             completed_rate = (completed_cares / total_cares) * 100
 
         for care in cares:
+            if care.visit_date and care.visit_time:
+                hour = care.visit_time.hour
+                minute = care.visit_time.minute
+                period = "오전" if hour < 12 else "오후"
+                hour = hour if hour <= 12 else hour - 12
+                visit_time_str = f"{period} {hour}시 {minute}분"
+                visit_date_str = f"{care.visit_date.strftime('%Y년 %m월 %d일')} {visit_time_str}"
+            else:
+                visit_date_str = '방문 날짜가 정해지지 않았습니다.'
+
             data_care.append({
+                'care_title': care.title,
                 'care_type': care.care_type,
                 'datetime': care.datetime.strftime('%Y년 %m월 %d일 %H시 %M분'),
+                'visit_date': visit_date_str,
                 'care_state': care.care_state,
+                'care_content': care.content,
+                'care_seniors': ', '.join([senior.name for senior in care.seniors.all()]),  # assuming Senior model has a 'name' field
             })
+
         request.session['filtered_cares'] = data_care
 
         return render(request, 'monitoring_app/csv_view.html', {

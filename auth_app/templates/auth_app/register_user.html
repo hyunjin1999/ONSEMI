@@ -40,10 +40,11 @@
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 50%;
+            width: 100%;
             max-width: 400px;
             z-index: 2;
             position: relative;
+            overflow-y: auto;
         }
         .signup-form h2 {
             margin-bottom: 20px;
@@ -70,6 +71,7 @@
         .signup-form .form-group .radio-group {
             display: flex;
             gap: 20px;
+            justify-content: center;
         }
         .signup-form .form-group .radio-group label {
             display: flex;
@@ -99,8 +101,13 @@
             background: #e0e0e0;
             border-color: #b0b0b0;
         }
+        .signup-form .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
         .signup-form button {
-            width: 100%;
+            width: 48%;
             padding: 10px;
             background: #156741;
             border: none;
@@ -108,17 +115,50 @@
             font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
         }
         .signup-form button[type="button"] {
             background: #dc3545;
-            margin-top: 10px;
         }
         .signup-form button:hover {
             background: #125a35;
         }
         .signup-form button[type="button"]:hover {
             background: #c82333;
+        }
+        .signup-form hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid #ccc;
+        }
+        .simple-signup {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .simple-signup a {
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .simple-signup img {
+            width: 50px;
+            height: 50px;
+        }
+        .line-separator {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .line-separator::before,
+        .line-separator::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ccc;
+        }
+        .line-separator::before {
+            margin-right: .25em;
+        }
+        .line-separator::after {
+            margin-left: .25em;
         }
     </style>
 </head>
@@ -156,16 +196,15 @@
                 <label for="family">보호자</label>
             </div>
         </div>
-        <button type="submit">가입하기</button>
-        <hr>
-        <button type="button" onclick="window.location.href = '/'">취소</button>
+        <div class="button-group">
+            <button type="submit">가입하기</button>
+            <button type="button" onclick="window.location.href = '/'">취소</button>
+        </div>
     </form>
-    <br>
-    <hr>
-    <div>
-        <p> 간단 회원가입 </p>
+    <div class="line-separator">간단 회원가입</div>
+    <div class="simple-signup">
         <a href="{% provider_login_url 'google' %}">
-            <img src="{% static 'auth/google_logo.png' %}" alt="구글" width="50px" height="50px"/>
+            <img src="{% static 'auth/google_logo.png' %}" alt="구글"/>
         </a>
     </div>
 </div>

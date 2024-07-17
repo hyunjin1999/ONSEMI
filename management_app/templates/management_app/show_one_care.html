@@ -71,7 +71,12 @@
         input[type="submit"]:hover,
         button:hover {
             opacity: 0.9;
-        }  
+        }
+
+        .plus-button {
+            text-decoration: none;
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -108,15 +113,18 @@
         <button type="submit">Save</button>
     </form>
     {% endif %}
-    
+    {% if care.care_state == 'NOT_APPROVED'%}
     <button type="button" onclick="window.location.href = '/management/care/update/{{care.id}}/'"class="submit">수정</button>
     <form method="post" action="{% url 'management_app:delete_care' care.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
 
         {% csrf_token %}
         <button type="submit" class="delete">Delete</button>
     </form>
+    {% endif %}
     <br>
-    <a href='/monitoring/family_monitor/' class="back">뒤로가기</a>
-    {% comment %} <button type="button" onclick="window.location.href = '/management/my-cares/'">돌아가기</button> {% endcomment %}
+    {% with care.seniors.all|first as first_senior %}
+        <a class="plus-button" href="/monitoring/family_monitor/?selected_senior_id={{ first_senior.id }}">뒤로가기</a>
+    {% endwith %}
+
 </body>
 </html>

@@ -94,7 +94,7 @@
       </div>
       {% for order in orders %}
       <div class="order-info">
-          <span>주문일시: {{ order.created }}</span>
+          <span>주문일시: {{ order.created|date:"Y년 n월 j일 A g:i" }}</span>
           <span>승인 여부: 
               {% for choice in order.care.CARE_STATE_CHOICES %}
                   {% if choice.0 == order.care.care_state %}

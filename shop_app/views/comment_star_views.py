@@ -51,3 +51,4 @@ def like_comment(request, comment_id):
     else:
         comment.likes.add(request.user)
     return JsonResponse({'likes': comment.total_likes()})
+

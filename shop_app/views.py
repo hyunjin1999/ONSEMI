@@ -1,13 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from cart_app.forms import CartAddProductForm
-from ..models import Category, Product
+from .models import Category, Product
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from ..forms import CommentForm, ReplyForm
-from django.views.decorators.http import require_POST
-from orders_app.models import OrderItem
-from django.db.models import Avg
-from django.core.paginator import Paginator
 
 @login_required
 def product_list(request, category_slug=None):
@@ -37,40 +32,17 @@ def product_detail(request, id, slug):
     cart_product_form = CartAddProductForm()
     stock_alert = product.stock <= 10
 
-    comment_form = CommentForm()
-    reply_form = ReplyForm()
-
-    # 부모 댓글 필터링
-    comments = product.comments.filter(parent__isnull=True)
-
-    # 평균 별점 계산
-    average_rating = comments.aggregate(Avg('rating'))['rating__avg'] or 0
-
     # 최근 본 상품에 추가
     recent_products = request.session.get('recent_products', [])
     if product.id not in recent_products:
         recent_products.append(product.id)
         request.session['recent_products'] = recent_products
 
-    # 사용자 구매 여부 확인
-    has_purchased = OrderItem.objects.filter(order__user=request.user, product=product).exists()
-
-    paginator = Paginator(comments, 5)  
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    context = {
-        'product': product,
-        'cart_product_form': cart_product_form,
-        'stock_alert': stock_alert,
-        'comment_form': comment_form,
-        'reply_form': reply_form,
-        'comments': comments,
-        'has_purchased': has_purchased,
-        'average_rating': average_rating,
-        'page_obj': page_obj,
-    }
-    return render(request,'shop/product/detail.html',context)
+    return render(request,
+                  'shop/product/detail.html',
+                  {'product': product,
+                   'cart_product_form': cart_product_form,
+                   'stock_alert': stock_alert})
 
 @login_required
 def add_to_recent_products(request, id):
@@ -91,13 +63,3 @@ def remove_from_recent_products(request, id):
         recent_products.remove(id)
         request.session['recent_products'] = recent_products
     return redirect('shop_app:product_list')
-
-@login_required
-@require_POST
-def like_product(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    if product.likes.filter(id=request.user.id).exists():
-        product.likes.remove(request.user)
-    else:
-        product.likes.add(request.user)
-    return JsonResponse({'likes': product.total_likes()})

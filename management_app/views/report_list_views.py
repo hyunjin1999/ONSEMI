@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from auth_app.utils import volunteer_required
 from django.core.paginator import Paginator
 from management_app.models import Report, Care, Senior
 from auth_app.models import User
 from django.http import JsonResponse
 
 @login_required
+@volunteer_required
 def report_list(request):
     user = request.user
     sort_by = request.GET.get('sort_by', '-created_at')
@@ -81,6 +83,7 @@ def report_list(request):
     })
 
 @login_required
+@volunteer_required
 def seniors_for_volunteer(request, volunteer_id):
     seniors = Senior.objects.filter(cares_seniors__report__user_id=volunteer_id).distinct().select_related('user_id').values('id', 'name', 'user_id', 'user_id__username')
     return JsonResponse({'seniors': list(seniors)})
