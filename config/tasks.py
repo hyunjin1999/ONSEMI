@@ -21,7 +21,11 @@ def update_product_price(self):
     
     for item, value in data.iloc[1:].items():
         product = get_object_or_404(Product, name=item)
-        print(product)
         product.price = value
+        product.available = True
+        
+        # 제철 상품이 아니면 available을 False로 변경(구매불가)
+        if value == 0.0:
+            product.available = False
         product.save()
     
