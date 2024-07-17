@@ -11,7 +11,9 @@ from django.contrib.auth import get_user_model
 
 class Senior(models.Model):
     id = models.AutoField(primary_key=True)
+    postcode = models.CharField(max_length=255, default=" ")
     address = models.CharField(max_length=255)
+    detail_address = models.CharField(max_length=255, default=" ")
     name = models.CharField(max_length=100)
     birthdate = models.DateField(default=date(1900, 1, 1))
     gender = models.CharField(max_length=10)

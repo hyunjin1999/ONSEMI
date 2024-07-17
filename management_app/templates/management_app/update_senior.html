@@ -1,103 +1,117 @@
-{% extends "layout.html" %}
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    {% block title %}Update Senior{% endblock %}
-    {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'base.css' %}">
     <style>
-        .form-container {
-            margin: 0 auto;
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+            margin: 0;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 600px;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            box-sizing: border-box;
         }
-        .form-container h1 {
+        .body-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
             text-align: center;
             margin-bottom: 20px;
         }
-        .form-container p {
+        .form-group {
             margin-bottom: 15px;
         }
-        .form-container label {
+        label {
             display: block;
             margin-bottom: 5px;
         }
-        .form-container input[type="text"],
-        .form-container input[type="number"],
-        .form-container input[type="file"],
-        .form-container input[type="radio"] {
-            width: 90%;
-            padding: 10px;
+        input[type="text"],
+        input[type="file"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 4px;
+            resize: none;
         }
-        .form-container input[type="radio"] {
-            width: auto;
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 10px;
         }
-        .form-container button {
+        .form-group.inline {
+            display: flex;
+            align-items: center;
+        }
+        .form-group.inline label {
+            margin-right: 10px;
+        }
+        .birthdate-group {
+            display: flex;
+            justify-content: space-between;
+        }
+        .birthdate-group select {
+            width: 32%;
+        }
+        input[type="submit"],
+        button {
             width: 100%;
             padding: 10px;
             border: none;
-            border-radius: 5px;
-            background-color: green;
-            color: white;
-            font-size: 16px;
-        }
-        .form-container .upload-button {
+            border-radius: 4px;
             background-color: blue;
             color: white;
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
             font-size: 16px;
-            margin-bottom: 10px;
+            cursor: pointer;
         }
-        .form-container .delete-button {
-            background-color: red;
-            color: white;
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
+        button {
+            background-color: #dc3545;
             margin-top: 10px;
         }
-        .form-container .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .radio-group {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-        .radio-group label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        input[type="submit"]:hover,
+        button:hover {
+            opacity: 0.9;
         }
         .preview-container {
-            margin-top: 10px;
+            margin-top: 15px;
         }
         .preview-container img {
-            max-width: 200px;
+            max-width: 100%;
             max-height: 200px;
-            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: block;
+        }
+        .detail-address-group {
             display: block;
         }
     </style>
+    <script src="https://ssl.daumcdn.net/dmaps/map_js_init/postcode.v2.js"></script>
     <script>
+        function validateForm(event) {
+            var addressInput = document.getElementById('address');
+            var detailAddressInput = document.getElementById('detail_address');
+
+            if (!addressInput.value || !detailAddressInput.value) {
+                alert("주소 입력은 필수입니다.");
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+
         function previewImage(event) {
             const fileInput = event.target;
             const previewImage = document.getElementById('preview-image');
@@ -117,65 +131,181 @@
                 reader.readAsDataURL(fileInput.files[0]);
             }
         }
+
+        function openDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var fullAddr = data.address;
+                    var extraAddr = '';
+
+                    if (data.addressType === 'R') {
+                        if (data.bname !== '') {
+                            extraAddr += data.bname;
+                        }
+                        if (data.buildingName !== '') {
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+                    }
+
+                    document.getElementById('postcode').value = data.zonecode;
+                    document.getElementById('address').value = fullAddr;
+                    document.getElementById('detail_address').focus();
+
+                    var detailAddressGroup = document.querySelector('.detail-address-group');
+                    detailAddressGroup.style.display = 'block';
+                }
+            }).open();
+        }
+
+        function formatPhoneNumber(input) {
+            const cleaned = ('' + input.value).replace(/\D/g, '');
+            let formatted = cleaned;
+
+            if (cleaned.length > 3 && cleaned.length <= 7) {
+                formatted = cleaned.slice(0, 3) + '-' + cleaned.slice(3);
+            } else if (cleaned.length > 7) {
+                formatted = cleaned.slice(0, 3) + '-' + cleaned.slice(3, 7) + '-' + cleaned.slice(7, 11);
+            }
+
+            input.value = formatted.slice(0, 13); // max length for phone number in format XXX-XXXX-XXXX
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearSelect = document.getElementById('year');
+            const monthSelect = document.getElementById('month');
+            const daySelect = document.getElementById('day');
+
+            for (let year = new Date().getFullYear(); year >= 1900; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.text = year;
+                yearSelect.appendChild(option);
+            }
+
+            for (let month = 1; month <= 12; month++) {
+                const option = document.createElement('option');
+                option.value = month;
+                option.text = month;
+                monthSelect.appendChild(option);
+            }
+
+            yearSelect.addEventListener('change', updateDays);
+            monthSelect.addEventListener('change', updateDays);
+
+            function updateDays() {
+                while (daySelect.firstChild) {
+                    daySelect.removeChild(daySelect.firstChild);
+                }
+
+                const year = yearSelect.value;
+                const month = monthSelect.value;
+                const daysInMonth = new Date(year, month, 0).getDate();
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const option = document.createElement('option');
+                    option.value = day;
+                    option.text = day;
+                    daySelect.appendChild(option);
+                }
+            }
+
+            // Set initial birthdate values
+            const birthdate = new Date("{{ senior.birthdate|date:'Y-m-d' }}");
+            yearSelect.value = birthdate.getFullYear();
+            monthSelect.value = birthdate.getMonth() + 1;
+            updateDays();
+            daySelect.value = birthdate.getDate();
+
+            const phoneInput = document.getElementById('phone_number');
+            phoneInput.addEventListener('input', function(event) {
+                formatPhoneNumber(event.target);
+            });
+
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                if (!validateForm(event)) {
+                    event.preventDefault();
+                }
+            });
+        });
     </script>
-    {% endblock %}
 </head>
 <body>
     {% block content %}
-    <div class="form-container">
+    <div class="body-container">
         <h1>수정하기</h1>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <p>
+            <div class="form-group">
                 <label for="name">이름:</label>
-                <input type="text" id="name" name="name" value="{{ senior.name }}">
-            </p>
-            <p>
-                <label for="age">연세:</label>
-                <input type="number" id="age" name="age" value="{{ senior.age }}">
-            </p>
-            <p>
+                <input type="text" id="name" name="name" value="{{ senior.name }}" maxlength="100" required>
+            </div>
+            <div class="form-group">
+                <label for="postcode">우편번호:</label>
+                <input type="text" id="postcode" name="postcode" value="{{ senior.postcode }}" readonly required>
+                <button type="button" onclick="openDaumPostcode()">우편번호 찾기</button>
+            </div>
+            <div class="form-group">
+                <label for="address">주소:</label>
+                <input type="text" id="address" name="address" value="{{ senior.address }}" readonly required>
+            </div>
+            <div class="form-group detail-address-group">
+                <label for="detail_address">상세주소:</label>
+                <textarea id="detail_address" name="detail_address" placeholder="상세주소를 입력하세요" maxlength="255" required>{{ senior.detail_address }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="birthdate">생년월일:</label>
+                <div class="birthdate-group">
+                    <select id="year" name="year" required></select>
+                    <select id="month" name="month" required></select>
+                    <select id="day" name="day" required></select>
+                </div>
+            </div>
+            <div class="form-group inline">
                 <label>성별:</label>
-                <div class="radio-group">
-                    <label><input type="radio" id="Male" name="gender" value="Male" {% if senior.gender == 'Male' %}checked{% endif %}> 남성</label>
-                    <label><input type="radio" id="Female" name="gender" value="Female" {% if senior.gender == 'Female' %}checked{% endif %}> 여성</label>
-                </div>
-            </p>
-            <p>
-                <label for="phone">전화번호:</label>
-                <input type="text" id="phone" name="phone" value="{{ senior.phone_number }}">
-            </p>
-            <p>
-                <label>치매 유/무:</label>
-                <div class="radio-group">
-                    <label><input type="radio" id="has_alzheimers_yes" name="has_alzheimers" value="True" {% if senior.has_alzheimers %}checked{% endif %}> 유</label>
-                    <label><input type="radio" id="has_alzheimers_no" name="has_alzheimers" value="False" {% if not senior.has_alzheimers %}checked{% endif %}> 무</label>
-                </div>
-            </p>
-            <p>
-                <label>파킨슨 유/무:</label>
-                <div class="radio-group">
-                    <label><input type="radio" id="has_parkinsons_yes" name="has_parkinsons" value="True" {% if senior.has_parkinsons %}checked{% endif %}> 유</label>
-                    <label><input type="radio" id="has_parkinsons_no" name="has_parkinsons" value="False" {% if not senior.has_parkinsons %}checked{% endif %}> 무</label>
-                </div>
-            </p>
-            <p>
+                <input type="radio" id="male" name="gender" value="Male" {% if senior.gender == 'Male' %}checked{% endif %} required>
+                <label for="male">Male</label>
+                <input type="radio" id="female" name="gender" value="Female" {% if senior.gender == 'Female' %}checked{% endif %} required>
+                <label for="female">Female</label>
+            </div>
+            <div class="form-group">
+                <label for="phone_number">전화번호:</label>
+                <input type="tel" id="phone_number" name="phone_number" value="{{ senior.phone_number }}" maxlength="13" required pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" placeholder="010-0000-0000">
+            </div>
+            <div class="form-group inline">
+                <label>알츠하이머 병:</label>
+                <input type="radio" id="has_alzheimers_yes" name="has_alzheimers" value="True" {% if senior.has_alzheimers %}checked{% endif %}>
+                <label for="has_alzheimers_yes">유</label>
+                <input type="radio" id="has_alzheimers_no" name="has_alzheimers" value="False" {% if not senior.has_alzheimers %}checked{% endif %}>
+                <label for="has_alzheimers_no">무</label>
+            </div>
+            <div class="form-group inline">
+                <label>파킨슨 병:</label>
+                <input type="radio" id="has_parkinsons_yes" name="has_parkinsons" value="True" {% if senior.has_parkinsons %}checked{% endif %}>
+                <label for="has_parkinsons_yes">유</label>
+                <input type="radio" id="has_parkinsons_no" name="has_parkinsons" value="False" {% if not senior.has_parkinsons %}checked{% endif %}>
+                <label for="has_parkinsons_no">무</label>
+            </div>
+            <div class="form-group">
                 <label for="photo">사진:</label>
                 <input type="file" id="photo" name="photo" onchange="previewImage(event)">
-                <div id="preview-container" class="preview-container">
+                <div class="preview-container">
                     {% if senior.photo %}
-                        <img id="existing-image" src="{{ senior.photo.url }}" alt="{{ senior.name }}'s photo">
+                        <img id="existing-image" src="{{ senior.photo.url }}" alt="{{ senior.name }}의 사진">
                     {% endif %}
                     <img id="preview-image" src="#" alt="미리보기" style="display: none;">
                 </div>
-            </p>
-            <button type="submit" class="upload-button">수정하기</button>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="수정하기">
+                <button type="button" onclick="window.location.href = '/management/senior/list/'">취소</button>
+            </div>
         </form>
         <form method="post" action="{% url 'management_app:delete_senior' senior.id %}" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
             {% csrf_token %}
             <button type="submit" class="delete-button">삭제</button>
         </form>
-        <a href="{% url 'management_app:list_senior' %}" class="back-link">뒤로가기</a>
     </div>
     {% endblock %}
 </body>

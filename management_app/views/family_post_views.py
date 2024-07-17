@@ -151,7 +151,9 @@ def add_senior(request):
 
     if request.method == "POST":
         name = request.POST.get("name")
+        postcode = request.POST.get("postcode")
         address = request.POST.get("address")
+        detail_address = request.POST.get("detail_address")        
         gender = request.POST.get("gender")
         year = int(request.POST.get('year'))
         month = int(request.POST.get('month'))
@@ -160,16 +162,14 @@ def add_senior(request):
         phone_number = request.POST.get("phone_number")
         has_alzheimers = request.POST.get("has_alzheimers")
         has_parkinsons = request.POST.get("has_parkinsons")
-        photo = request.FILES.get("photo")
-        user = request.user
+        photo = request.FILES.get("photo")        
 
-        # user = User.objects.get(pk=user.id)
-
-        # 기존에 재홍님께서 작성한 코드로는 이상하게 오류가 발생해서 새롬게 작성
         user = request.user
         senior = Senior(
             name=name,
+            postcode = postcode,
             address=address,
+            detail_address = detail_address,
             birthdate=birthdate,
             gender=gender,
             phone_number=phone_number,
@@ -191,11 +191,18 @@ def update_senior(request, id):
     
     if request.method == 'POST':
         senior.name = request.POST.get('name', senior.name)
-        senior.age = request.POST.get('age', senior.age)
+        year = int(request.POST.get('year', senior.birthdate.year))
+        month = int(request.POST.get('month', senior.birthdate.month))
+        day = int(request.POST.get('day', senior.birthdate.day))
+        senior.birthdate = datetime(year, month, day)
         senior.gender = request.POST.get('gender', senior.gender)
         senior.phone_number = request.POST.get('phone', senior.phone_number)
         senior.has_alzheimers = request.POST.get('has_alzheimers') 
         senior.has_parkinsons = request.POST.get('has_parkinsons')
+        senior.address = request.POST.get("address")
+        senior.detail_address = request.POST.get("detail_address")
+        senior.gender = request.POST.get("gender")
+        senior.postcode = request.POST.get("postcode")
 
         if 'photo' in request.FILES:
             senior.photo = request.FILES['photo']

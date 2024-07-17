@@ -2,7 +2,11 @@
 {% block extra_css %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'base.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
+    header {
+        background-color: #f9f9f9;
+    }
     main {
         min-width: 1000px;
     }
@@ -24,7 +28,7 @@
         padding: 15px;
         margin: 10px;
         border-radius: 10px;
-        transition: box-shadow 0.3s, transform 0.3s;
+        transition: box-shadow 0.3s, transform 0.3s, background-color 0.3s;
         text-align: center;
         width: calc(25% - 40px);
         min-width: 332px;
@@ -34,12 +38,17 @@
         align-items: center;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         cursor: pointer;
-        height: 350px;
+        height: 380px;
         padding-top: 40px;
+        position: relative;
     }
     .senior-item:hover {
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         transform: scale(1.05);
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+    .senior-item:hover .overlay {
+        display: flex;
     }
     .senior-item img {
         border-radius: 50%;
@@ -125,7 +134,7 @@
         background-color : #c2e271;
         color: #332225;
     }
-    .container {
+    .body-container {
         max-width: 1700px;
         min-width: 1000px;
         margin: 0 auto;
@@ -141,6 +150,24 @@
     .bbar {
         margin : 15px 10px 0px 10px;        
     }
+    .overlay {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .overlay i {
+        color: white;
+        font-size: 24px;
+        margin: 10px;
+        cursor: pointer;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -152,11 +179,11 @@
             <a class="actions-add" href='/management/add/senior/'>어르신 추가 등록</a>
         </div>
     </div>
-    <div class="container">
+    <div class="body-container">
         {% if page_obj %}
             <ul class="senior-list">
                 {% for senior_data in page_obj.object_list %}
-                <li class="senior-item" onclick="location.href='/management/senior/update/{{ senior_data.senior.id }}/'">
+                <li class="senior-item">
                     {% if senior_data.senior.photo %}
                         <img src="{{ senior_data.senior.photo.url }}" alt="{{ senior_data.senior.name }}'s photo">
                     {% endif %}
@@ -166,9 +193,14 @@
                             <li><strong>연세:</strong> {{ senior_data.age }}</li>
                             <li><strong>성별:</strong> {{ senior_data.gender_display }}</li>
                             <li><strong>핸드폰 번호:</strong> {{ senior_data.senior.phone_number }}</li>
+                            <li><strong>주소:</strong> {{ senior_data.senior.address }} {{senior_data.senior.detail_address}}</li>                            
                             <li><strong>치매 유무:</strong> {{ senior_data.has_alzheimers_display }}</li>
                             <li><strong>파킨슨 유무:</strong> {{ senior_data.has_parkinsons_display }}</li>
                         </ul>
+                    </div>
+                    <div class="overlay">                        
+                        <i class="fas fa-edit" onclick="location.href='/management/senior/update/{{ senior_data.senior.id }}/'"> 수정</i><br>
+                        <i class="fas fa-desktop" onclick="location.href='/monitoring/family_monitor/?selected_senior_id={{ senior_data.senior.id }}'"> 모니터링</i>
                     </div>
                 </li>
                 {% endfor %}
