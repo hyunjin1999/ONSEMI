@@ -253,13 +253,15 @@ thead th{
 .product-container {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 80px;
 }
 
 .product-detail {
   display: flex;
   align-items: flex-start;
-  max-width: 800px; /* Adjust this width as necessary */
+  width: 100%; /* Adjust this width as necessary */
+  min-width:800px;
+  background-color: white;
 }
 
 .product-image {
@@ -313,6 +315,7 @@ thead th{
               <form action="{% url 'cart_app:cart_add' product.id %}" method="post" class="cart-form">
                   {{ cart_product_form }}
                   {% csrf_token %}
+                  
                   <input type="submit" value="장바구니에 담기" class="button">
               </form>
               <!-- 상품 좋아요 -->
@@ -323,13 +326,13 @@ thead th{
                     </span> <span id="product-likes">{{ product.total_likes }}</span></button>
               </form>
               <button id="toggle-reviews" class="button">후기 작성</button>
+              {{ product.description|linebreaks }}
+              {% if stock_alert %}
+              <p class="stock-alert">재고가 {{ product.stock }}개 남았습니다.</p>
+              {% endif %}
           </div>
       </div>
   </div></div>
-        {{ product.description|linebreaks }}
-        {% if stock_alert %}
-        <p class="stock-alert">재고가 {{ product.stock }}개 남았습니다.</p>
-        {% endif %}
     </div>
 </div>
 <div id="reviews-container" style="display: none;">

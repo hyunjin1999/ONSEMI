@@ -121,7 +121,7 @@ a.button, input[type="submit"] {
 .stock-alert {
     color: #dc1616;
     font-weight: bold;
-    margin-top: 20px;
+    margin-top: 70px;
 }
 a.button.light {
     color:#666;
@@ -464,7 +464,11 @@ form div.field {
     color:#666;
     border-radius:4px;
 }
-
+ 
+img{
+    height : 300px;
+}
+ 
   .cart-container {
     width: 80%;
     max-width: 1200px;
