@@ -10,13 +10,24 @@
     <title>{% block title %}{% endblock %}</title>
     {% block extra_css %}{% endblock %}
 </head>
+<style>
+ 
+</style>
 <body>
     <div class="header">
         <div class="left-controls">
             <span class="material-symbols-outlined hamburger-menu" onclick="toggleSidebar()">menu</span>
             <img src="{% static 'main/onsemi_logos.png' %}" alt="Main Image">
         </div>
-        <div class="user-controls">
+        
+        <div class="user-controls" class="home">
+            <a href="/">
+                <span class="material-symbols-outlined nav-icon selected">home</span>
+            </a>
+
+            <a href="/shop">
+                <span class="material-symbols-outlined nav-icon">storefront</span>
+            </a>
             <div class="user-profile" onclick="toggleInfoBox()">
                 <span class="material-symbols-outlined icon">notifications</span>
                 <div id="infoBox" class="info-box">
