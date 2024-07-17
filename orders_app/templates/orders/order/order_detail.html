@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% comment %} {% extends "shop/product/base.html" %} {% endcomment %}
 
 {% block content %}
 <style>
@@ -76,9 +76,9 @@
     transition: background-color 0.3s ease;
   }
 
-  .order-info ul li:hover {
+  /*.order-info ul li:hover {
     background-color: #f0f0f0;
-  }
+  }*/
 
   .order-info p {
     margin: 5px 0;
@@ -131,14 +131,14 @@
     <div class="order-container">
         <div class="order-details">
             <div class="order-info">
-              <h2>주문번호 {{ order.id }}</h2>
+              <h2>주문번호{{ order.id }}</h2>
               <h3>상품:</h3>
               <ul>
-                <a href="{% url 'orders_app:order_edit' order.id %}">수정
+                {% comment %} <a href="{% url 'orders_app:order_edit' order.id %}">수정 {% endcomment %}
                 {% for item in order.items.all %}
                 <li>{{ item.product.name }} - {{ item.quantity }} x {{ item.price }}</li>
                 {% endfor %}
-                </a>
+                {% comment %} </a> {% endcomment %}
               </ul>
               <p><strong>주문 일시:</strong> {{ order.created }}</p>
               <br>
@@ -157,7 +157,7 @@
               </p>
               {% if order.care.care_state == "REJECT" %}
               <p><strong>관리자 메시지:</strong> {{ order.care.admin_message }}</p>
-            {% endif %}
+              {% endif %}
             </div>
             <div class="order-actions">
               <a href="{% url 'orders_app:order_edit' order.id %}">주문 수정</a>
