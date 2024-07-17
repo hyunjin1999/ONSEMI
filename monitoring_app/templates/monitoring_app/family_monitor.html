@@ -645,6 +645,8 @@
                                             <td>
                                                 {% if care.care_state == 'APPROVED' %}
                                                     {{ care.visit_date }} {{ care.visit_time }}
+                                                {% else %}
+                                                    방문 날짜가 정해지지 않았습니다.
                                                 {% endif %}
                                             </td>
                                             <td>{{ care.get_care_state_display }}</td>
