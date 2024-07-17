@@ -77,7 +77,7 @@ def csv_view(request):
             cares = cares.filter(care_type=category_service)
         if selected_senior and selected_senior != 'all':
             cares = cares.filter(seniors__id=selected_senior)
-
+        
         # 케어 완료 비율 계산
         total_cares = cares.count()
         completed_cares = cares.filter(care_state='COMPLETED').count()
@@ -90,7 +90,12 @@ def csv_view(request):
                 'care_title' : care.title,
                 'care_type': care.care_type,
                 'datetime': care.datetime.strftime('%Y년 %m월 %d일 %H시 %M분'),
-                'visit_date': care.visit_date.strftime('%Y년 %m월 %d일 %H시 %M분'),
+                # visit_date와 visit_time 처리
+                if care.visit_date :
+                    'visit_date': care.visit_date.strftime('%Y년 %m월 %d일 %H시 %M분')
+
+                else :
+                    'visite_date' : '방문 날짜가 정해지지 않았습니다.'
                 'care_state': care.care_state,
                 'care_content': care.content,
                 'care_seniors': care.seniors,
