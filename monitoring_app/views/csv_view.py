@@ -77,7 +77,7 @@ def csv_view(request):
             cares = cares.filter(care_type=category_service)
         if selected_senior and selected_senior != 'all':
             cares = cares.filter(seniors__id=selected_senior)
-
+        
         # 케어 완료 비율 계산
         total_cares = cares.count()
         completed_cares = cares.filter(care_state='COMPLETED').count()
@@ -105,6 +105,7 @@ def csv_view(request):
                 'care_content': care.content,
                 'care_seniors': ', '.join([senior.name for senior in care.seniors.all()]),  # assuming Senior model has a 'name' field
             })
+
         request.session['filtered_cares'] = data_care
 
         return render(request, 'monitoring_app/csv_view.html', {
