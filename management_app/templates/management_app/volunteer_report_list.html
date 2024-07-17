@@ -9,6 +9,10 @@
     {% block extra_css %}
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <style>
+        header {
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -52,8 +56,7 @@
             color: black;
             cursor: pointer;
             font-size: 14px;
-            margin: 0; /* Margin 제거 */
-            padding: 12px; /* Padding 추가 */
+            margin: 0;
         }
 
         .button-cell button:hover {
@@ -63,7 +66,7 @@
             text-align: left;
             display: flex;
             border-bottom: 2px solid #ddd;
-            background-color : white;
+            background-color: white;
         }
         
         .select_list a {
@@ -95,20 +98,27 @@
             background-color: #e9e9e9;
         }
 
-        .container {
+        .body-container {
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
         .pending-approval-text {
             color: red;
         }
+
         .pagination {
             display: flex;
             justify-content: center;
             margin-top: 20px;
         }
+
         .pagination span {
             display: flex;
         }
+
         .pagination a, .pagination span.current {
             margin: 0 5px;
             padding: 8px 12px;
@@ -117,32 +127,37 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+
         .pagination a:hover {
             background-color: #f0f0f0;
         }
+
         .pagination span.current {
             background-color: #007bff;
             color: white;
             border: 1px solid #007bff;
         }
-        .pending-approval-text {
-            color: red;
-        }
+
         .filter-form {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
+
         .filter-form label {
             margin-right: 10px;
             font-weight: bold;
         }
+
         .filter-form select {
             padding: 5px 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             margin-right: 10px;
         }
+
         .filter-form button {
             padding: 8px 16px;
             border: none;
@@ -151,8 +166,14 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
         .filter-form button:hover {
             background-color: #0056b3;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
         }
     </style>
     {% endblock %}
@@ -160,10 +181,10 @@
 <body>
     {% block content %}
     <div class="select_list">
-        <a id='selected' href="{% url 'management_app:report_list' %}">보고서 목록</a>
         <a id='not_selected' href="{% url 'management_app:care_list' %}">케어 목록</a>
+        <a id='selected' href="{% url 'management_app:report_list' %}">보고서 목록</a>
     </div>
-    <div class="container">
+    <div class="body-container">
         <form method="get" class="filter-form">
             <label for="sort_by">정렬:</label>
             <select name="sort_by" id="sort_by">
@@ -199,39 +220,41 @@
         <div>
             <h2>작성 <span class="pending-approval-text">예정</span> 보고서 목록 ({{ pending_reports_count }}개)</h2>
         </div>
-        <table class="table-care">
-            <thead>
-                <tr>
-                    <th>케어 타입</th>
-                    <th>케어 신청 날짜</th>
-                    <th>제목</th>
-                    <th>내용</th>
-                    <th>대상 어르신</th>
-                    <th>파킨슨병 진단 요청</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for care in pending_page_obj %}
+        <div class="table-wrapper">
+            <table class="table-care">
+                <thead>
                     <tr>
-                        <td>{{ care.care_type }}</td>
-                        <td>{{ care.datetime }}</td>
-                        <td>{{ care.title }}</td>
-                        <td>{{ care.content }}</td>
-                        <td>{% for senior in care.seniors.all %}
-                            {{ senior.name }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}</td>
-                        <td>{% if care.parkinson_diagnosis %} O
-                            {%else%}X
-                            {%endif%}
-                        </td>
-                        <td class="button-cell">
-                            <button type="button" onclick="redirectToCreateReport('{{ care.id }}')">보고서 작성 버튼</button>
-                        </td>
+                        <th>케어 타입</th>
+                        <th>케어 신청 날짜</th>
+                        <th>제목</th>
+                        <th>내용</th>
+                        <th>대상 어르신</th>
+                        <th>파킨슨병 진단 요청</th>
+                        <th></th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for care in pending_page_obj %}
+                        <tr>
+                            <td>{{ care.care_type }}</td>
+                            <td>{{ care.datetime }}</td>
+                            <td>{{ care.title }}</td>
+                            <td>{{ care.content }}</td>
+                            <td>{% for senior in care.seniors.all %}
+                                {{ senior.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}</td>
+                            <td>{% if care.parkinson_diagnosis %} O
+                                {%else%}X
+                                {%endif%}
+                            </td>
+                            <td class="button-cell">
+                                <button type="button" onclick="redirectToCreateReport('{{ care.id }}')">보고서 작성 버튼</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <div class="pagination">
             <span class="step-links">
@@ -255,31 +278,33 @@
             </span>
         </div>
 
-        <hr style = "margin:50px 0px;">
+        <hr style="margin:50px 0px;">
         
         <h2>작성 <span class="pending-approval-text">완료</span> 보고서 목록</h2>
-        <table class="table-report">
-            <thead>
-                <tr>
-                    <th>보고서 상태</th>
-                    <th>등록 시간</th>
-                    <th>제목</th>
-                    <th>대상 어르신</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for report in report_page_obj %}
-                    <tr class="clickable-row" onclick="redirectToManageReport('{{ report.id }}')">
-                        <td>{{ report.status }}</td>
-                        <td>{{ report.created_at }}</td>
-                        <td>{{ report.care.title }}</td>
-                        <td>{% for senior in report.care.seniors.all %}
-                            {{ senior.name }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}</td>
+        <div class="table-wrapper">
+            <table class="table-report">
+                <thead>
+                    <tr>
+                        <th>보고서 상태</th>
+                        <th>등록 시간</th>
+                        <th>제목</th>
+                        <th>대상 어르신</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for report in report_page_obj %}
+                        <tr class="clickable-row" onclick="redirectToManageReport('{{ report.id }}')">
+                            <td>{{ report.status }}</td>
+                            <td>{{ report.created_at }}</td>
+                            <td>{{ report.care.title }}</td>
+                            <td>{% for senior in report.care.seniors.all %}
+                                {{ senior.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <div class="pagination">
             <span class="step-links">

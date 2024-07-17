@@ -1,4 +1,4 @@
-from django.db import models, IntegrityError
+from django.db import models, IntegrityError, transaction
 from django.conf import settings
 from auth_app.models import User
 from django.utils import timezone
@@ -6,12 +6,16 @@ from datetime import datetime
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import os
+from datetime import date
+from django.contrib.auth import get_user_model
 
 class Senior(models.Model):
     id = models.AutoField(primary_key=True)
+    postcode = models.CharField(max_length=255, default=" ")
     address = models.CharField(max_length=255)
+    detail_address = models.CharField(max_length=255, default=" ")
     name = models.CharField(max_length=100)
-    age = models.IntegerField()
+    birthdate = models.DateField(default=date(1900, 1, 1))
     gender = models.CharField(max_length=10)
     phone_number = models.CharField(max_length=15)
     has_alzheimers = models.BooleanField(default=False, null=True, blank=True)
@@ -26,10 +30,6 @@ class Senior(models.Model):
     class Meta:
         db_table = "senior"
 
-
-from django.db import models, IntegrityError, transaction
-from django.utils import timezone
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 

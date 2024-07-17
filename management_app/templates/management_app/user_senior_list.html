@@ -1,103 +1,225 @@
-<!-- care_app/templates/care_app/list_seniors.html -->
 {% extends "layout.html" %}
 {% block extra_css %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'base.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
-    body {
-        font-family: 'Arial', sans-serif;
+    header {
         background-color: #f9f9f9;
-        margin: 0;
-        justify-content: center;
+    }
+    main {
+        min-width: 1000px;
     }
     h1 {
         text-align: center;
         color: #333;
+        margin-bottom: 30px;
     }
-    ul {
+    .senior-list {
         list-style: none;
         padding: 0;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
     }
-    li {
+    .senior-item {
         background-color: #fff;
         border: 1px solid #ddd;
         padding: 15px;
         margin: 10px;
-        border-radius: 5px;
-        transition: box-shadow 0.3s;
+        border-radius: 10px;
+        transition: box-shadow 0.3s, transform 0.3s, background-color 0.3s;
         text-align: center;
-        display: inline-block;
-        width: 300px;
-        height:auto;
+        width: calc(25% - 40px);
+        min-width: 332px;
         box-sizing: border-box;
-        
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        cursor: pointer;
+        height: 380px;
+        padding-top: 40px;
+        position: relative;
     }
-    li:hover {
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    .senior-item:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transform: scale(1.05);
+        background-color: rgba(255, 255, 255, 0.8);
     }
-    img {
+    .senior-item:hover .overlay {
+        display: flex;
+    }
+    .senior-item img {
         border-radius: 50%;
-        margin-bottom: 10px;
+        width: 100px;
+        height: 100px;        
+        object-fit: cover;
     }
-    a {
+    .senior-info {
+        margin-top : 20px;
+        text-align: left;
+        width: 100%;
+    }
+    .senior-info ul {
+        padding: 0;
+        margin: 0;
+        list-style: disc;
+        padding-left: 20px;
+    }
+    .senior-info li {
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+    .actions a:last-child {
         text-decoration: none;
-        color: black;
+        font-size: 20px;
     }
-    .actions a:first-child{
+    .actions a:first-child {
         text-decoration: none;
-        color: blue ;
-        font-size:20px;
+        color: gray;
+        margin-right: 20px;
     }
-
-    .actions a:last-child{
-        text-decoration: none;
-        color: gray ;
+    .actions a:last-child:hover {
+        background-color: #72a858;
     }
-    a:hover {
+    .actions a:first-child:hover {
         text-decoration: underline;
     }
     .actions {
-        text-align: center;
+        text-align: right;
+        margin-right: 70px;
+        margin-top: 30px;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
         margin-top: 20px;
     }
-    strong{
-        color:black;
+    .pagination span, .pagination a {
+        display: inline-block;
+        padding: 8px 16px;
+        margin: 2px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-decoration: none;
+        color: #333;
+        background-color: #f8f8f8;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .pagination a:hover {
+        background-color: #007bff;
+        color: white;
+    }
+    .pagination .current {
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+        border: 1px solid #007bff;
+    }
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 70px;
+    }
+    .list-text {
+        margin-left: 90px;
+        font-size: 30px;
+        color: #45434b;
+    }
+    .actions-add {
+        border-radius: 5px;
+        padding: 15px;
+        background-color : #c2e271;
+        color: #332225;
+    }
+    .body-container {
+        max-width: 1700px;
+        min-width: 1000px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .dim-text {
+        color: #b4b5b6;
+        font-size: 20px;
+        margin-left:10px;
+    }
+    .bbar {
+        margin : 15px 10px 0px 10px;        
+    }
+    .overlay {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .overlay i {
+        color: white;
+        font-size: 24px;
+        margin: 10px;
+        cursor: pointer;
     }
 </style>
 {% endblock %}
-</head>
-<body>
-    {% block content %}
-    <h1>어르신 목록</h1>
-    {% if seniors %}
-        <ul>
-            {% for senior in seniors %}
-            <li>
-                <a href='/management/senior/update/{{ senior.id }}/'>
-                    {% if senior.photo %}
-                        <img src="{{ senior.photo.url }}" alt="{{ senior.name }}'s photo" style="max-width:200px; max-height:200px;"><br>
-                    {% endif %}
-                    <strong>성함:</strong>{{ senior.name }}<br>
-                    <strong>연세:</strong> {{ senior.age }}<br>
-                    <strong>성별:</strong> {{ senior.gender_display }}<br>
-                    <strong>핸드폰 번호:</strong> {{ senior.phone_number }}<br>
-                    <strong>치매 유무:</strong> {{ senior.has_alzheimers_display }}<br>
-                    <strong>파킨슨 유무:</strong> {{ senior.has_parkinsons_display }}<br>
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No seniors registered yet.</p>
-    {% endif %}
-    <br>
-    <div class="actions">
-        <a href='/management/add/senior/'>어르신 추가 등록</a><br>
-        <a href="{% url 'monitoring_app:family_monitor' %}">뒤로 가기</a>
+{% block content %}
+<main>
+    <div class="top-bar">
+        <div class="list-text">어르신 목록 <span class="dim-text">[총 {{ total_seniors }}명]<span></div>
+        <div class="actions">                
+            <a class="actions-back" href="{% url 'monitoring_app:family_monitor' %}">뒤로 가기</a>
+            <a class="actions-add" href='/management/add/senior/'>어르신 추가 등록</a>
+        </div>
     </div>
-    {% endblock %}
-</body>
-</html>
+    <div class="body-container">
+        {% if page_obj %}
+            <ul class="senior-list">
+                {% for senior_data in page_obj.object_list %}
+                <li class="senior-item">
+                    {% if senior_data.senior.photo %}
+                        <img src="{{ senior_data.senior.photo.url }}" alt="{{ senior_data.senior.name }}'s photo">
+                    {% endif %}
+                    <div class="senior-info">
+                        <ul>
+                            <li><strong>성함:</strong> {{ senior_data.senior.name }}</li>
+                            <li><strong>연세:</strong> {{ senior_data.age }}</li>
+                            <li><strong>성별:</strong> {{ senior_data.gender_display }}</li>
+                            <li><strong>핸드폰 번호:</strong> {{ senior_data.senior.phone_number }}</li>
+                            <li><strong>주소:</strong> {{ senior_data.senior.address }} {{senior_data.senior.detail_address}}</li>                            
+                            <li><strong>치매 유무:</strong> {{ senior_data.has_alzheimers_display }}</li>
+                            <li><strong>파킨슨 유무:</strong> {{ senior_data.has_parkinsons_display }}</li>
+                        </ul>
+                    </div>
+                    <div class="overlay">                        
+                        <i class="fas fa-edit" onclick="location.href='/management/senior/update/{{ senior_data.senior.id }}/'"> 수정</i><br>
+                        <i class="fas fa-desktop" onclick="location.href='/monitoring/family_monitor/?selected_senior_id={{ senior_data.senior.id }}'"> 모니터링</i>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; 처음</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">이전</a>
+                {% endif %}
+                <span class="current">{{ page_obj.number }}</span> <div class="bbar">/</div> <span class="total">{{ page_obj.paginator.num_pages }}</span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">다음</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">끝 &raquo;</a>
+                {% endif %}
+            </div>
+        {% else %}
+            <p>No seniors registered yet.</p>
+        {% endif %}
+        <br>
+    </div>
+</main>
+{% endblock %}
