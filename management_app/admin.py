@@ -17,7 +17,7 @@ class CareAdmin(admin.ModelAdmin):
         return form
 
 class SeniorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address', 'age', 'gender', 'phone_number', 'user_id')
+    list_display = ('name', 'address', 'birthdate', 'gender', 'phone_number', 'user_id')
     search_fields = ('name', 'address', 'phone_number', 'user_id__username')
     ordering = ('name',)
 

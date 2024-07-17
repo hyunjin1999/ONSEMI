@@ -40,14 +40,18 @@
         }
         input[type="text"],
         input[type="file"],
-        select {
+        select,
+        textarea {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        /* input[type="submit"]와 button의 공통 스타일 */
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
         input[type="submit"],
         button {
             width: 100%;
@@ -69,9 +73,8 @@
         button:hover {
             opacity: 0.9;
         }
-        #content {
-            height: 150px;
-            width: 100%;
+        textarea {
+            resize: none;
         }
     </style>
     <script>
@@ -101,32 +104,40 @@
 </head>
 <body>
     <div class="container">
-        <h2>케어 작성</h2>
+        <h1>케어 작성</h1>
         <form method="post" onsubmit="submitForm(event)">
             {% csrf_token %}
-            <label>케어 종류</label><br>
-            <div class="form-group inline">
-                <input type="radio" id="care_type_a" name="care_type" value="방문" required>
-                <label for="care_type_a">방문</label><br>
-                <input type="radio" id="care_type_b" name="care_type" value="병원" required>
-                <label for="care_type_b">병원</label><br>
-            </div>
-            <label>파킨슨병 진단 요청</label><br>
-            <div class="form-group inline">
-                <input type="checkbox" id="parkinson_diagnosis" name="parkinson_diagnosis">
-                <label for="parkinson_diagnosis">요청</label><br>
-            </div>
-            <label for="title">제목</label>
-            <input type="text" id="title" name="title" maxlength="200"><br>
-            <label for="content">내용</label>
-            <textarea id="content" name="content"></textarea><br>
             <div class="form-group">
-                <label>서비스 대상자</label>
-                <div class="radio-group">
-                    {% for senior in seniors %}
-                        <label><input type="radio" name="senior" value="{{ senior.id }}" required> {{ senior.name }}</label>
-                    {% endfor %}
+                <label>케어 종류</label>
+                <div class="form-group inline">
+                    <input type="radio" id="care_type_a" name="care_type" value="방문" required>
+                    <label for="care_type_a">방문</label>
+                    <input type="radio" id="care_type_b" name="care_type" value="병원" required>
+                    <label for="care_type_b">병원</label>
                 </div>
+            </div>
+            <div class="form-group">
+                <label>파킨슨병 진단 요청</label>
+                <div class="form-group inline">
+                    <input type="checkbox" id="parkinson_diagnosis" name="parkinson_diagnosis">
+                    <label for="parkinson_diagnosis">요청</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" id="title" name="title" maxlength="200">
+            </div>
+            <div class="form-group">
+                <label for="content">내용</label>
+                <textarea id="content" name="content" rows="5"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="senior">서비스 대상자</label>
+                <select id="senior" name="senior" required>
+                    {% for senior in seniors %}
+                        <option value="{{ senior.id }}">{{ senior.name }}</option>
+                    {% endfor %}
+                </select>
             </div>
             <button type="submit" class="submit">요청</button>
             <button type="button" onclick="window.location.href = '/monitoring/family_monitor/'" class="cancle">취소</button>

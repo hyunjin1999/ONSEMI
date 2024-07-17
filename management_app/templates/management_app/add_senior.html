@@ -9,16 +9,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             background-color: #f2f2f2;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        .container {
+        .body-container {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 600px;
+            width: 100%;
+            max-width: 600px;
         }
         h1 {
             text-align: center;
@@ -33,12 +37,15 @@
         }
         input[type="text"],
         input[type="file"],
-        select {
+        input[type="tel"],
+        select,
+        textarea {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
+            resize: none;
         }
         input[type="radio"],
         input[type="checkbox"] {
@@ -50,6 +57,13 @@
         }
         .form-group.inline label {
             margin-right: 10px;
+        }
+        .birthdate-group {
+            display: flex;
+            justify-content: space-between;
+        }
+        .birthdate-group select {
+            width: 32%;
         }
         input[type="submit"],
         button {
@@ -70,10 +84,143 @@
         button:hover {
             opacity: 0.9;
         }
+        .preview-container {
+            margin-top: 15px;
+        }
+        .preview-container img {
+            max-width: 100%;
+            max-height: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: none;
+        }
     </style>
+    <script src="https://ssl.daumcdn.net/dmaps/map_js_init/postcode.v2.js"></script>
+    <script>
+        function validateForm(event) {
+            var photoInput = document.getElementById('photo');
+            var addressInput = document.getElementById('address');
+            var detailAddressInput = document.getElementById('detail_address');
+
+            if (!photoInput.value) {
+                alert("사진은 필수입니다.");
+                event.preventDefault();
+                return false;
+            } else if (!addressInput.value || !detailAddressInput.value) {
+                alert("주소 입력은 필수입니다.");
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+
+        function previewImage(event) {
+            const fileInput = event.target;
+            const previewImage = document.getElementById('preview-image');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
+        function openDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var fullAddr = data.address;
+                    var extraAddr = '';
+
+                    if (data.addressType === 'R') {
+                        if (data.bname !== '') {
+                            extraAddr += data.bname;
+                        }
+                        if (data.buildingName !== '') {
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+                    }
+
+                    document.getElementById('postcode').value = data.zonecode;
+                    document.getElementById('address').value = fullAddr;
+                    document.getElementById('detail_address').focus();
+                }
+            }).open();
+        }
+
+        function formatPhoneNumber(input) {
+            const cleaned = ('' + input.value).replace(/\D/g, '');
+            let formatted = cleaned;
+
+            if (cleaned.length > 3 && cleaned.length <= 7) {
+                formatted = cleaned.slice(0, 3) + '-' + cleaned.slice(3);
+            } else if (cleaned.length > 7) {
+                formatted = cleaned.slice(0, 3) + '-' + cleaned.slice(3, 7) + '-' + cleaned.slice(7, 11);
+            }
+
+            input.value = formatted.slice(0, 13); // max length for phone number in format XXX-XXXX-XXXX
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearSelect = document.getElementById('year');
+            const monthSelect = document.getElementById('month');
+            const daySelect = document.getElementById('day');
+
+            for (let year = new Date().getFullYear(); year >= 1900; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.text = year;
+                yearSelect.appendChild(option);
+            }
+
+            for (let month = 1; month <= 12; month++) {
+                const option = document.createElement('option');
+                option.value = month;
+                option.text = month;
+                monthSelect.appendChild(option);
+            }
+
+            yearSelect.addEventListener('change', updateDays);
+            monthSelect.addEventListener('change', updateDays);
+
+            function updateDays() {
+                while (daySelect.firstChild) {
+                    daySelect.removeChild(daySelect.firstChild);
+                }
+
+                const year = yearSelect.value;
+                const month = monthSelect.value;
+                const daysInMonth = new Date(year, month, 0).getDate();
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const option = document.createElement('option');
+                    option.value = day;
+                    option.text = day;
+                    daySelect.appendChild(option);
+                }
+            }
+
+            const phoneInput = document.getElementById('phone_number');
+            phoneInput.addEventListener('input', function(event) {
+                formatPhoneNumber(event.target);
+            });
+
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                if (!validateForm(event)) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
 </head>
 <body>
-    <div class="container">
+    <div class="body-container">
         <h1>시니어 등록</h1>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -82,16 +229,25 @@
                 <input type="text" id="name" name="name" maxlength="100" required>
             </div>
             <div class="form-group">
-                <label for="address">주소:</label>
-                <input type="text" id="address" name="address" maxlength="255" required>
+                <label for="postcode">우편번호:</label>
+                <input type="text" id="postcode" name="postcode" readonly required>
+                <button type="button" onclick="openDaumPostcode()">우편번호 찾기</button>
             </div>
             <div class="form-group">
-                <label for="age">나이:</label>
-                <select id="age" name="age">
-                    {% for i in ages %}
-                        <option value="{{ i }}">{{ i }}</option>
-                    {% endfor %}
-                </select>
+                <label for="address">주소:</label>
+                <input type="text" id="address" name="address" readonly required placeholder="우편번호 찾기로 입력하세요">
+            </div>
+            <div class="form-group detail-address-group">
+                <label for="detail_address">상세주소:</label>
+                <textarea id="detail_address" name="detail_address" placeholder="상세주소를 입력하세요" maxlength="255" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="birthdate">생년월일:</label>
+                <div class="birthdate-group">
+                    <select id="year" name="year" required></select>
+                    <select id="month" name="month" required></select>
+                    <select id="day" name="day" required></select>
+                </div>
             </div>
             <div class="form-group inline">
                 <label>성별:</label>
@@ -102,7 +258,7 @@
             </div>
             <div class="form-group">
                 <label for="phone_number">전화번호:</label>
-                <input type="text" id="phone_number" name="phone_number" maxlength="15" required>
+                <input type="tel" id="phone_number" name="phone_number" maxlength="13" required pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" placeholder="010-0000-0000">
             </div>
             <div class="form-group inline">
                 <label>알츠하이머 병:</label>
@@ -118,10 +274,12 @@
                 <input type="radio" id="has_parkinsons_no" name="has_parkinsons" value="False">
                 <label for="has_parkinsons_no">무</label>
             </div>
-            
             <div class="form-group">
                 <label for="photo">사진:</label>
-                <input type="file" id="photo" name="photo">
+                <input type="file" id="photo" name="photo" onchange="previewImage(event)">
+                <div class="preview-container">
+                    <img id="preview-image" src="#" alt="미리보기">
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="저장">

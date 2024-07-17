@@ -15,7 +15,7 @@
                     <option value="{{ state }}" {% if selected_care_state == state %}selected{% endif %}>{{ state }}</option>
                 {% endfor %}
             </select>
-            <label for="senior_id">시니어:</label>
+            <label for="senior_id">등록 노인:</label>
             <select name="senior_id" id="senior_id">
                 <option value="">전체</option>
                 {% for senior in seniors %}
