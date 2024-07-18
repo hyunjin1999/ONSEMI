@@ -11,25 +11,62 @@
     {% block extra_css %}{% endblock %}
 </head>
 <style>
- 
+    .tooltip {
+        visibility: hidden;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px 10px;
+        position: absolute;
+        z-index: 1;
+        top: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        white-space: nowrap;
+    }
+    .tooltip::after {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: transparent transparent #555 transparent;
+    }
+
+    .nav-item:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+    .user-controls:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
 </style>
 <body>
     <div class="header">
         <div class="left-controls">
-            <span class="material-symbols-outlined hamburger-menu" onclick="toggleSidebar()">menu</span>
+            <span class="material-symbols-outlined hamburger-menu" onclick="toggleSidebar()" title="메뉴">menu</span>
             <img src="{% static 'main/onsemi_logos.png' %}" alt="Main Image">
         </div>
        
         <div class="user-controls" class="home">
+            <div class="nav-item">
             <a href="/">
-                <span class="material-symbols-outlined nav-icon selected">home</span>
+                <span class="material-symbols-outlined nav-icon selected" title="홈">home</span>
+                <span class="tooltip">홈</span>
             </a>
+        </div>
  
             <a href="/shop">
-                <span class="material-symbols-outlined nav-icon">storefront</span>
+                <span class="material-symbols-outlined nav-icon" title="상점">storefront</span>
             </a>
             <div class="user-profile" onclick="toggleInfoBox()">
-                <span class="material-symbols-outlined icon" id="notification-icon" >notifications</span>
+                <span class="material-symbols-outlined icon" id="notification-icon" title="알림">notifications</span>
                 <div id="infoBox" class="info-box">
                     <p id="signal-message1">알림이 없습니다.</p>
                     <p id="signal-message2"></p>
@@ -42,7 +79,7 @@
                 </div>
             </div>
             <a href="/user/logout/" class="logout">
-                <span class="material-symbols-outlined icon">logout</span>
+                <span class="material-symbols-outlined icon" title="로그아웃">logout</span>
             </a>
         </div>
     </div>

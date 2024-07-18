@@ -4,6 +4,7 @@ html, body {
     padding: 0;
 }
 
+
 body {
     display: flex;
     flex-direction: column;
@@ -42,7 +43,7 @@ body {
 .header .user-controls {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
 }
 
 .header .user-controls .icon,

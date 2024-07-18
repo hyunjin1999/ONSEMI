@@ -1,9 +1,12 @@
-{% extends "layout.html" %}
+{% extends "monitoring_app/layout.html" %}
 {% block extra_css %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'base.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
+    .hamburger-menu{
+           display:none;
+        }
     header {
         background-color: #f9f9f9;
     }
