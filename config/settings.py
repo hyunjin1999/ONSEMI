@@ -51,6 +51,9 @@ INSTALLED_APPS = [
     "management_app",
     'monitoring_app',
     'django_celery_results',
+    'django_celery_beat',
+    # 'config',
+    'config.apps.ConfigAppConfig',
     
     'allauth',
     'allauth.account',
@@ -169,28 +172,39 @@ IAMPORT_API_SECRET = 'tVZHIXzhBmmOvdJjhmEVd3osXkAE2Td1BLrKtz5vrGIgFLTzv4RqeqKkaG
 
 IAMPORT_CODE = 'imp10781812'
 
-# CELERY_BROKER_URL = 'redis://localhost:6379/0'
-# CELERY_RESULT_BACKEND = 'django-db'
-CELERY_ACCEPT_CONTENT = ['json']
+# Celery 설정
+# CELERY_BROKER_URL = 'sqs://'
+# CELERY_RESULT_BACKEND = 'django-db'  # 결과 백엔드로 Django DB 사용
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Seoul'
+CELERY_TASK_DEFAULT_QUEUE = "sqs"
 
-# aws 전용 celery 코드
-# settings.py
-from celery.schedules import crontab 
-
-CELERY_BROKER_URL = 'redis://172.31.5.21:6379/0'
-CELERY_RESULT_BACKEND = 'redis://172.31.5.21:6379/0'
-CELERY_BEAT_SCHEDULE = {
-    'my-scheduled-task': {
-        'task': 'myapp.tasks.my_task',
-        'schedule': crontab(hour=1, minute=0),  # 매일 새벽 1시
-    },
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'region': 'ap-northeast-2',
+    'visibility_timeout': 3600,
+    'polling_interval': 10,
+    'queue_name_prefix': 'dev-',
 }
 
-CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+# Celery 결과 백엔드로 Django DB 사용 설정
+from celery import Celery
 
+app = Celery('config')
+
+app.config_from_object('django.conf:settings', namespace='CELERY')
+app.autodiscover_tasks()
+
+@app.task(bind=True)
+def debug_task(self):
+    print(f'Request: {self.request!r}')
+
+from dotenv import load_dotenv
+###############################################################################
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 # AWS configuration
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
