@@ -23,6 +23,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            border-color: #b4b3b0;
         }
         th {
             background-color: #f4f4f4;
@@ -94,7 +95,7 @@
             border: 1px solid #007bff;
         }
         .body-container {
-            padding: 20px;
+            padding: 20px 50px;
         }
         .pending-approval-text {
             color: red;
@@ -136,6 +137,12 @@
         .title-cell, .content-cell {
             max-width: 150px;
         }
+        .top-table thead tr th{
+            background-color : #f1b477;
+        }
+        .bottom-table thead tr th {
+            background-color : #b8efed;
+        }    
     </style>
     {% endblock %}
 </head>
@@ -170,7 +177,7 @@
             </form>
         </div>
         <div class="table-wrapper">
-            <table>
+            <table class="top-table">
                 <thead>
                     <tr>
                         <th>대상 어르신</th>
@@ -251,7 +258,7 @@
             <button type="submit">적용하기</button>
         </form>
         <div class="table-wrapper">
-            <table>
+            <table class="bottom-table">
                 <thead>
                     <tr>
                         <th>대상 어르신</th>
