@@ -19,17 +19,17 @@
             <span class="material-symbols-outlined hamburger-menu" onclick="toggleSidebar()">menu</span>
             <img src="{% static 'main/onsemi_logos.png' %}" alt="Main Image">
         </div>
-        
+       
         <div class="user-controls" class="home">
             <a href="/">
                 <span class="material-symbols-outlined nav-icon selected">home</span>
             </a>
-
+ 
             <a href="/shop">
                 <span class="material-symbols-outlined nav-icon">storefront</span>
             </a>
             <div class="user-profile" onclick="toggleInfoBox()">
-                <span class="material-symbols-outlined icon">notifications</span>
+                <span class="material-symbols-outlined icon" id="notification-icon" >notifications</span>
                 <div id="infoBox" class="info-box">
                     <p id="signal-message1">알림이 없습니다.</p>
                     <p id="signal-message2"></p>
@@ -73,7 +73,7 @@
             } else{
                 state = '알 수 없음';
             }
-
+ 
             // 시그널을 받았을 때 메시지를 표시할 HTML 요소 업데이트
             const message = seniorname + ' 어르신 케어 서비스가 ' + state + ' 되었습니다. 방문 예정 날짜는 ' + visit_date + ' ' + visit_time + ' 입니다.';
             var temp = document.getElementById("signal-message1").textContent;
@@ -81,10 +81,12 @@
             if(temp === '알림이 없습니다.'){
                 console.log('여기1:', temp); // Debug message
                 $('#signal-message1').text(message);
+                // 알림 아이콘 변경
+                $('#notification-icon').text('notifications_unread');
             } else{
                 console.log('여기2:', temp); // Debug message
-               
                 $('#signal-message2').text('');
+                $('#notification-icon').text('notifications_unread');
             }
             localStorage.setItem('signalMessage', message);
             console.log('Signal handled and stored:', temp); // Debug message
@@ -106,25 +108,27 @@
                 }
             });
         }
-
+ 
         pollSignal();
-
+ 
         // Display the message from localStorage if it exists
         const storedMessage = localStorage.getItem('signalMessage');
         if (storedMessage) {
             $('#signal-message1').text(storedMessage);
+            $('#notification-icon').text('notifications_unread');
             console.log('Loaded message from localStorage:', storedMessage); // Debug message
         }
-
+ 
         // Clear the message on "X" button click
         $('.close-button').click(function() {
             $('#signal-message1').text('알림이 없습니다.');
             $('#signal-message2').text('');
+            $('#notification-icon').text('notifications');
             localStorage.removeItem('signalMessage');
             console.log('Message cleared'); // Debug message
         });
     });
-
+ 
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
             sidebar.classList.toggle('expanded');
@@ -137,20 +141,20 @@
                 seniorPhoto.classList.add('small-round-photo');
             }
         }
-
+ 
         function toggleInfoBox() {
             const infoBox = document.getElementById('infoBox');
             infoBox.style.display = infoBox.style.display === 'block' ? 'none' : 'block';
         }
-
+ 
         document.addEventListener('click', function(event) {
             const infoBox = document.getElementById('infoBox');
             if (!infoBox.contains(event.target) && !event.target.matches('.user-profile, .user-profile *')) {
                 infoBox.style.display = 'none';
             }
         });
-    
-
+   
+ 
 </script>
 {% block script %}
 {% endblock %}

@@ -13,13 +13,14 @@
         }
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: collapse;            
         }
         th, td {
             padding: 8px 12px;
             border: 1px solid #ddd;
             text-align: center;
-            white-space: nowrap; /* Prevent text wrapping */
+            white-space: nowrap;
+            border-color: #b4b3b0;
         }
         th {
             background-color: #f4f4f4;
@@ -103,7 +104,7 @@
             border: 1px solid #007bff;
         }
         .body-container {
-            padding: 20px;
+            padding: 20px 50px;
         }
         .pending-approval-text {
             color: red;
@@ -138,6 +139,12 @@
             font-size : 17px;
             color : #727875;
         }
+        .top-table thead tr th{
+            background-color : #f1b477;
+        }
+        .bottom-table thead tr th {
+            background-color : #b8efed;
+        }        
     </style>
     {% endblock %}
 </head>
@@ -169,7 +176,7 @@
             </select>
             <button type="submit">적용하기</button>
         </form>
-        <table>
+        <table class="top-table">
             <thead>
                 <tr>
                     <th>대상 어르신</th>
@@ -247,7 +254,7 @@
             </select>
             <button type="submit">적용하기</button>
         </form>
-        <table>
+        <table class="bottom-table">
             <thead>
                 <tr>
                     <th>대상 어르신</th>
