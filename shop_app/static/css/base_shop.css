@@ -374,12 +374,13 @@ a #text{
 }
  
 .order-info {
-    float:right;
+    /* float:right; */
     width:300px;
+    height: 120px;
     background:#efefef;
     padding:10px 20px;
     color:#333;
-    border-bottom:4px solid #5993bb;
+    /* border-bottom:4px solid #5993bb; */
 }
  
 .order-info h3 {
