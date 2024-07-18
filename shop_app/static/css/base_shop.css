@@ -121,7 +121,6 @@ a.button, input[type="submit"] {
 .stock-alert {
     color: #dc1616;
     font-weight: bold;
-    margin-top: 70px;
 }
 a.button.light {
     color:#666;
