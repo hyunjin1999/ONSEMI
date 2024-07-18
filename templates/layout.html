@@ -140,7 +140,7 @@
                         <li> <a href="/">홈</a></li>
                         <li> <a href="/introduce/">소개</a></li>
                         {% if request.user.is_authenticated %}
-                        <li> <a href="{% url 'account_logout' %}" class="logout">로그아웃</a></li>
+                        <li> <a href="/user/logout" class="logout">로그아웃</a></li>
                         <li><a href="/user/profile">프로필</a></li>
                         <li><a href="/blog/notice_list">공지사항</a></li>
                         <li><a href="/user_page/">사용자페이지</a></li>
