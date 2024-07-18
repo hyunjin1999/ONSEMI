@@ -187,8 +187,17 @@
             background-color: #104e31;
         }
         .plus-button {
+            background-color: #156741;
+            color: white;
+            border: none;
+            
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
             margin-left: 10px;
             padding: 0px;
+
         }
         .image-box {
             text-decoration: none;
@@ -369,33 +378,45 @@
             font-size: 16px;
             font-weight: bold;
         }
+
+        .plus-button .tooltip {
+            visibility: hidden;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 10;
+            top: 125%;
+            left: -10%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            font-size:10px;
+        }
+        .plus-button .tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent #555 transparent;
+            font-size:10px;
+        }
+        .plus-button:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+            font-size:10px;
+        }
+
     </style>
 </head>
 <body>
-    {% comment %} <div class="header">
-        <div class="left-controls">
-            <span class="material-symbols-outlined hamburger-menu" onclick="toggleSidebar()">menu</span>
-            <img src="{% static 'main/onsemi_logos.png' %}" alt="Main Image">
-        </div>
-        <div class="user-controls">
-            <div class="user-profile" onclick="toggleInfoBox()">
-                <span class="material-symbols-outlined icon">notifications</span>
-                <div id="infoBox" class="info-box">
-                    <p id="signal-message1">알림이 없습니다.</p>
-                    <p id="signal-message2"></p>
-                    <div class="button-container">
-                        <a href="{% url 'monitoring_app:family_monitor' %}">
-                            <button id="navigateButton">모니터링</button>
-                        </a>
-                        <button id="clearButton" class="close-button">알림 지우기</button>
-                    </div>
-                </div>
-            </div>
-            <a href="/user/logout/" class="logout">
-                <span class="material-symbols-outlined icon">logout</span>
-            </a>
-        </div>
-    </div> {% endcomment %}
+  
     <div class="content-container">
         <div class="sidebar">
             {% if selected_senior %}
@@ -486,7 +507,7 @@
                 <div class="health-box card">
                     <div class="card-header">
                         <h3>건강 상태</h3>
-                        <button class="plus-button" onclick="location.href='/monitoring/family_monitor/report/list/?selected_senior_id={{ selected_senior_id }}';">+</button>
+                        <button class="plus-button" onclick="location.href='/monitoring/family_monitor/report/list/?selected_senior_id={{ selected_senior_id }}';">+<span class="tooltip">건강 상태 추가</span></button>
                     </div>
                     <div class="card-body">
                         {% if selected_senior_id %}
@@ -541,7 +562,7 @@
                         <h3>주문 및 돌봄 내역</h3>
                         <div style="margin-top: 10px;">
                             <a href='/management/add/care/' class="add-button">케어 요청하기</a>
-                            <button class="plus-button" onclick="location.href='{% url 'monitoring_app:generate' %}';">+</button>
+                            <button class="plus-button" onclick="location.href='{% url 'monitoring_app:generate' %}';">+<span class="tooltip">주문 내역 추가</span></button>
                         </div>
                     </div>
                     <div class="card-body">
