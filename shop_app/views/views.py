@@ -22,13 +22,12 @@ def product_list(request, category_slug=None):
     # 예측 결과 데이터 전처리
     price_predict['3'] = round(price_predict['3'] * 100, 2) # 가격 변동률 100분위로 변경
     price_predict['2'] = price_predict['2'].astype(int)     # 변동된 가격 int로 변경
-    price_predict.drop('1', axis=1, inplace=True)
     
     # 가격 상승 상품 3개 저장
-    increase = price_predict.iloc[: 3].values.tolist()
+    increases = price_predict.iloc[: 3].values.tolist()
     
     # 가격 하락 상품 3개 저장
-    decrease = price_predict.iloc[-1: -4: -1].values.tolist()
+    decreases = price_predict.iloc[-1: -4: -1].values.tolist()
     
     category = None
     categories = Category.objects.all()
@@ -38,7 +37,13 @@ def product_list(request, category_slug=None):
         products = products.filter(category=category)
 
     recent_products_ids = request.session.get('recent_products', [])
-    recent_products = Product.objects.filter(id__in=recent_products_ids)
+    # 빈 리스트를 생성합니다.
+    recent_products = []
+
+    # for 문을 사용하여 각 ID로 Product 객체를 쿼리하고 리스트에 저장합니다.
+    for product_id in recent_products_ids:
+        product = Product.objects.get(id=product_id)
+        recent_products.insert(0,product)
 
     return render(request,
                   'shop/product/list.html',
@@ -46,8 +51,8 @@ def product_list(request, category_slug=None):
                    'categories': categories,
                    'products': products,
                    'recent_products': recent_products,
-                   'increase': increase,
-                   'decrease': decrease})
+                   'increases': increases,
+                   'decreases': decreases})
 
 
 @login_required
