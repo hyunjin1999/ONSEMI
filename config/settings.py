@@ -169,11 +169,24 @@ IAMPORT_API_SECRET = 'tVZHIXzhBmmOvdJjhmEVd3osXkAE2Td1BLrKtz5vrGIgFLTzv4RqeqKkaG
 
 IAMPORT_CODE = 'imp10781812'
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'django-db'
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Seoul'
 
-# AWS 설정 제거 (로컬 환경에서는 필요 없음)
+# aws 전용 celery 코드
+# settings.py
+from celery.schedules import crontab 
+
+CELERY_BROKER_URL = 'redis://172.31.5.21:6379/0'
+CELERY_RESULT_BACKEND = 'redis://172.31.5.21:6379/0'
+CELERY_BEAT_SCHEDULE = {
+    'my-scheduled-task': {
+        'task': 'myapp.tasks.my_task',
+        'schedule': crontab(hour=1, minute=0),  # 매일 새벽 1시
+    },
+}
+
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
