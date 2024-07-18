@@ -103,7 +103,7 @@
     list-style: none; /* 기본 목록 스타일 제거 */
     padding: 0; /* 기본 패딩 제거 */
     margin: 0; /* 기본 마진 제거 */
-    justify-content: center; /* 가로 방향으로 중앙 정렬 */
+    justify-content: space-between; /* 가로 방향으로 중앙 정렬 */
     align-items: center; /* 세로 방향으로 중앙 정렬 */
     margin-bottom: 15px;
   }
@@ -127,19 +127,13 @@
   .product-list {
     display: flex;
     justify-content: center;
-    /*align-items: center;*/
     flex-wrap: wrap;  /*줄바꿈 설정 */
-    gap: 80px; /* 요소 간의 간격 설정 */
+    gap: 20px; /* 요소 간의 간격 설정 */
   }
  
   .product-list h1 {
-    flex-basis: 80%;  h1이 전체 너비를 차지하도록 설정 */
+    flex-basis: 100%;  h1이 전체 너비를 차지하도록 설정 */
     /*margin-bottom: 10px;  h1과 나머지 요소 간의 간격 설정 */
-  }
- 
-  .product-list .item {
-    /* flex: 1 1 calc(33.333% - 40px);  3개 열로 배치하고 간격 고려 */
- 
   }
  
   .ordered-list-container {
