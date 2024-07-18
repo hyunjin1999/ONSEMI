@@ -37,7 +37,13 @@ def product_list(request, category_slug=None):
         products = products.filter(category=category)
 
     recent_products_ids = request.session.get('recent_products', [])
-    recent_products = Product.objects.filter(id__in=recent_products_ids)
+    # 빈 리스트를 생성합니다.
+    recent_products = []
+
+    # for 문을 사용하여 각 ID로 Product 객체를 쿼리하고 리스트에 저장합니다.
+    for product_id in recent_products_ids:
+        product = Product.objects.get(id=product_id)
+        recent_products.insert(0,product)
 
     return render(request,
                   'shop/product/list.html',
