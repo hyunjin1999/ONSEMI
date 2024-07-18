@@ -189,7 +189,6 @@
             background-color: #156741;
             color: white;
             border: none;
-            
             cursor: pointer;
             border-radius: 5px;
             text-align: center;
@@ -419,6 +418,133 @@
             font-size:10px;
         }
 
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .modal-content2 {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 40%;
+            {% comment %} height: 40%; {% endcomment %}
+            max-height: 80vh;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 25px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: block;
+        }
+        .text {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .circle {
+            width: 5px;
+            height: 5px;
+            background-color: #333;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+       strong{
+        margin-right:10px;
+       }
+
+       .photo-box2 {
+        {% comment %} background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column; /* 아래부터 위로 정렬 */
+        height: 100%; {% endcomment %}
+    }
+    
+    .photo-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .photo-item {
+        margin: 20px;
+        text-align: center;
+        max-height:70%;
+    }
+    
+    .photo-item img {
+        max-width: 100%;
+        max-height: 70%;
+        object-fit: contain;
+        display: block;
+        margin: 0 0;
+    }
+    
+    .cancle {
+        margin-top: auto;
+        align-self: flex-end; /*오른쪽 정렬 */
+        padding: 10px 20px;
+    }
+    
+    .cancle {
+        margin-top: auto;
+        align-self: flex-end; /*오른쪽 정렬 */
+        padding: 8px 16px; /* 패딩을 조정하여 버튼 크기 조절 */
+        font-size: 14px; /* 폰트 크기를 조정하여 버튼 텍스트 크기 조절 */
+    }
+
+    .button-container {
+        margin-top: auto; /* 위쪽 여백을 자동으로 최대로 설정 */
+        align-self: flex-end; /* 오른쪽 아래 정렬 */
+    }
     </style>
 </head>
 <body>
@@ -491,7 +617,6 @@
                         {% if selected_senior_id %}
                             {% for report in reports %}
                                 {% if forloop.first %}
-                                <a href="{% url 'monitoring_app:family_monitor_image' report.id %}" class="image-box">
                                 <div>
                                     {% if report.images.all %}
                                         <div>{% for senior in report.care.seniors.all %}
@@ -500,11 +625,11 @@
                                         <div>{{ report.created_at }}</div><br>
                                         <div>
                                         {% for image in report.images.all %}
-                                            <img src="{{ image.image.url }}" alt="Report Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                            <img src="{{ image.image.url }}" alt="Report Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onclick="openPhotoModal('{{ image.image.url }}')">
                                         {% endfor %}
                                         </div>
                                     {% endif %}
-                                </div></a><br>
+                                </div><br>
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
@@ -587,7 +712,7 @@
                             <tbody>
                                 {% if selected_senior_id %}
                                     {% for care in sorted_cares_latest %}
-                                        <tr class="clickable-row" onclick="location.href='/management/care/detail/{{ care.id }}/'">
+                                        <tr class="clickable-row" onclick="openModal('{{ care.title }}', '{{ care.care_type }}', '{{ care.datetime|date:"Y년 n월 j일 A g:i" }}', '{{ care.visit_date }}', '{{ care.visit_time }}', '{{ care.get_care_state_display }}', '{{ care.content }}', '{{ care.seniors.all|join:", " }}', '{{ care.user_id.username }}')">
                                             <td class="title">{{ care.title }}</td>
                                             <td>{{ care.care_type }}</td>
                                             <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
@@ -616,6 +741,61 @@
         </div>
     </div>
     
+    <!-- Modal Structure -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h1>케어 상세</h1>
+            <div class="container">
+                <div class="text"><span class="circle"></span><strong>케어 종류 :</strong> <span id="modal-care-type"></span></div>
+                <div class="text"><span class="circle"></span><strong>등록 시간 :</strong> <span id="modal-request-date"></span></div>
+                <div class="text"><span class="circle"></span><strong>제목 :</strong> <span id="modal-title"></span></div>
+                <div class="text"><span class="circle"></span><strong>내용 :</strong> <span id="modal-content"></span></div>
+                <div class="text"><span class="circle"></span><strong>등록인 :</strong> <span id="modal-username"></span></div>
+                <div class="text"><span class="circle"></span><strong>해당 노인 :</strong> <span id="modal-seniors"></span></div>
+                <div class="text"><span class="circle"></span><strong>상태 :</strong> <span id="modal-care-state"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Modal Structure -->
+    <div id="photoModal" class="modal">
+        <div class="modal-content2">
+            <span class="close" onclick="closePhotoModal()">&times;</span>
+            <div class="photo-box2">
+                <div id="photo-modal-content" class="photo-item"></div>
+                <div class="button-container">
+                    <button type="button" class="cancle" onclick="closePhotoModal()">뒤로가기</button>    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(title, careType, requestDate, visitDate, visitTime, careState, content, seniors, username) {
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('modal-care-type').textContent = careType;
+            document.getElementById('modal-request-date').textContent = requestDate;
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-content').textContent = content;
+            document.getElementById('modal-username').textContent = username;
+            document.getElementById('modal-seniors').textContent = seniors;
+            document.getElementById('modal-care-state').textContent = careState;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function openPhotoModal(imageUrl) {
+            document.getElementById('photo-modal-content').innerHTML = `<img src="${imageUrl}" alt="Report Image">`;
+            document.getElementById('photoModal').style.display = 'block';
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').style.display = 'none';
+        }
+    </script>
 </body>
 {% endblock %}
 </html>
