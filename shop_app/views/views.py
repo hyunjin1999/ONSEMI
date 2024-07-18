@@ -9,8 +9,27 @@ from orders_app.models import OrderItem
 from django.db.models import Avg
 from django.core.paginator import Paginator
 
+import pandas as pd
+
+
 @login_required
 def product_list(request, category_slug=None):
+    
+    # 예측 결과 불러오기 및 정렬
+    price_predict = pd.read_csv('./result.csv')
+    price_predict.sort_values(by='3', ascending=True)
+    
+    # 예측 결과 데이터 전처리
+    price_predict['3'] = round(price_predict['3'] * 100, 2) # 가격 변동률 100분위로 변경
+    price_predict['2'] = price_predict['2'].astype(int)     # 변동된 가격 int로 변경
+    price_predict.drop('1', axis=1, inplace=True)
+    
+    # 가격 상승 상품 3개 저장
+    increase = price_predict.iloc[: 3].values.tolist()
+    
+    # 가격 하락 상품 3개 저장
+    decrease = price_predict.iloc[-1: -4: -1].values.tolist()
+    
     category = None
     categories = Category.objects.all()
     products = Product.objects.filter(available=True)
@@ -26,7 +45,10 @@ def product_list(request, category_slug=None):
                   {'category': category,
                    'categories': categories,
                    'products': products,
-                   'recent_products': recent_products})
+                   'recent_products': recent_products,
+                   'increase': increase,
+                   'decrease': decrease})
+
 
 @login_required
 def product_detail(request, id, slug):
@@ -72,6 +94,7 @@ def product_detail(request, id, slug):
     }
     return render(request,'shop/product/detail.html',context)
 
+
 @login_required
 def add_to_recent_products(request, id):
     if request.method == 'POST':
@@ -91,6 +114,7 @@ def remove_from_recent_products(request, id):
         recent_products.remove(id)
         request.session['recent_products'] = recent_products
     return redirect('shop_app:product_list')
+
 
 @login_required
 @require_POST
