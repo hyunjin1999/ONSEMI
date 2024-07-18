@@ -341,6 +341,10 @@ h2{
     background-color: #f7f7f7;
 }
 
+.quantity {
+    margin-right: 10px;
+}
+
 a #text{
     text-align: center;
 }

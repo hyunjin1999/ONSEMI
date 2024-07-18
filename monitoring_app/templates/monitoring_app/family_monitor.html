@@ -619,10 +619,10 @@
                                 {% if forloop.first %}
                                 <div>
                                     {% if report.images.all %}
-                                        <div>{% for senior in report.care.seniors.all %}
+                                        {% comment %} <div>{% for senior in report.care.seniors.all %}
                                             {{ senior.name }}{% if not forloop.last %}, {% endif %}님
-                                        {% endfor %}</div>
-                                        <div>{{ report.created_at }}</div><br>
+                                        {% endfor %}</div> {% endcomment %}
+                                        
                                         <div>
                                         {% for image in report.images.all %}
                                             <img src="{{ image.image.url }}" alt="Report Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onclick="openPhotoModal('{{ image.image.url }}')">
@@ -645,10 +645,10 @@
                             {% for report in reports %}
                                 {% if forloop.first %}
                                 <div>
-                                    <div>{% for senior in report.care.seniors.all %}
+                                    {% comment %} <div>{% for senior in report.care.seniors.all %}
                                         {{ senior.name }}{% if not forloop.last %}, {% endif %}님
-                                    {% endfor %}</div>
-                                    <div>{{ report.created_at|date:"Y년 n월 j일 A g:i" }}</div><br>
+                                    {% endfor %}</div> {% endcomment %}
+                                    
                                     <div>
                                         {% if report.no_issue %}
                                             특이사항 없음
@@ -669,18 +669,19 @@
                                                 {{report.other_text}} 진찰 필요
                                             {% endif %}
                                         {% endif %}
-                                    </div><br><br>
-                                    {% if report.doctor_opinion %}
-                                    <h3>의사 소견</h3>
-                                    <div>{{report.doctor_opinion}}</div><br><br>
-                                    {% endif %}
+                                    </div>
                                     <h3>전달 사항</h3>
                                     <div>
                                         {% if report.user_request %}
                                             {{report.user_request}}
                                         {% endif %}
                                     </div>
-                                </div><br><br>
+                                    {% if report.doctor_opinion %}
+                                    <h3>의사 소견</h3>
+                                    <div>{{report.doctor_opinion}}</div><br>
+                                    {% endif %}
+                                   
+                                </div>
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
