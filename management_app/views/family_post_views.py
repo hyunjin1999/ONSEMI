@@ -75,8 +75,8 @@ def add_care(request):
         care.save()
         care.seniors.add(senior)
 
-        return JsonResponse({'success': True, 'redirect_url': "/monitoring/family_monitor/"})
-    
+        return JsonResponse({'success': True, 'redirect_url': f'/monitoring/family_monitor/?selected_senior_id={senior_id}'})
+    return JsonResponse({'error': '유효하지 않은 요청입니다.'}, status=400)
         
 
 @login_required

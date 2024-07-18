@@ -166,7 +166,7 @@
       <a href="{% url 'orders_app:my_orders' %}" class="ordered-list">주문 내역</a></h2>
   </div>
   <div id="main" class="product-list">
-    <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
+    <h1>{% if category %}{{ category.name }}{% else %}전체 상품{% endif %}</h1>
     {% for product in products %}
       <div class="item">
         <a href="{{ product.get_absolute_url }}">
