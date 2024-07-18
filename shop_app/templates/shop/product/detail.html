@@ -327,7 +327,7 @@ thead th{
           <div class="cart-like-section">
               <form action="{% url 'cart_app:cart_add' product.id %}" method="post" class="cart-form">
                   <div class="quantity-stock">
-                    <p>수량</p>
+                    <p class="quantity">수량</p>
                       {{ cart_product_form.quantity }}
                       {% if stock_alert %}
                       <span class="stock-alert">재고가 {{ product.stock }}개 남았습니다.</span>
