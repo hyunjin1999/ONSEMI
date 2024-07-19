@@ -51,6 +51,9 @@ INSTALLED_APPS = [
     "management_app",
     'monitoring_app',
     'django_celery_results',
+    'django_celery_beat',
+    # 'config',
+    'config.apps.ConfigAppConfig',
     
     'allauth',
     'allauth.account',
@@ -169,11 +172,56 @@ IAMPORT_API_SECRET = 'tVZHIXzhBmmOvdJjhmEVd3osXkAE2Td1BLrKtz5vrGIgFLTzv4RqeqKkaG
 
 IAMPORT_CODE = 'imp10781812'
 
+# Celery 설정
+# CELERY_BROKER_URL = 'sqs://'
+# CELERY_RESULT_BACKEND = 'django-db'  # 결과 백엔드로 Django DB 사용
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Seoul'
+CELERY_TASK_DEFAULT_QUEUE = "sqs"
 
-# AWS 설정 제거 (로컬 환경에서는 필요 없음)
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'region': 'ap-northeast-2',
+    'visibility_timeout': 3600,
+    'polling_interval': 10,
+    'queue_name_prefix': 'dev-',
+}
+
+# Celery 결과 백엔드로 Django DB 사용 설정
+from celery import Celery
+
+app = Celery('config')
+
+app.config_from_object('django.conf:settings', namespace='CELERY')
+app.autodiscover_tasks()
+
+@app.task(bind=True)
+def debug_task(self):
+    print(f'Request: {self.request!r}')
+
+from dotenv import load_dotenv
+###############################################################################
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+# AWS configuration
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+
+# 스토리지 백엔드 설정
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+# 정적 파일 설정
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 로컬에서 collectstatic 명령어 실행 시 사용될 경로
+
+# 미디어 파일 설정
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
