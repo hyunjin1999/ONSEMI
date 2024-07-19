@@ -9,8 +9,8 @@ def setup_periodic_tasks(sender, **kwargs):
     from django_celery_beat.models import PeriodicTask, CrontabSchedule
     # 매일 자정마다 실행되는 작업 스케줄 설정
     schedule, created = CrontabSchedule.objects.get_or_create(
-        minute='25',
-        hour='1',
+        minute='0',
+        hour='15',
         day_of_week='*',
         day_of_month='*',
         month_of_year='*',
