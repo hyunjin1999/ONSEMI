@@ -19,6 +19,8 @@
 
 *.png
 
+*.jpg
+
 
 .DS_Store
 ._.DS_Store
@@ -32,3 +34,5 @@
 *.env
 
 *.jar
+
+db_settings.py

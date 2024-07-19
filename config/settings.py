@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+import db_settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +29,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = "auth_app.User"
-
 
 # Application definition
 
@@ -52,6 +52,9 @@ INSTALLED_APPS = [
     "management_app",
     'monitoring_app',
     'django_celery_results',
+    'django_celery_beat',
+    # 'config',
+    'config.apps.ConfigAppConfig',
     
     'allauth',
     'allauth.account',
@@ -76,7 +79,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        # "DIRS": [BASE_DIR / "templates"],
+        # "DIRS": [BASE_DIR / "templates"], 
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -93,7 +96,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -103,6 +105,8 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# DATABASES = db_settings.DATABASES
 
 
 # Password validation
@@ -123,7 +127,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -137,17 +140,10 @@ USE_TZ = True
 
 USE_L10N = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
@@ -155,9 +151,11 @@ STATICFILES_DIRS = [
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-AUTHENTICATION_BACKEND = (
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationsBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 SITE_ID = 1
@@ -174,22 +172,43 @@ SOCIAL_AUTH_LOGOUT_URL_PARAMETER = 'next'
 CART_SESSION_ID = 'cart'
 
 IAMPORT_API_KEY = 'imp10781812'
-IAMPORT_API_SECRET = 'tVZHIXzhBmmOvdJjhmEVd3osXkAE2Td1BLlrKtz5vrGIgFLTzv4RqeqKkaGP5boVbH6HFlUQHLr6qtlj'
+IAMPORT_API_SECRET = 'tVZHIXzhBmmOvdJjhmEVd3osXkAE2Td1BLrKtz5vrGIgFLTzv4RqeqKkaGP5boVbH6HFlUQHLr6qtlj'
 
 IAMPORT_CODE = 'imp10781812'
 
+# Celery 설정
+# CELERY_BROKER_URL = 'sqs://'
+# CELERY_RESULT_BACKEND = 'django-db'  # 결과 백엔드로 Django DB 사용
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Seoul'
+CELERY_TASK_DEFAULT_QUEUE = "sqs"
+
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'region': 'ap-northeast-2',
+    'visibility_timeout': 3600,
+    'polling_interval': 10,
+    'queue_name_prefix': 'dev-',
+}
+
+# Celery 결과 백엔드로 Django DB 사용 설정
+from celery import Celery
+
+app = Celery('config')
+
+app.config_from_object('django.conf:settings', namespace='CELERY')
+app.autodiscover_tasks()
+
+@app.task(bind=True)
+def debug_task(self):
+    print(f'Request: {self.request!r}')
 
 from dotenv import load_dotenv
-
-# Load .env file
-load_dotenv()
-
+###############################################################################
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 # AWS configuration
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')

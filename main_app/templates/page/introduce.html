@@ -6,32 +6,35 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'introduce.css' %}">
 <style>
-    .header {
-        color:black;
-        padding: 20px;
-        text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-        
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: 'GmarketSansMedium';
+       
+        min-width:100%;
+        width: 100%;
     }
-    
+
     nav ul li a {
         color: black;
     }
-    h1{
-        text-align:center;
-        color:black;
+
+   
+    h1 {
+        text-align: center;
+        color: black;
     }
-    h2{
-        color:black;
+    h2 {
+        color: black;
     }
-    h3{
-        color:black;
+    h3 {
+        color: black;
     }
     .main {
-        padding: 20px;
-        background-color: #fff;
         
+        background-color: #fff;
+        overflow: auto;
     }
 
     .vision-section {
@@ -41,9 +44,9 @@
     }
 
     .vision-section img {
-       width:1080px;
+        width: 1080px;
         height: 370px;
-        opacity:0.75;
+        opacity: 0.75;
     }
 
     .vision-text {
@@ -111,6 +114,16 @@
         text-align: center;
         font-size: 14px;
     }
+
+    .page-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .wrapper {
+        flex: 1;
+    }
   
 </style>
 {% endblock %}
@@ -122,16 +135,16 @@
         <h1>온새미(ONSEMI)</h1>
         <img src="{% static 'main/subimage.png' %}" alt="Vision Image">
         <div class="vision-text">
-            <h3>식료품을 구하는 것도 녹록지 않은 동네</h2>
-            <h3>그 안에서 지긋한 연세가 되어버린 우리 부모님</h2>
-            <h3>서로에게 보내지 못한 마음과 소식들</h2>
+            <h3>식료품을 구하는 것도 녹록지 않은 동네</h3>
+            <h3>그 안에서 지긋한 연세가 되어버린 우리 부모님</h3>
+            <h3>서로에게 보내지 못한 마음과 소식들</h3>
             <h2>그 모든 갈증,
                 이 땅에서 솟아나는 샘물 되어
                 온새미가 채우겠습니다</h2>
         </div>
     </div>
     <div class="values-section">
-        <h2>온새미의서비스</h2>
+        <h2>온새미의 서비스</h2>
         <div class="values-container">
             <div class="value-box">
                 <div class="icon"><img src="{% static 'images/customer.png' %}" alt="Customer Icon"></div>

@@ -9,8 +9,27 @@ from orders_app.models import OrderItem
 from django.db.models import Avg
 from django.core.paginator import Paginator
 
+import pandas as pd
+
+
 @login_required
 def product_list(request, category_slug=None):
+    
+    # 예측 결과 불러오기 및 정렬
+    price_predict = pd.read_csv('./result.csv')
+    price_predict.sort_values(by='3', ascending=True)
+    
+    # 예측 결과 데이터 전처리
+    price_predict['3'] = round(price_predict['3'] * 100, 2) # 가격 변동률 100분위로 변경
+    price_predict['2'] = price_predict['2'].astype(int)     # 변동된 가격 int로 변경
+    price_predict['1'] = price_predict['1'].astype(int)     # 변동된 가격 int로 변경
+    
+    # 가격 상승 상품 3개 저장
+    increases = price_predict.iloc[: 3].values.tolist()
+    
+    # 가격 하락 상품 3개 저장
+    decreases = price_predict.iloc[-1: -4: -1].values.tolist()
+    
     category = None
     categories = Category.objects.all()
     products = Product.objects.filter(available=True)
@@ -19,14 +38,23 @@ def product_list(request, category_slug=None):
         products = products.filter(category=category)
 
     recent_products_ids = request.session.get('recent_products', [])
-    recent_products = Product.objects.filter(id__in=recent_products_ids)
+    # 빈 리스트를 생성합니다.
+    recent_products = []
+
+    # for 문을 사용하여 각 ID로 Product 객체를 쿼리하고 리스트에 저장합니다.
+    for product_id in recent_products_ids:
+        product = Product.objects.get(id=product_id)
+        recent_products.insert(0,product)
 
     return render(request,
                   'shop/product/list.html',
                   {'category': category,
                    'categories': categories,
                    'products': products,
-                   'recent_products': recent_products})
+                   'recent_products': recent_products,
+                   'increases': increases,
+                   'decreases': decreases})
+
 
 @login_required
 def product_detail(request, id, slug):
@@ -72,6 +100,7 @@ def product_detail(request, id, slug):
     }
     return render(request,'shop/product/detail.html',context)
 
+
 @login_required
 def add_to_recent_products(request, id):
     if request.method == 'POST':
@@ -91,6 +120,7 @@ def remove_from_recent_products(request, id):
         recent_products.remove(id)
         request.session['recent_products'] = recent_products
     return redirect('shop_app:product_list')
+
 
 @login_required
 @require_POST

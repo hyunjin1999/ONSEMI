@@ -39,7 +39,9 @@ def add_care(request):
     if request.method == "GET":
         user = request.user
         user_senior_list = user.senior_set.all()
-        context = {"seniors": user_senior_list}
+        selected_senior_id = request.GET.get("selected_senior_id")
+        selected_senior = Senior.objects.get(id=selected_senior_id) if selected_senior_id else None
+        context = {"seniors": user_senior_list, "selected_senior": selected_senior}
         return render(request, "management_app/add_care.html", context)
 
     if request.method == "POST":
@@ -49,10 +51,7 @@ def add_care(request):
         senior_id = request.POST.get("senior")
         parkinson_diagnosis = request.POST.get("parkinson_diagnosis")
         
-        if parkinson_diagnosis == "on":
-            parkinson_diagnosis = True
-        else:
-            parkinson_diagnosis = False
+        parkinson_diagnosis = parkinson_diagnosis == "on"
                 
         user = request.user
         senior = Senior.objects.get(pk=senior_id)
@@ -76,8 +75,8 @@ def add_care(request):
         care.save()
         care.seniors.add(senior)
 
-        return JsonResponse({'success': True, 'redirect_url': "/monitoring/family_monitor/"})
-    
+        return JsonResponse({'success': True, 'redirect_url': f'/monitoring/family_monitor/?selected_senior_id={senior_id}'})
+    return JsonResponse({'error': '유효하지 않은 요청입니다.'}, status=400)
         
 
 @login_required
