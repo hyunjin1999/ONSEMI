@@ -129,20 +129,21 @@
 </head>
 <body>
 
-    <div class="page-container" id="start-image">
-        <header>
+    <div class="page-container">
+        <header id="start-image">
             <div class="header-container">
                 <div class="logo">
+                    <a href="/">
                     <img src="{% static 'main/onsemi_logos.png' %}" alt="ONSEMI" class="logo">
+                    </a>
                 </div>
                 <nav>
                     <ul>
-                        <li> <a href="/">홈</a></li>
+                        {% comment %} <li> <a href="/">홈</a></li> {% endcomment %}
                         <li> <a href="/introduce/">소개</a></li>
                         {% if request.user.is_authenticated %}
                         <li> <a href="/user/logout" class="logout">로그아웃</a></li>
-                        <li><a href="/user/profile">프로필</a></li>
-                        <li><a href="/blog/notice_list">공지사항</a></li>
+                        <li><a href="/blog/notice_list">커뮤니티</a></li>
                         <li><a href="/user_page/">마이페이지</a></li>
                         {% else %}
                         <li><a href="/user/login/">로그인</a></li>
@@ -196,6 +197,8 @@
             const chatLink2 = document.getElementById('chat-link2');
             chatLink2.style.display = 'none';
             window.addEventListener('scroll', handleScroll);
+
+            window.scrollTo(0, 0);
         });
     </script>
 </body>

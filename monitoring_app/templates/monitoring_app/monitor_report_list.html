@@ -125,6 +125,38 @@
         display: inline-block;
         margin-right: 10px;
     }
+
+    .text {
+        margin-bottom : 10px;
+    }
+    /* Table styles */
+    .table-report {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-report th, .table-report td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px; /* Adjust the max-width as needed */
+    }
+
+    .table-report th {
+        
+        text-align: left;
+    }
+
+    .table-report td {
+        max-width: 200px; /* Adjust the max-width as needed */
+    }
+
+    .table-report .clickable-row {
+        cursor: pointer;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -173,21 +205,50 @@
             <table class="table-report">
                 <thead>
                     <tr>
-                        <th>케어 타입</th>
-                        <th>등록 시간</th>
+                        <th>이름</th>
+                        <th>케어</th>
                         <th>제목</th>
                         <th>내용</th>
+                        <th>파킨슨 요청</th>
+                        <th>주소</th>
+                        <th>신청날짜</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for report in page_obj %}        
-                    {% comment %} {% for report in reports %} {% endcomment %}
-                            <tr class="clickable-row" data-report-id="{{ report.id }}">    
-                            <td>{{ report.care.care_type}}</td>
-                            <td>{{ report.created_at|date:"Y년 n월 j일 A g:i" }}</td>
-                            <td>{{ report.care.title }}</td>
-                            <td>{{ report.care.content }}</td>
-                        </tr>
+                    {% for report_detail in reports_details %}
+                    <tr class="clickable-row" 
+                        data-care-type="{{ report_detail.report.care.care_type }}"
+                        data-datetime="{{ report_detail.report.created_at|date:"Y년 n월 j일 A g:i" }}"
+                        data-title="{{ report_detail.report.care.title }}"
+                        data-content="{{ report_detail.report.care.content }}"
+                        data-no-issue="{{ report_detail.report.no_issue }}"
+                        data-eye="{{ report_detail.report.eye }}"
+                        data-teeth="{{ report_detail.report.teeth }}"
+                        data-skin="{{ report_detail.report.skin }}"
+                        data-back="{{ report_detail.report.back }}"
+                        data-other="{{ report_detail.report.other }}"
+                        data-other-text="{{ report_detail.report.other_text }}"
+                        data-parkinson-diagnosis="{{ report_detail.report.care.parkinson_diagnosis }}"
+                        data-audio-test-result="{{ report_detail.report.audio_test_result }}"
+                        data-doctor-opinion="{{ report_detail.report.doctor_opinion }}"
+                        data-user-request="{{ report_detail.report.user_request }}"
+                        data-images='{% for image in report_detail.images %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}'>
+                        <td>
+                            {% for senior in report_detail.seniors %}
+                                {{ senior.name }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>{{ report_detail.report.care.care_type }}</td>
+                        <td>{{ report_detail.report.care.title }}</td>
+                        <td>{{ report_detail.report.care.content }}</td>
+                        <td>{% if report_detail.report.care.parkinson_diagnosis %} O {% else %}X {% endif %}</td>
+                        <td>
+                            {% for senior in report_detail.seniors %}
+                                {{ senior.address }} {{ senior.detail_address }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>{{ report_detail.report.created_at|date:"Y년 n월 j일" }}</td>
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -217,19 +278,17 @@
     <div id="reportModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h1>리포트 상세</h1>
+            <h1>리포트 상세</h1>            
+            <div class="text"><span class="circle"></span><strong>리포트 종류: </strong> <span id="reportType"></span></div>
+            <div class="text"><span class="circle"></span><strong>등록 시간: </strong> <span id="reportTime"></span></div>
+            <div class="text"><span class="circle"></span><strong>제목: </strong> <span id="reportTitle"></span></div>
+            <div class="text"><span class="circle"></span><strong>내용: </strong> <span id="reportContent"></span></div>
+            <div class="text"><span class="circle"></span><strong>특이사항: </strong> <span id="reportIssues"></span></div>
+            <div class="text"><span class="circle"></span><strong>업로드 이미지: </strong><br> <div id="reportImages"></div></div>
+            <div class="text"><span class="circle"></span><strong>파킨슨병 진단 결과: </strong> <span id="reportParkinson"></span></div>
+            <div class="text"><span class="circle"></span><strong>의사소견: </strong> <span id="reportDoctorOpinion"></span></div>
+            <div class="text"><span class="circle"></span><strong>전달사항: </strong> <span id="reportUserRequest"></span></div>
             
-            <div class="text"><span class="circle"></span><strong>리포트 종류:</strong> <span id="reportType"></span></div>
-            <div class="text"><span class="circle"></span><strong>등록 시간:</strong> <span id="reportTime"></span></div>
-            <div class="text"><span class="circle"></span><strong>제목:</strong> <span id="reportTitle"></span></div>
-            <div class="text"><span class="circle"></span><strong>내용:</strong> <span id="reportContent"></span></div>
-            <div class="text"><span class="circle"></span><strong>특이사항:</strong> <span id="reportIssues"></span></div>
-            <div class="text"><span class="circle"></span><strong>업로드 이미지:</strong><br> <div id="reportImages"></div></div>
-            <div class="text"><span class="circle"></span><strong>파킨슨병 진단 결과:</strong> <span id="reportParkinson"></span></div>
-            <div class="text"><span class="circle"></span><strong>의사소견:</strong> <span id="reportDoctorOpinion"></span></div>
-            <div class="text"><span class="circle"></span><strong>전달사항:</strong> <span id="reportUserRequest"></span></div>
-            
-           
         </div>
     </div>
 
@@ -261,9 +320,45 @@
 
             document.querySelectorAll('.clickable-row').forEach(function(row) {
                 row.addEventListener('click', function() {
-                    // Fetch report data (you'll need to adapt this to your data fetching method)
-                    var reportId = this.getAttribute('data-report-id');
-                    fetchReportData(reportId);
+                    // Populate modal with data from data attributes
+                    document.getElementById('reportType').textContent = this.dataset.careType;
+                    document.getElementById('reportTime').textContent = this.dataset.datetime;
+                    document.getElementById('reportTitle').textContent = this.dataset.title;
+                    document.getElementById('reportContent').textContent = this.dataset.content;
+
+                    var issues = '';
+                    if (this.dataset.noIssue === 'true') {
+                        issues = '특이사항 없음';
+                    } else {
+                        if (this.dataset.eye === 'true') issues += '눈 진찰 필요 ';
+                        if (this.dataset.teeth === 'true') issues += '치아 진찰 필요 ';
+                        if (this.dataset.skin === 'true') issues += '피부 진찰 필요 ';
+                        if (this.dataset.back === 'true') issues += '허리 진찰 필요 ';
+                        if (this.dataset.other === 'true') issues += this.dataset.otherText + ' 진찰 필요 ';
+                    }
+                    document.getElementById('reportIssues').textContent = issues;
+
+                    var imagesDiv = document.getElementById('reportImages');
+                    imagesDiv.innerHTML = '';
+                    var images = this.dataset.images.split(',');
+                    images.forEach(function(imageUrl) {
+                        if (imageUrl) {
+                            var imgElement = document.createElement('img');
+                            imgElement.src = imageUrl;
+                            imgElement.alt = 'Report Image';
+                            imgElement.style.maxWidth = '200px';
+                            imgElement.style.maxHeight = '200px';
+                            imagesDiv.appendChild(imgElement);
+                        }
+                    });
+
+                    document.getElementById('reportParkinson').textContent = this.dataset.parkinsonDiagnosis === 'true' ? this.dataset.audioTestResult : '파킨슨 요청 X';
+                    document.getElementById('reportDoctorOpinion').textContent = this.dataset.doctorOpinion;
+                    document.getElementById('reportUserRequest').textContent = this.dataset.userRequest;
+
+                    // Show modal
+                    modal.style.display = "block";
+                    document.body.classList.add('modal-open');
                 });
             });
 
@@ -277,66 +372,6 @@
                     modal.style.display = "none";
                     document.body.classList.remove('modal-open');
                 }
-            }
-
-            function fetchReportData(reportId) {
-                // Fetch the data (replace with actual data fetching logic)
-                // For now, let's use a placeholder
-                var report = {
-                    care_type: '병원',
-                    datetime: '2024년 7월 16일 오후 11:20',
-                    title: 'aasdas',
-                    content: 'adasdasd',
-                    no_issue: true,
-                    eye: false,
-                    teeth: false,
-                    skin: false,
-                    back: false,
-                    other: false,
-                    other_text: '',
-                    images: [],
-                    parkinson_diagnosis: false,
-                    audio_test_result: '',
-                    doctor_opinion: '',
-                    user_request: ''
-                };
-
-                // Populate modal with data
-                document.getElementById('reportType').textContent = report.care_type;
-                document.getElementById('reportTime').textContent = report.datetime;
-                document.getElementById('reportTitle').textContent = report.title;
-                document.getElementById('reportContent').textContent = report.content;
-
-                var issues = '';
-                if (report.no_issue) {
-                    issues = '특이사항 없음';
-                } else {
-                    if (report.eye) issues += '눈 진찰 필요 ';
-                    if (report.teeth) issues += '치아 진찰 필요 ';
-                    if (report.skin) issues += '피부 진찰 필요 ';
-                    if (report.back) issues += '허리 진찰 필요 ';
-                    if (report.other) issues += report.other_text + ' 진찰 필요 ';
-                }
-                document.getElementById('reportIssues').textContent = issues;
-
-                var imagesDiv = document.getElementById('reportImages');
-                imagesDiv.innerHTML = '';
-                report.images.forEach(function(image) {
-                    var imgElement = document.createElement('img');
-                    imgElement.src = image.image.url;
-                    imgElement.alt = 'Report Image';
-                    imgElement.style.maxWidth = '200px';
-                    imgElement.style.maxHeight = '200px';
-                    imagesDiv.appendChild(imgElement);
-                });
-
-                document.getElementById('reportParkinson').textContent = report.parkinson_diagnosis ? report.audio_test_result : '';
-                document.getElementById('reportDoctorOpinion').textContent = report.doctor_opinion;
-                document.getElementById('reportUserRequest').textContent = report.user_request;
-
-                // Show modal
-                modal.style.display = "block";
-                document.body.classList.add('modal-open');
             }
 
             window.closeModal = function() {
