@@ -10,6 +10,9 @@
 {% block content %}
 {{ block.super }}
 <style>
+  .cate {
+    text-align: center;
+  }
   #content {
     display: flex;
     flex-wrap: wrap;
@@ -174,11 +177,88 @@
     font-size: 1.5em; /* 글자 크기 설정 */
     color: #333; /* 글자 색상 설정 */
   }
+
+  .highlight-increase {
+    color: red;
+  }
+
+  .highlight-decrease {
+    color: blue;
+  }
+
+  .price-list {
+    width: 40%;
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  .price-list tr {
+    border-bottom: 1px dotted #ccc;
+  }
+  .number {
+    display: inline-block;
+    background-color: #156741;
+    color: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    margin-right: 10px;
+    font-size: 20px;
+  }
+  .item-name {
+    font-size: 25px;
+    font-weight: bold;
+    margin-right: 100px;
+  }
+  .price {
+    font-size: 20px;
+  }
+  .change-decrease {
+    font-size: 20px;
+    color: blue;
+  }
+  .change-increase{
+    font-size: 20px;
+    color: red;
+  }
+  button {
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    padding: 15px 32px; /* Some padding */
+    text-align: center; /* Centered text */
+    display: inline-block; /* Make the buttons appear inline */
+    font-size: 16px; /* Increase font size */
+    font-weight: bold;
+    margin: 4px 2px; /* Some margin */
+    cursor: pointer; /* Pointer/hand icon */
+    border-radius: 20px; /* Rounded corners */
+  }
+
+  button:hover {
+      color: black; /* Black text on hover */
+  }
+
+  #show-decrease {
+      background-color: #f44336; /* Red background for decrease button */
+  }
+
+  #show-decrease:hover {
+      border: 2px solid #f44336; /* Red border on hover */
+  }
+
+  #show-increase {
+      background-color: #008CBA; /* Blue background for increase button */
+  }
+
+  #show-increase:hover {
+      border: 2px solid #008CBA; /* Blue border on hover */
+  }
+
 </style>
 <body>
 <div id="content">
   <div id="sidebar">
-    <h2>카테고리</h2>
+    <h1 class="cate">카테고리</h1>
     <ul>
       <li {% if not category %}class="selected"{% endif %}>
         <a href="{% url "shop_app:product_list" %}">전체</a>
@@ -198,66 +278,48 @@
     <button id="show-increase">상승 예측</button>
   </div>
   <div id="predict-price-increase" class="predict-price-section" style="display: none;">
+    <h2>가격 <span class="highlight-increase">상승&uarr;</span> 전망 목록</h2>
     <table class="price-list">
       <tr>
-        <th>순위</th>
-        <th>상품명</th>
-        <th>오늘 가격</th>
-        <th>다음주 예측 가격</th>
-        <th>예측 상승률</th>
+          <td><span class="number">1</span>
+          <span class="item-name">{{ increases.0.0 }}</span>
+          <span class="price">{{ increases.0.1 }}원 &nbsp;&rarr;</span>
+          <span class="change-increase">{{ increases.0.2 }}원</span></td>
       </tr>
       <tr>
-          <td><div class="number">1</div></td>
-          <td class="item-name">{{ increases.0.0 }}</td>
-          <td><span class="price">{{ increases.0.1 }}원</span></td>
-          <td><span class="price">{{ increases.0.2 }}원</span></td>
-          <td class="change"><span class="down">이번주보다 {{ increases.0.3 }}% 상승할 것 같아요.</span></td>
-      </tr>
-      <tr>
-        <td><div class="number">2</div></td>
-        <td class="item-name">{{ increases.1.0 }}</td>
-        <td><span class="price">{{ increases.1.1 }}원</span></td>
-        <td><span class="price">{{ increases.1.2 }}원</span></td>
-        <td class="change"><span class="down">이번주보다 {{ increases.1.3 }}% 상승할 것 같아요.</span></td>
+        <td><span class="number">2</span>
+        <span class="item-name">{{ increases.1.0 }}</span>
+        <span class="price">{{ increases.1.1 }}원 &nbsp;&rarr;</span>
+        <span class="change-increase">{{ increases.1.2 }}원</span></td>
     </tr>
     <tr>
-      <td><div class="number">3</div></td>
-      <td class="item-name">{{ increases.2.0 }}</td>
-      <td><span class="price">{{ increases.2.1 }}원</span></td>
-      <td><span class="price">{{ increases.2.2 }}원</span></td>
-      <td class="change"><span class="down">이번주보다 {{ increases.2.3 }}% 상승할 것 같아요.</span></td>
+      <td><span class="number">3</span>
+      <span class="item-name">{{ increases.2.0 }}</span>
+      <span class="price">{{ increases.2.1 }}원 &nbsp;&rarr;</span>
+      <span class="change-increase">{{ increases.2.2 }}원</span></td>
   </tr>
   </table>
   </div>
   <div id="predict-price-decrease" class="predict-price-section">
+    <h2>가격 <span class="highlight-decrease">하락&darr;</span> 전망 목록</h2>
     <table class="price-list">
       <tr>
-        <th>순위</th>
-        <th>상품명</th>
-        <th>오늘 가격</th>
-        <th>다음주 예측 가격</th>
-        <th>예측 하락률</th>
+          <td><span class="number">1</span>
+          <span class="item-name">{{ decreases.0.0 }}</span>
+          <span class="price">{{ decreases.0.1 }}원 &nbsp;&rarr;</span>
+          <span class="change-decrease">{{ decreases.0.2 }}원</span></td>
       </tr>
       <tr>
-          <td><div class="number">1</div></td>
-          <td class="item-name">{{ decreases.0.0 }}</td>
-          <td><span class="price">{{ decreases.0.1 }}원</span></td>
-          <td><span class="price">{{ decreases.0.2 }}원</span></td>
-          <td class="change"><span class="down">이번주보다 {{ decreases.0.3 }}% 하락할 것 같아요.</span></td>
-      </tr>
-      <tr>
-        <td><div class="number">2</div></td>
-        <td class="item-name">{{ decreases.1.0 }}</td>
-        <td><span class="price">{{ decreases.1.1 }}원</span></td>
-        <td><span class="price">{{ decreases.1.2 }}원</span></td>
-        <td class="change"><span class="down">이번주보다 {{ decreases.1.3 }}% 하락할 것 같아요.</span></td>
+        <td><span class="number">2</span>
+        <span class="item-name">{{ decreases.1.0 }}</span>
+        <span class="price">{{ decreases.1.1 }}원 &nbsp;&rarr;</span>
+        <span class="change-decrease">{{ decreases.1.2 }}원</span></td>
     </tr>
     <tr>
-      <td><div class="number">3</div></td>
-      <td class="item-name">{{ decreases.2.0 }}</td>
-      <td><span class="price">{{ decreases.2.1 }}원</span></td>
-      <td><span class="price">{{ decreases.2.2 }}원</span></td>
-      <td class="change"><span class="down">이번주보다 {{ decreases.2.3 }}% 하락할 것 같아요.</span></td>
+      <td><span class="number">3</span>
+      <span class="item-name">{{ decreases.2.0 }}</span>
+      <span class="price">{{ decreases.2.1 }}원 &nbsp;&rarr;</span>
+      <span class="change-decrease">{{ decreases.2.2 }}원</span></td>
   </tr>
   </table>
   </div>
