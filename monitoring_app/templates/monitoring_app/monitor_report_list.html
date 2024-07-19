@@ -92,6 +92,9 @@
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         animation-name: animatetop;
         animation-duration: 0.4s;
+        overflow-y: auto;
+        max-height: 80vh;
+        word-wrap: break-word;
     }
 
     @keyframes animatetop {
@@ -142,16 +145,18 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 150px; /* Adjust the max-width as needed */
+        max-width: 150px; 
     }
 
-    .table-report th {
-        
+    .table-report th {        
         text-align: left;
     }
 
     .table-report td {
-        max-width: 200px; /* Adjust the max-width as needed */
+        max-width: 200px;
+    }
+    .table-report tbody tr:hover {
+        background-color: #bebebe;
     }
 
     .table-report .clickable-row {
@@ -285,8 +290,8 @@
             <div class="text"><span class="circle"></span><strong>내용: </strong> <span id="reportContent"></span></div>
             <div class="text"><span class="circle"></span><strong>특이사항: </strong> <span id="reportIssues"></span></div>
             <div class="text"><span class="circle"></span><strong>업로드 이미지: </strong><br> <div id="reportImages"></div></div>
-            <div class="text"><span class="circle"></span><strong>파킨슨병 진단 결과: </strong> <span id="reportParkinson"></span></div>
-            <div class="text"><span class="circle"></span><strong>의사소견: </strong> <span id="reportDoctorOpinion"></span></div>
+            <div class="text" id="doctorOpinionDiv"><span class="circle"></span><strong>의사소견: </strong> <span id="reportDoctorOpinion"></span></div>
+            <div class="text" id="parkinsonDiv"><span class="circle"></span><strong>파킨슨병 진단 결과: </strong> <span id="reportParkinson"></span></div>
             <div class="text"><span class="circle"></span><strong>전달사항: </strong> <span id="reportUserRequest"></span></div>
             
         </div>
@@ -321,22 +326,24 @@
             document.querySelectorAll('.clickable-row').forEach(function(row) {
                 row.addEventListener('click', function() {
                     // Populate modal with data from data attributes
-                    document.getElementById('reportType').textContent = this.dataset.careType;
+                    var careType = this.dataset.careType;
+                    document.getElementById('reportType').textContent = careType;
                     document.getElementById('reportTime').textContent = this.dataset.datetime;
                     document.getElementById('reportTitle').textContent = this.dataset.title;
                     document.getElementById('reportContent').textContent = this.dataset.content;
 
                     var issues = '';
-                    if (this.dataset.noIssue === 'true') {
+                    if (this.dataset.noIssue === 'True') {
                         issues = '특이사항 없음';
                     } else {
-                        if (this.dataset.eye === 'true') issues += '눈 진찰 필요 ';
-                        if (this.dataset.teeth === 'true') issues += '치아 진찰 필요 ';
-                        if (this.dataset.skin === 'true') issues += '피부 진찰 필요 ';
-                        if (this.dataset.back === 'true') issues += '허리 진찰 필요 ';
-                        if (this.dataset.other === 'true') issues += this.dataset.otherText + ' 진찰 필요 ';
+                        if (this.dataset.eye === 'True') issues += '눈 ';
+                        if (this.dataset.teeth === 'True') issues += '치아 ';
+                        if (this.dataset.skin === 'True') issues += '피부 ';
+                        if (this.dataset.back === 'True') issues += '허리 ';
+                        if (issues != '') issues += '진찰 필요';
+                        if (this.dataset.other === 'True') issues += "<br> 기타 사항: " + this.dataset.otherText;
                     }
-                    document.getElementById('reportIssues').textContent = issues;
+                    document.getElementById('reportIssues').innerHTML = issues;
 
                     var imagesDiv = document.getElementById('reportImages');
                     imagesDiv.innerHTML = '';
@@ -352,9 +359,23 @@
                         }
                     });
 
-                    document.getElementById('reportParkinson').textContent = this.dataset.parkinsonDiagnosis === 'true' ? this.dataset.audioTestResult : '파킨슨 요청 X';
-                    document.getElementById('reportDoctorOpinion').textContent = this.dataset.doctorOpinion;
-                    document.getElementById('reportUserRequest').textContent = this.dataset.userRequest;
+                    var parkinsonDiagnosis = this.dataset.parkinsonDiagnosis === 'True';
+                    if (parkinsonDiagnosis) {
+                        document.getElementById('parkinsonDiv').style.display = 'block';
+                        document.getElementById('reportParkinson').textContent = this.dataset.audioTestResult;
+                    } else {
+                        document.getElementById('parkinsonDiv').style.display = 'none';
+                    }
+
+                    if (careType === '방문') {
+                        document.getElementById('doctorOpinionDiv').style.display = 'none';
+                    } else {
+                        document.getElementById('doctorOpinionDiv').style.display = 'block';
+                        document.getElementById('reportDoctorOpinion').textContent = this.dataset.doctorOpinion;
+                    }
+
+                    var userRequest = this.dataset.userRequest;
+                    document.getElementById('reportUserRequest').textContent = userRequest ? userRequest : '없음';
 
                     // Show modal
                     modal.style.display = "block";
