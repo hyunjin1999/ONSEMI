@@ -121,7 +121,6 @@ a.button, input[type="submit"] {
 .stock-alert {
     color: #dc1616;
     font-weight: bold;
-    margin-top: 70px;
 }
 a.button.light {
     color:#666;
@@ -311,11 +310,24 @@ ul.errorlist {
 }
  
 .product-list .item {
-    width:20%;
-    padding:10px 20px 10px 0;
-    float:left;
-    text-align:center;
-    line-height:1.2;
+    width: calc(33.333% - 40px); /* 항상 3개 열로 배치되도록 설정 */
+    box-sizing: border-box;
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-right: 20px;
+    padding-bottom: 12px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 20px; /* 세로 간격을 일정하게 설정 */
+}
+
+/* 아이템이 2개 이하일 때의 스타일 */
+.product-list .item:nth-child(1),
+.product-list .item:nth-child(2) {
+    width: calc(33.333% - 40px); /* 여전히 3개 열의 크기를 유지 */
 }
  
 h2{
@@ -323,12 +335,16 @@ h2{
 }
  
 .product-list .item img {
-    width:100%;
-    height: 150px;
-    margin-bottom:8px;
+    width: 285px;
+    height: 250px;
+    margin-bottom:10px;
     background-color: #f7f7f7;
 }
- 
+
+.quantity {
+    margin-right: 10px;
+}
+
 a #text{
     text-align: center;
 }
@@ -362,12 +378,13 @@ a #text{
 }
  
 .order-info {
-    float:right;
+    /* float:right; */
     width:300px;
+    height: 120px;
     background:#efefef;
     padding:10px 20px;
     color:#333;
-    border-bottom:4px solid #5993bb;
+    /* border-bottom:4px solid #5993bb; */
 }
  
 .order-info h3 {

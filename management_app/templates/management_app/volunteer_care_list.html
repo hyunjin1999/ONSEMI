@@ -10,19 +10,28 @@
     <style>
         header {
             background-color: #f9f9f9;
-            margin-bottom: 20px;
         }
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: collapse;            
         }
         th, td {
             padding: 8px 12px;
             border: 1px solid #ddd;
+            text-align: center;
+            white-space: nowrap;
+            border-color: #b4b3b0;
         }
         th {
             background-color: #f4f4f4;
             cursor: pointer;
+        }
+
+        td.title, td.content {
+            max-width: 150px; /* Adjust the width as needed */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .clickable-row {
@@ -38,7 +47,8 @@
             text-align: left;
             display: flex;
             border-bottom: 2px solid #ddd;
-            background-color : white;
+            background-color: white;
+            padding-top: 20px;
         }
         
         .select-list a {
@@ -94,7 +104,7 @@
             border: 1px solid #007bff;
         }
         .body-container {
-            padding: 20px;
+            padding: 20px 50px;
         }
         .pending-approval-text {
             color: red;
@@ -125,65 +135,76 @@
         .filter-form button:hover {
             background-color: #0056b3;
         }
+        .care-count {
+            font-size : 17px;
+            color : #727875;
+        }
+        .top-table thead tr th{
+            background-color : #f1b477;
+        }
+        .bottom-table thead tr th {
+            background-color : #b8efed;
+        }        
     </style>
     {% endblock %}
 </head>
 <body>
     {% block content %}
-    <div class = "select-list">
+    <div class="select-list">
         <a id='selected' href="{% url 'management_app:care_list' %}">케어 목록</a>
         <a id='not_selected' href="{% url 'management_app:report_list' %}">보고서 목록</a>
     </div>
-    <div class = "body-container">
+    <div class="body-container">
+        <h2>[요청 승인 <span class="pending-approval-text">대기</span>] 목록 <span class="care-count"> ({{ page_obj1.paginator.count }}개)</span></h2>
         <form method="get" class="filter-form">
-            <label for="sort_by">정렬:</label>
-            <select name="sort_by" id="sort_by">
-                <option value="care_type" {% if current_sort_by == 'care_type' %}selected{% endif %}>케어 타입</option>
-                <option value="datetime" {% if current_sort_by == 'datetime' %}selected{% endif %}>시간</option>
-                <option value="care_state" {% if current_sort_by == 'care_state' %}selected{% endif %}>케어 상태</option>
+            <label for="sort_by_pending">정렬:</label>
+            <select name="sort_by_pending" id="sort_by_pending">
+                <option value="care_type" {% if current_sort_by_pending == 'care_type' %}selected{% endif %}>케어 타입</option>
+                <option value="datetime" {% if current_sort_by_pending == 'datetime' %}selected{% endif %}>시간</option>
+                <option value="care_state" {% if current_sort_by_pending == 'care_state' %}selected{% endif %}>케어 상태</option>
             </select>
-            <select name="order" id="order">
-                <option value="asc" {% if current_order == 'asc' %}selected{% endif %}>오름차순</option>
-                <option value="desc" {% if current_order == 'desc' %}selected{% endif %}>내림차순</option>
+            <select name="order_pending" id="order_pending">
+                <option value="asc" {% if current_order_pending == 'asc' %}selected{% endif %}>오름차순</option>
+                <option value="desc" {% if current_order_pending == 'desc' %}selected{% endif %}>내림차순</option>
             </select>
-            <label for="user">신청자:</label>
-            <select name="user" id="user">
+            <label for="user_pending">신청자:</label>
+            <select name="user_pending" id="user_pending">
                 <option value="">전체</option>
                 {% for user in users %}
-                    <option value="{{ user.id }}" {% if user.id == selected_user %}selected{% endif %}>{{ user.username }}</option>
+                    <option value="{{ user.id }}" {% if user.id == selected_user_pending %}selected{% endif %}>{{ user.username }}</option>
                 {% endfor %}
             </select>
             <button type="submit">적용하기</button>
         </form>
-
-        <h2>[요청 승인 <span class="pending-approval-text">대기</span>] 목록</h2>
-        <table>
+        <table class="top-table">
             <thead>
                 <tr>
-                    <th>케어타입</th>
-                    <th>시간</th>
-                    <th>제목</th>
-                    <th>상태</th>
-                    <th>신청자</th>
                     <th>대상 어르신</th>
+                    <th>케어 타입</th>
+                    <th class="title">제목</th>
+                    <th class="content">내용</th>
                     <th>파킨슨병 진단 요청</th>
+                    <th>주소</th>
+                    <th>케어 신청 날짜</th> 
                 </tr>
             </thead>
             <tbody>
                 {% for care in page_obj1.object_list %}
                     <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
-                        <td>{{ care.care_type }}</td>
-                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
-                        <td>{{ care.title }}</td>
-                        <td class="{% if care.care_state == 'NOT_APPROVED' %}pending-approval{% endif %}">{{ care.get_care_state_display }}</td>
-                        <td>{{ care.user_id.username }}</td>
                         <td>{% for senior in care.seniors.all %}
                             {{ senior.name }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}</td>
+                        <td>{{ care.care_type }}</td>                            
+                        <td class="title">{{ care.title }}</td>
+                        <td class="content">{{ care.content }}</td>
                         <td>{% if care.parkinson_diagnosis %} O
                             {%else%}X
                             {%endif%}
                         </td>
+                        <td>{% for senior in care.seniors.all %}
+                            {{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}</td>
+                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -193,53 +214,75 @@
         <div class="pagination">
             <span class="step-links">
                 {% if page_obj1.has_previous %}
-                    <a href="?page1=1&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">처음</a>
-                    <a href="?page1={{ page_obj1.previous_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}"><</a>
+                    <a href="?page1=1&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">처음</a>
+                    <a href="?page1={{ page_obj1.previous_page_number }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}"><</a>
                 {% endif %}
 
                 {% for num in page_obj1.paginator.page_range %}
                     {% if page_obj1.number == num %}
                         <span class="current">{{ num }}</span>
                     {% elif num > page_obj1.number|add:'-2' and num < page_obj1.number|add:'3' %}
-                        <a href="?page1={{ num }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">{{ num }}</a>
+                        <a href="?page1={{ num }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">{{ num }}</a>
                     {% endif %}
                 {% endfor %}
 
                 {% if page_obj1.has_next %}
-                    <a href="?page1={{ page_obj1.next_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">></a>
-                    <a href="?page1={{ page_obj1.paginator.num_pages }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">마지막</a>
+                    <a href="?page1={{ page_obj1.next_page_number }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">></a>
+                    <a href="?page1={{ page_obj1.paginator.num_pages }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">마지막</a>
                 {% endif %}
             </span>
         </div>
-        <hr style = "margin:50px 0px;">
+        <hr style="margin:50px 0px;">
         <h2>[요청 승인 <span class="pending-approval-text">완료</span>] 목록</h2>
-        <table>
+        <form method="get" class="filter-form">
+            <label for="sort_by_approved">정렬:</label>
+            <select name="sort_by_approved" id="sort_by_approved">
+                <option value="care_type" {% if current_sort_by_approved == 'care_type' %}selected{% endif %}>케어 타입</option>
+                <option value="datetime" {% if current_sort_by_approved == 'datetime' %}selected{% endif %}>시간</option>
+                <option value="care_state" {% if current_sort_by_approved == 'care_state' %}selected{% endif %}>케어 상태</option>
+            </select>
+            <select name="order_approved" id="order_approved">
+                <option value="asc" {% if current_order_approved == 'asc' %}selected{% endif %}>오름차순</option>
+                <option value="desc" {% if current_order_approved == 'desc' %}selected{% endif %}>내림차순</option>
+            </select>
+            <label for="user_approved">신청자:</label>
+            <select name="user_approved" id="user_approved">
+                <option value="">전체</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}" {% if user.id == selected_user_approved %}selected{% endif %}>{{ user.username }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">적용하기</button>
+        </form>
+        <table class="bottom-table">
             <thead>
                 <tr>
-                    <th>케어타입</th>
-                    <th>시간</th>
-                    <th>제목</th>
-                    <th>상태</th>
-                    <th>신청자</th>
                     <th>대상 어르신</th>
+                    <th>케어 타입</th>
+                    <th class="title">제목</th>
+                    <th class="content">내용</th>
                     <th>파킨슨병 진단 요청</th>
+                    <th>주소</th>
+                    <th>케어 신청 날짜</th> 
                 </tr>
             </thead>
             <tbody>
                 {% for care in page_obj2.object_list %}
                     <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
-                        <td>{{ care.care_type }}</td>
-                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
-                        <td>{{ care.title }}</td>
-                        <td>{{ care.get_care_state_display }}</td>
-                        <td>{{ care.user_id.username }}</td>
                         <td>{% for senior in care.seniors.all %}
                             {{ senior.name }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}</td>
+                        <td>{{ care.care_type }}</td>                            
+                        <td class="title">{{ care.title }}</td>
+                        <td class="content">{{ care.content }}</td>
                         <td>{% if care.parkinson_diagnosis %} O
                             {%else%}X
                             {%endif%}
                         </td>
+                        <td>{% for senior in care.seniors.all %}
+                            {{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}</td>
+                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -249,21 +292,21 @@
         <div class="pagination">
             <span class="step-links">
                 {% if page_obj2.has_previous %}
-                    <a href="?page2=1&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">처음</a>
-                    <a href="?page2={{ page_obj2.previous_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}"><</a>
+                    <a href="?page2=1&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">처음</a>
+                    <a href="?page2={{ page_obj2.previous_page_number }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}"><</a>
                 {% endif %}
 
                 {% for num in page_obj2.paginator.page_range %}
                     {% if page_obj2.number == num %}
                         <span class="current">{{ num }}</span>
                     {% elif num > page_obj2.number|add:'-2' and num < page_obj2.number|add:'3' %}
-                        <a href="?page2={{ num }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">{{ num }}</a>
+                        <a href="?page2={{ num }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">{{ num }}</a>
                     {% endif %}
                 {% endfor %}
 
                 {% if page_obj2.has_next %}
-                    <a href="?page2={{ page_obj2.next_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">></a>
-                    <a href="?page2={{ page_obj2.paginator.num_pages }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">마지막</a>
+                    <a href="?page2={{ page_obj2.next_page_number }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">></a>
+                    <a href="?page2={{ page_obj2.paginator.num_pages }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">마지막</a>
                 {% endif %}
             </span>
         </div>
