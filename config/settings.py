@@ -110,7 +110,7 @@ DATABASES = {
 # DATABASES = db_settings.DATABASES
 
 CRONJOBS = [
-    ('0 0 * * *', 'shop_app.views.cron.predict_price'),  # 매일 자정에 실행
+    ('*/3 * * * *', 'shop_app.views.cron.predict_price'),  # 3분마다 실행
 ]
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
